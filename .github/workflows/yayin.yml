@@ -1,0 +1,100 @@
+name: Yayın (GitHub Pages + Cloudflare Pages + Surge)
+
+# master'a her push'ta siteyi yayınlar.
+#   - GitHub Pages (naberlo627-cyber.github.io/sezer-abi-kurye) → her zaman
+#   - Cloudflare Pages (sezer-abi-kurye.pages.dev) → CF sırları varsa
+#   - Surge (sezer-abi-kurye.surge.sh) → Surge sırları varsa
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: yayin
+  cancel-in-progress: false
+
+jobs:
+  sayfa:
+    name: Yayın paketi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Paketi hazırla
+        run: bash tools/build_site.sh
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  github-pages:
+    name: GitHub Pages
+    needs: sayfa
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  cloudflare:
+    name: Cloudflare Pages
+    needs: sayfa
+    runs-on: ubuntu-latest
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Sır denetimi
+        id: check
+        run: |
+          if [ -z "$CF_TOKEN" ] || [ -z "$CF_ACCOUNT" ]; then
+            echo "hazir=false" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare sırları tanımlı değil; yayın atlandı."
+          else
+            echo "hazir=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.hazir == 'true'
+      - name: Paketi hazırla
+        if: steps.check.outputs.hazir == 'true'
+        run: bash tools/build_site.sh
+      - name: Cloudflare Pages'e yükle
+        if: steps.check.outputs.hazir == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=sezer-abi-kurye --branch=master
+
+  surge:
+    name: Surge
+    needs: sayfa
+    runs-on: ubuntu-latest
+    env:
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+      SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+    steps:
+      - name: Sır denetimi
+        id: check
+        run: |
+          if [ -z "$SURGE_TOKEN" ] || [ -z "$SURGE_LOGIN" ]; then
+            echo "hazir=false" >> "$GITHUB_OUTPUT"
+            echo "Surge sırları tanımlı değil; yayın atlandı."
+          else
+            echo "hazir=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.hazir == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.hazir == 'true'
+        with:
+          node-version: '20'
+      - name: Surge'e yükle
+        if: steps.check.outputs.hazir == 'true'
+        run: bash tools/deploy_surge.sh
