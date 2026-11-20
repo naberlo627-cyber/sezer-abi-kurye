@@ -20,3 +20,6 @@ __pycache__/
 
 # Tasarım dosyaları (depoya gerek yok)
 tasarim/
+
+# Yayın paketi (CI üretir)
+dist/
