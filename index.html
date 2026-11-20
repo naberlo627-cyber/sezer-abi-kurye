@@ -37,7 +37,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .ic{width:22px;height:22px;display:block;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- iskelet ---------- */
-#app{display:flex;flex-direction:column;height:100dvh;max-width:520px;margin:0 auto;position:relative;background:var(--bg)}
+#app{display:flex;flex-direction:column;height:100vh;max-width:520px;margin:0 auto;position:relative;background:var(--bg)}
+@supports (height:100dvh){#app{height:100dvh}}
 #top{flex:none;padding:calc(env(safe-area-inset-top,0px) + 14px) 18px 10px}
 #view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 18px 16px}
 #view::-webkit-scrollbar{display:none}
@@ -106,7 +107,8 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
 .agserit.on{display:block}
 
 /* sohbet */
-.sohbet{display:flex;flex-direction:column;gap:8px;max-height:46dvh;overflow-y:auto;padding:12px 0 6px}
+.sohbet{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;padding:12px 0 6px}
+@supports (height:46dvh){.sohbet{max-height:46dvh}}
 .balon{max-width:82%;padding:10px 13px;border-radius:16px;font-size:13.5px;font-weight:550;line-height:1.4;
   position:relative;overflow-wrap:anywhere}
 .balon.onlar{background:#F1F5F4;color:var(--ink);align-self:flex-start;border-bottom-left-radius:5px}
@@ -222,7 +224,8 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
 #sheet.in .scrim{opacity:1}
 #sheet .panel{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--card);
   border-radius:22px 22px 0 0;padding:8px 18px calc(env(safe-area-inset-bottom,0px) + 18px);
-  transform:translateY(100%);transition:transform .26s cubic-bezier(.3,1.1,.4,1);max-height:88dvh;overflow-y:auto}
+  transform:translateY(100%);transition:transform .26s cubic-bezier(.3,1.1,.4,1);max-height:88vh;overflow-y:auto}
+@supports (height:88dvh){#sheet .panel{max-height:88dvh}}
 #sheet.in .panel{transform:translateY(0)}
 .grab{width:38px;height:4px;border-radius:99px;background:#DDE4E4;margin:6px auto 14px}
 .shhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px}
@@ -283,7 +286,7 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
 (function(){
 'use strict';
 
-var SURUM='1.2';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
+var SURUM='1.3';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
 
 /* ============ durum ============ */
 var KEY='sezar.v1';
