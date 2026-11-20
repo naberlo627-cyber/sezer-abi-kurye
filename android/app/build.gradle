@@ -10,8 +10,8 @@ android {
         applicationId "com.sezerabi.kurye"
         minSdk 23
         targetSdk 34
-        versionCode 10100
-        versionName "1.1"
+        versionCode 10200
+        versionName "1.2"
     }
 
     signingConfigs {

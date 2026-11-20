@@ -1,6 +1,6 @@
 {
-  "version": "1.1",
-  "versionCode": 10100,
-  "notes": "Gerçek işlevler: navigasyon, telefon, WhatsApp, paylaşım, bildirim, adres kopyalama, mesajlaşma. Ana ekrana ekleme, sürüm denetimi ve uygulama içi güncelleme. Aşağı çekip yenileme, çevrimdışı şeridi, donanım geri tuşu.",
+  "version": "1.2",
+  "versionCode": 10200,
+  "notes": "Navigasyon ve iletişim düzeltmesi: görev alınca koordinat ve telefon bilgisi korunuyor. Eski sürümden gelen kayıtlar otomatik tamamlanıyor.",
   "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk"
 }

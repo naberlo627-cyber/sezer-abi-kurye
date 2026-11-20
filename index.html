@@ -283,7 +283,7 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
 (function(){
 'use strict';
 
-var SURUM='1.1';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
+var SURUM='1.2';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
 
 /* ============ durum ============ */
 var KEY='sezar.v1';
@@ -331,8 +331,30 @@ function yukle(){
     if(!ham) return JSON.parse(JSON.stringify(VARSAYILAN));
     var d=JSON.parse(ham);
     var birles=Object.assign(JSON.parse(JSON.stringify(VARSAYILAN)),d);
+    gocEttir(birles);
     return birles;
   }catch(e){ return JSON.parse(JSON.stringify(VARSAYILAN)); }
+}
+/* Eski kayıtlarda koordinat ve telefon yoktu; v1.0 kullanıcıları
+   navigasyon/paylaşım özelliklerini kaybetmesin diye eşleşen
+   siparişten tamamlanır. */
+function gocEttir(s){
+  function tamamla(g, kaynak){
+    if(!g) return;
+    ['alis','varis','tel','musteriTel'].forEach(function(k){
+      if(g[k]==null && kaynak && kaynak[k]!=null) g[k]=kaynak[k];
+    });
+  }
+  if(s.aktifGorev){
+    var esle=VARSAYILAN.siparisler.filter(function(x){
+      return x.isletme===s.aktifGorev.isletme; })[0];
+    if(!esle && VARSAYILAN.aktifGorev.isletme===s.aktifGorev.isletme) esle=VARSAYILAN.aktifGorev;
+    tamamla(s.aktifGorev, esle);
+  }
+  (s.siparisler||[]).forEach(function(o){
+    var esle=VARSAYILAN.siparisler.filter(function(x){ return x.id===o.id; })[0];
+    tamamla(o, esle);
+  });
 }
 function kaydet(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
 
@@ -1125,7 +1147,10 @@ function gorevAl(id){
   var o=S.siparisler.filter(function(x){return x.id===id;})[0];
   if(!o) return;
   S.siparisler=S.siparisler.filter(function(x){return x.id!==id;});
-  S.aktifGorev={id:o.id,isletme:o.isletme,adres:o.adres,musteri:o.musteri,sure:o.sure,km:o.km,ucret:o.ucret,asama:'paket'};
+  /* Sipariş nesnesi olduğu gibi kopyalanır: alan alan kurmak yeni
+     eklenen alanları (koordinat, telefon) düşürüyordu. */
+  S.aktifGorev=JSON.parse(JSON.stringify(o));
+  S.aktifGorev.asama='paket';
   kaydet(); katmanKapat();
   S.sekme='home'; navCiz(); gorunumCiz(); durumCiz();
   toast('Görev alındı: '+o.isletme);

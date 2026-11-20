@@ -1,5 +1,5 @@
 /* Sezar Abi Kurye — çevrimdışı destek */
-var CACHE = "sezar-v1.1";
+var CACHE = "sezar-v1.2";
 var ASSETS = [
   "./",
   "./index.html",
