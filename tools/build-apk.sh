@@ -22,14 +22,25 @@ mkdir -p "$ASSETS/icons"
 cp "$ROOT/index.html" "$ROOT/manifest.json" "$ROOT/sw.js" "$ASSETS/"
 cp "$ROOT"/icons/*.png "$ASSETS/icons/"
 
-cat > "$ROOT/version.json" <<JSON
-{
-  "version": "$VER",
-  "versionCode": $VCODE,
-  "notes": "Sezar Abi Kurye ilk sürüm.",
-  "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk"
-}
-JSON
+# Notlar version.json'da elle yazılır; betik onları korur.
+NOTES="$(python3 -c "
+import json,sys
+try:
+    print(json.load(open('$ROOT/version.json',encoding='utf-8')).get('notes',''))
+except Exception:
+    print('')
+" 2>/dev/null)"
+[ -z "$NOTES" ] && NOTES="Sezar Abi Kurye güncellemesi."
+python3 - "$ROOT/version.json" "$VER" "$VCODE" "$NOTES" <<'PYEOF'
+import json, sys
+yol, ver, vcode, notlar = sys.argv[1], sys.argv[2], int(sys.argv[3]), sys.argv[4]
+json.dump({
+    "version": ver,
+    "versionCode": vcode,
+    "notes": notlar,
+    "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk"
+}, open(yol,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
+PYEOF
 cp "$ROOT/version.json" "$ASSETS/"
 
 sed -i "s/versionCode [0-9]*/versionCode $VCODE/" "$ANDROID_DIR/app/build.gradle"

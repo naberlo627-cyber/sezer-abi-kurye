@@ -86,6 +86,39 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
 .rowv small{font-weight:500;color:var(--ink2)}
 .eta{display:inline-flex;align-items:center;gap:6px;background:var(--greenbg);color:var(--green);font-weight:750;font-size:13px;padding:4px 10px;border-radius:999px;margin-top:3px}
 
+/* satır içi küçük işlem düğmeleri */
+.rowbtn{width:34px;height:34px;border-radius:10px;background:#F0F4F4;display:grid;place-items:center;flex:none;
+  color:var(--brand);box-shadow:inset 0 0 0 1px var(--line);transition:transform .08s}
+.rowbtn:active{transform:scale(.92)}
+.rowbtn .ic{width:16px;height:16px}
+
+/* hızlı işlem şeridi */
+.quickrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px 16px}
+.qbtn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:12px;
+  background:#F4F8F7;color:var(--ink2);transition:transform .08s,background .15s}
+.qbtn:active{transform:scale(.95);background:#E8F0EE}
+.qbtn .ic{width:19px;height:19px;color:var(--brand)}
+.qbtn span{font-size:10.5px;font-weight:700;letter-spacing:.1px;text-align:center;line-height:1.2}
+
+/* ağ durumu şeridi */
+.agserit{display:none;flex:none;text-align:center;font-size:12px;font-weight:700;padding:6px 14px;
+  background:#FDF1D8;color:#7A5A12}
+.agserit.on{display:block}
+
+/* sohbet */
+.sohbet{display:flex;flex-direction:column;gap:8px;max-height:46dvh;overflow-y:auto;padding:12px 0 6px}
+.balon{max-width:82%;padding:10px 13px;border-radius:16px;font-size:13.5px;font-weight:550;line-height:1.4;
+  position:relative;overflow-wrap:anywhere}
+.balon.onlar{background:#F1F5F4;color:var(--ink);align-self:flex-start;border-bottom-left-radius:5px}
+.balon.ben{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+.bsaat{display:block;font-size:10px;font-weight:600;opacity:.55;margin-top:4px;text-align:right}
+.yazalim{display:flex;align-items:center;gap:9px;padding:8px 0 4px;border-top:1px solid var(--line);margin-top:6px}
+.yazalim input{flex:1;height:44px;border-radius:22px;border:0;background:#F1F5F4;padding:0 16px;
+  font:inherit;font-size:14px;color:var(--ink);min-width:0}
+.yazalim input:focus{outline:2px solid var(--green2);outline-offset:-2px}
+.gonder{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;flex:none}
+.gonder .ic{width:18px;height:18px;transform:rotate(45deg)}
+
 /* butonlar */
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 16px}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:13px;font-size:14.5px;font-weight:700;letter-spacing:-.1px;
@@ -230,11 +263,14 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
   <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h7l5 5v13H6Z"/><path d="M13 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 15.5V10a6 6 0 1 0-12 0v5.5L4.5 18h15Z"/><path d="M10 21h4"/></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5.5" r="2.8"/><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="18.5" r="2.8"/><path d="m8.5 10.6 7-3.6M8.5 13.4l7 3.6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></symbol>
   <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></symbol>
 </svg>
 
 <div id="app">
   <header id="top"></header>
+  <div class="agserit" id="agSerit"></div>
   <main id="view"></main>
   <div class="statusbar" id="statusbar"></div>
   <nav id="nav"></nav>
@@ -247,7 +283,7 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
 (function(){
 'use strict';
 
-var SURUM='1.0';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
+var SURUM='1.1';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
 
 /* ============ durum ============ */
 var KEY='sezar.v1';
@@ -259,14 +295,21 @@ var VARSAYILAN={
   teslimat:1284,
   /* Açılışta tasarımdaki ekran birebir görünsün diye devam eden bir görev var. */
   aktifGorev:{id:'a0', isletme:'Evrensel Kebab Evi', adres:'Caferağa Mahallesi, Moda Cd. No:15',
-    musteri:'Zeynep A.', sure:12, km:2.4, ucret:35, asama:'paket'},
+    musteri:'Zeynep A.', sure:12, km:2.4, ucret:35, asama:'paket',
+    alis:[40.9878,29.0258], varis:[40.9822,29.0212], tel:'+902163456789', musteriTel:'+905321112233'},
   siparisler:[
-    {id:'s1', isletme:'Espresso Lab', adres:'Caferağa Mah. Bahariye Cd. No:22', musteri:'Ayşe K.', km:3.5, sure:18, ucret:42},
-    {id:'s2', isletme:'Midyeci Ahmet', adres:'Osmanağa Mah. Söğütlü Çeşme Cd. No:8', musteri:'Mehmet T.', km:1.8, sure:11, ucret:28},
-    {id:'s3', isletme:'Evrensel Kebab Evi', adres:'Caferağa Mah. Moda Cd. No:15', musteri:'Zeynep A.', km:2.4, sure:14, ucret:35},
-    {id:'s4', isletme:'Kahve Durağı', adres:'Bahariye Cd. No:47', musteri:'Can B.', km:4.2, sure:22, ucret:51},
-    {id:'s5', isletme:'Pide Sarayı', adres:'Moda Cd. No:91', musteri:'Elif D.', km:2.9, sure:16, ucret:38},
-    {id:'s6', isletme:'Tatlı Dünyası', adres:'Kadıköy Çarşı İçi No:12', musteri:'Burak S.', km:1.2, sure:9, ucret:22}
+    {id:'s1', isletme:'Espresso Lab', adres:'Caferağa Mah. Bahariye Cd. No:22', musteri:'Ayşe K.', km:3.5, sure:18, ucret:42,
+      alis:[40.9890,29.0270], varis:[40.9760,29.0402], tel:'+902163456790', musteriTel:'+905321112234'},
+    {id:'s2', isletme:'Midyeci Ahmet', adres:'Osmanağa Mah. Söğütlü Çeşme Cd. No:8', musteri:'Mehmet T.', km:1.8, sure:11, ucret:28,
+      alis:[40.9905,29.0300], varis:[40.9952,29.0344], tel:'+902163456791', musteriTel:'+905321112235'},
+    {id:'s3', isletme:'Evrensel Kebab Evi', adres:'Caferağa Mah. Moda Cd. No:15', musteri:'Zeynep A.', km:2.4, sure:14, ucret:35,
+      alis:[40.9878,29.0258], varis:[40.9822,29.0212], tel:'+902163456789', musteriTel:'+905321112233'},
+    {id:'s4', isletme:'Kahve Durağı', adres:'Bahariye Cd. No:47', musteri:'Can B.', km:4.2, sure:22, ucret:51,
+      alis:[40.9885,29.0280], varis:[40.9702,29.0501], tel:'+902163456792', musteriTel:'+905321112236'},
+    {id:'s5', isletme:'Pide Sarayı', adres:'Moda Cd. No:91', musteri:'Elif D.', km:2.9, sure:16, ucret:38,
+      alis:[40.9840,29.0250], varis:[40.9800,29.0180], tel:'+902163456793', musteriTel:'+905321112237'},
+    {id:'s6', isletme:'Tatlı Dünyası', adres:'Kadıköy Çarşı İçi No:12', musteri:'Burak S.', km:1.2, sure:9, ucret:22,
+      alis:[40.9900,29.0265], varis:[40.9925,29.0245], tel:'+902163456794', musteriTel:'+905321112238'}
   ],
   kazanc:{bugun:486, hafta:3120, ay:12480, hedef:600,
     gunler:[{g:'Pzt',v:420},{g:'Sal',v:380},{g:'Çar',v:510},{g:'Per',v:295},{g:'Cum',v:640},{g:'Cmt',v:720},{g:'Paz',v:486}],
@@ -362,6 +405,198 @@ function git(k){
   S.sekme=k; kaydet(); navCiz(); gorunumCiz(); $('#view').scrollTop=0;
 }
 
+/* ============ gerçek cihaz işlevleri ============ */
+
+/* Titreşim: dokunma geri bildirimi. Desteklenmiyorsa sessizce geçer. */
+function titres(desen){ try{ if(navigator.vibrate) navigator.vibrate(desen||12); }catch(e){} }
+
+/* Uygulama APK içinde mi çalışıyor? Android köprüsü bunu işaretler. */
+function apkMi(){ return !!(window.SEZAR_APP_MODE && window.SEZAR_APP); }
+
+/* Dış adresi aç: APK'da native köprü, tarayıcıda yeni sekme.
+   window.open popup engeline takılabildiği için gerçek bağlantı öğesi
+   kullanılır; bu yol kullanıcı dokunuşuyla her zaman çalışır. */
+function disariAc(url){
+  if(apkMi()){ try{ window.SEZAR_APP.open(url); return; }catch(e){} }
+  var a=document.createElement('a');
+  a.href=url; a.target='_blank'; a.rel='noopener noreferrer';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); },0);
+}
+
+/* Google Maps navigasyonu — gerçek yol tarifi. */
+function navigasyonBaslat(hedef, ad){
+  if(!hedef || hedef.length<2){ toast('Adres koordinatı yok'); return; }
+  var lat=hedef[0], lng=hedef[1];
+  var url='https://www.google.com/maps/dir/?api=1&destination='+lat+','+lng+
+          '&travelmode=driving&dir_action=navigate';
+  titres([14,40,14]);
+  disariAc(url);
+  toast('Navigasyon açılıyor: '+(ad||'varış'));
+}
+
+/* Haritada göster (yol tarifi değil, sadece konum). */
+function haritadaGoster(konum, ad){
+  if(!konum || konum.length<2){ toast('Koordinat yok'); return; }
+  var url='https://www.google.com/maps/search/?api=1&query='+konum[0]+','+konum[1];
+  titres(12); disariAc(url);
+}
+
+/* Telefon: gerçek arama ekranı. */
+function ara(tel){
+  if(!tel){ toast('Telefon numarası yok'); return; }
+  var temiz=String(tel).replace(/[^\d+]/g,'');
+  titres([10,30,10]);
+  location.href='tel:'+temiz;
+  toast('Aranıyor: '+temiz);
+}
+
+/* WhatsApp: müşteriye yaz. */
+function whatsapp(tel, metin){
+  if(!tel){ toast('Numara yok'); return; }
+  var temiz=String(tel).replace(/[^\d]/g,'');
+  var url='https://wa.me/'+temiz+(metin?'?text='+encodeURIComponent(metin):'');
+  titres(12); disariAc(url);
+}
+
+/* Paylaş: native paylaşım sayfası (Android/Chrome), yoksa kopyala. */
+function paylas(baslik, metin, url){
+  var veri={title:baslik||'Sezar Abi Kurye', text:metin||'', url:url||location.href};
+  if(navigator.share){
+    navigator.share(veri).catch(function(){});
+    return;
+  }
+  kopyala((metin?metin+'\n':'')+veri.url,'Bağlantı kopyalandı');
+}
+
+/* Panoya kopyala: eski tarayıcılar için yedek yol var. */
+function kopyala(metin, mesaj){
+  function tamam(){ toast(mesaj||'Kopyalandı'); titres(12); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(metin).then(tamam).catch(function(){ eskiKopyala(metin,tamam); });
+  } else eskiKopyala(metin,tamam);
+}
+function eskiKopyala(metin,tamam){
+  var t=document.createElement('textarea');
+  t.value=metin; t.style.position='fixed'; t.style.opacity='0';
+  document.body.appendChild(t); t.select();
+  try{ document.execCommand('copy'); tamam(); }
+  catch(e){ toast('Kopyalanamadı'); }
+  document.body.removeChild(t);
+}
+
+/* Sipariş özetini paylaşılabilir metne çevir. */
+function siparisMetni(o){
+  return 'Sezar Abi Kurye · Görev\n'+
+    o.isletme+'\n'+o.adres+'\nMüşteri: '+o.musteri+'\n'+
+    String(o.km).replace('.',',')+' km · '+o.sure+' dk · '+o.ucret+' ₺';
+}
+
+/* ---------- bildirim ---------- */
+function bildirimIzni(){
+  if(!('Notification' in window)) return 'yok';
+  return Notification.permission;
+}
+function bildirimIste(){
+  if(!('Notification' in window)){ toast('Bu cihaz bildirimi desteklemiyor'); return; }
+  if(Notification.permission==='granted'){ toast('Bildirimler zaten açık'); return; }
+  Notification.requestPermission().then(function(p){
+    S.bildirim=p==='granted'; kaydet();
+    toast(p==='granted'?'Bildirimler açıldı':'Bildirim izni verilmedi');
+    gorunumCiz();
+  });
+}
+function bildir(baslik, govde){
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  try{ new Notification(baslik,{body:govde, icon:'icons/icon-192.png', tag:'sezar-gorev'}); }catch(e){}
+}
+
+/* ---------- kurulum (ana ekrana ekle) ---------- */
+var kurulumOlayi=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault(); kurulumOlayi=e;
+  var b=$('#kurBtn'); if(b) b.style.display='flex';
+});
+window.addEventListener('appinstalled',function(){
+  kurulumOlayi=null; toast('Uygulama yüklendi'); titres([16,50,16]);
+});
+function kur(){
+  if(apkMi()){ toast('Uygulama zaten kurulu'); return; }
+  if(!kurulumOlayi){
+    toast('Tarayıcı menüsünden "Ana ekrana ekle" seç');
+    return;
+  }
+  kurulumOlayi.prompt();
+  kurulumOlayi.userChoice.then(function(c){
+    if(c.outcome==='accepted'){ toast('Yükleniyor…'); titres([16,50,16]); }
+    kurulumOlayi=null;
+  });
+}
+
+/* ---------- sürüm / güncelleme ---------- */
+function surumDenetle(sessiz){
+  fetch('version.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){ return r.ok? r.json():null; })
+    .then(function(v){
+      if(!v) { if(!sessiz) toast('Sürüm bilgisi alınamadı'); return; }
+      var yeni=v.version!==SURUM;
+      if(!yeni){ if(!sessiz) toast('Uygulama güncel · v'+SURUM); return; }
+      katmanAc(
+        '<div class="shhead"><div><h3>Güncelleme var</h3>'+
+        '<p class="shsub">v'+esc(SURUM)+' → v'+esc(v.version)+'</p></div>'+
+        '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
+        '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+esc(v.notes||'Yeni sürüm hazır.')+'</p>'+
+        '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
+        '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(v.apk||'')+'">'+
+        ic('box')+'Güncelle</button></div>'
+      );
+    })
+    .catch(function(){ if(!sessiz) toast('Bağlantı yok'); });
+}
+function guncelle(url){
+  if(!url){ toast('İndirme adresi yok'); return; }
+  katmanKapat();
+  if(apkMi() && window.SEZAR_APP.install){
+    try{ window.SEZAR_APP.install(url); toast('Güncelleme indiriliyor…'); return; }catch(e){}
+  }
+  disariAc(url);
+  toast('İndirme başladı');
+}
+
+/* ---------- ağ durumu ---------- */
+function agDurumu(){
+  var cevrimdisi=!navigator.onLine;
+  var el=$('#agSerit');
+  if(!el) return;
+  el.className='agserit'+(cevrimdisi?' on':'');
+  el.textContent=cevrimdisi?'Çevrimdışısın — kayıtlı görevler görünüyor':'';
+}
+window.addEventListener('online',function(){ agDurumu(); toast('Bağlantı geri geldi'); });
+window.addEventListener('offline',function(){ agDurumu(); toast('Bağlantı kesildi'); });
+
+/* ---------- aşağı çekip yenile ---------- */
+function yenileKur(){
+  var v=$('#view'), bas=0, cekik=false, esik=64;
+  v.addEventListener('touchstart',function(e){
+    if(v.scrollTop<=0){ bas=e.touches[0].clientY; cekik=true; }
+  },{passive:true});
+  v.addEventListener('touchmove',function(e){
+    if(!cekik) return;
+    var d=e.touches[0].clientY-bas;
+    if(d>0 && v.scrollTop<=0) v.style.transform='translateY('+Math.min(d*0.45,esik)+'px)';
+  },{passive:true});
+  v.addEventListener('touchend',function(e){
+    if(!cekik) return;
+    cekik=false;
+    var d=(e.changedTouches[0].clientY-bas)*0.45;
+    v.style.transform='';
+    if(d>=esik){
+      titres(14); toast('Yenileniyor…');
+      setTimeout(function(){ gorunumCiz(); durumCiz(); toast('Güncel'); },420);
+    }
+  },{passive:true});
+}
+
 /* ============ harita çizimi ============ */
 function haritaSVG(){
   return '<svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
@@ -427,6 +662,7 @@ function gorevKarti(a){
           '<div class="rowic">'+ic('pin')+'</div>'+
           '<div class="rowbody"><div class="rowk">Adres</div>'+
             '<div class="rowv">'+esc(a.adres)+'</div></div>'+
+          '<button class="rowbtn" type="button" data-act="kopyalaAdres" title="Adresi kopyala">'+ic('doc')+'</button>'+
         '</div>'+
         '<div class="row">'+
           '<div class="rowic">'+ic('clock')+'</div>'+
@@ -437,11 +673,19 @@ function gorevKarti(a){
           '<div class="rowic">'+ic('user')+'</div>'+
           '<div class="rowbody"><div class="rowk">Müşteri</div>'+
             '<div class="rowv">'+esc(a.musteri)+' <small>· '+para(a.ucret)+' kazanç</small></div></div>'+
+          '<button class="rowbtn" type="button" data-act="musteriAra" title="Müşteriyi ara">'+ic('phone')+'</button>'+
+          '<button class="rowbtn" type="button" data-act="musteriYaz" title="WhatsApp ile yaz">'+ic('msg')+'</button>'+
         '</div>'+
       '</div>'+
       '<div class="acts">'+
         '<button class="btn '+bsinif+'" type="button" data-act="asama">'+ic(asamaIkon[a.asama]||'box')+asamaEtiket[a.asama]+'</button>'+
         '<button class="btn sec" type="button" data-act="navigasyon">'+ic('nav')+'Navigasyonu Başlat</button>'+
+      '</div>'+
+      '<div class="quickrow">'+
+        '<button class="qbtn" type="button" data-act="paylasGorev">'+ic('share')+'<span>Paylaş</span></button>'+
+        '<button class="qbtn" type="button" data-act="gorevAra">'+ic('phone')+'<span>İşletmeyi ara</span></button>'+
+        '<button class="qbtn" type="button" data-act="harita">'+ic('map')+'<span>Harita</span></button>'+
+        '<button class="qbtn" type="button" data-act="bildir">'+ic('bell')+'<span>Hatırlat</span></button>'+
       '</div>'+
     '</div>';
 }
@@ -529,6 +773,8 @@ function mesajSayfasi(){
 
 /* ============ PROFİL ============ */
 function profilSayfasi(){
+  var bz=bildirimIzni();
+  var bzMetin=bz==='granted'?'Açık':(bz==='denied'?'Kapalı':(bz==='yok'?'Desteklenmiyor':'Kapalı'));
   return '<div class="phead"><h2>Profil</h2><p>Kurye hesabın ve belgelerin</p></div>'+
     '<div class="hero">'+
       '<div class="heroav">'+esc(bas(S.ad))+'</div>'+
@@ -538,11 +784,18 @@ function profilSayfasi(){
           '<div>Teslimat<b>'+S.teslimat+'</b></div></div>'+
       '</div>'+
     '</div>'+
+    '<div class="sechead" style="margin-top:20px"><div class="seclabel">Hesap</div></div>'+
     '<div class="kv">'+
       '<button class="kvrow" type="button" data-act="bilgi"><span class="kvk">'+ic('doc')+'Kişisel bilgiler</span><span class="chev">'+ic('chev')+'</span></button>'+
       '<button class="kvrow" type="button" data-act="belge"><span class="kvk">'+ic('shield')+'Belgelerim</span><span class="kvv">Onaylı</span></button>'+
-      '<button class="kvrow" type="button" data-act="bildirim"><span class="kvk">'+ic('bell')+'Bildirimler</span><span class="kvv">Açık</span></button>'+
+      '<button class="kvrow" type="button" data-act="bildirim"><span class="kvk">'+ic('bell')+'Bildirimler</span><span class="kvv">'+bzMetin+'</span></button>'+
       '<button class="kvrow" type="button" data-act="hesap"><span class="kvk">'+ic('wallet')+'Ödeme bilgileri</span><span class="chev">'+ic('chev')+'</span></button>'+
+    '</div>'+
+    '<div class="sechead" style="margin-top:20px"><div class="seclabel">Kısayollar</div></div>'+
+    '<div class="kv" style="margin-top:0">'+
+      '<button class="kvrow" type="button" data-act="kur"><span class="kvk">'+ic('box')+'Ana ekrana ekle</span><span class="chev">'+ic('chev')+'</span></button>'+
+      '<button class="kvrow" type="button" data-act="paylas"><span class="kvk">'+ic('share')+'Uygulamayı paylaş</span><span class="chev">'+ic('chev')+'</span></button>'+
+      '<button class="kvrow" type="button" data-act="surum"><span class="kvk">'+ic('refresh')+'Sürümü denetle</span><span class="kvv">v'+esc(SURUM)+'</span></button>'+
     '</div>'+
     '<div class="kv" style="margin-top:12px">'+
       '<button class="kvrow" type="button" data-act="cikis"><span class="kvk" style="color:var(--danger)">'+ic('logout')+'Çıkış yap</span></button>'+
@@ -566,8 +819,11 @@ function yardimSayfasi(){
     '<div class="kv" style="margin-top:14px">'+
       '<button class="kvrow" type="button" data-act="destek"><span class="kvk">'+ic('msg')+'Destek ekibine yaz</span><span class="chev">'+ic('chev')+'</span></button>'+
       '<button class="kvrow" type="button" data-act="ara"><span class="kvk">'+ic('phone')+'7/24 çağrı merkezi</span><span class="kvv">0850 000 00 00</span></button>'+
+      '<button class="kvrow" type="button" data-act="paylas"><span class="kvk">'+ic('share')+'Uygulamayı paylaş</span><span class="chev">'+ic('chev')+'</span></button>'+
+      '<button class="kvrow" type="button" data-act="surum"><span class="kvk">'+ic('refresh')+'Sürümü denetle</span><span class="kvv">v'+esc(SURUM)+'</span></button>'+
     '</div>'+
-    '<p style="text-align:center;color:var(--ink3);font-size:12px;margin-top:22px">Sezar Abi Kurye · Sürüm 1.0</p>';
+    '<p style="text-align:center;color:var(--ink3);font-size:12px;margin-top:22px">'+
+      'Sezar Abi Kurye · Sürüm '+esc(SURUM)+'</p>';
 }
 
 /* ============ görünüm yönlendirme ============ */
@@ -596,34 +852,219 @@ function bagla(kok){
   Array.prototype.forEach.call(kok.querySelectorAll('[data-mesaj]'),function(b){
     b.addEventListener('click',function(){
       var m=S.mesajlar.filter(function(x){return x.id===b.dataset.mesaj;})[0];
-      if(m){ m.okunmadi=false; kaydet(); toast('Sohbet: '+m.kim+' (demo)'); }
-      gorunumCiz();
+      if(m){ m.okunmadi=false; kaydet(); sohbetKatmani(m.id); gorunumCiz(); }
     });
   });
   Array.prototype.forEach.call(kok.querySelectorAll('[data-act]'),function(b){
-    b.addEventListener('click',function(){ eylem(b.dataset.act); });
+    b.addEventListener('click',function(){ eylem(b.dataset.act, b); });
   });
 }
-function eylem(ad){
+function eylem(ad, el){
+  var a=S.aktifGorev;
   if(ad==='asama'){
-    var a=S.aktifGorev; if(!a) return;
-    if(a.asama==='paket'){ a.asama='yolda'; toast('Paket alındı — müşteriye gidiyorsun'); }
-    else if(a.asama==='yolda'){ a.asama='teslim'; toast('Teslimat tamamlandı · +'+para(a.ucret)); }
+    if(!a) return;
+    titres([12,30,12]);
+    if(a.asama==='paket'){ a.asama='yolda'; toast('Paket alındı — müşteriye gidiyorsun');
+      bildir('Paket alındı', a.isletme+' · '+a.adres); }
+    else if(a.asama==='yolda'){ a.asama='teslim';
+      S.kazanc.bugun+=a.ucret; S.kazanc.hafta+=a.ucret; S.kazanc.ay+=a.ucret; S.teslimat+=1;
+      toast('Teslimat tamamlandı · +'+para(a.ucret));
+      bildir('Teslimat tamam', a.musteri+' · +'+para(a.ucret)); }
     else { S.aktifGorev=null; toast('Görev tamamlandı, teşekkürler!'); }
     kaydet(); gorunumCiz(); durumCiz();
   }
-  else if(ad==='navigasyon'){ toast('Navigasyon başlatılıyor… (demo)'); }
-  else if(ad==='harita'){ toast('Google Maps açılıyor… (demo)'); }
-  else if(ad==='bitir'){ S.aktifGorev=null; kaydet(); toast('Görev bırakıldı'); gorunumCiz(); durumCiz(); }
-  else if(ad==='bilgi'){ toast('Kişisel bilgiler ekranı (demo)'); }
-  else if(ad==='belge'){ toast('Belgelerin onaylı ✓'); }
-  else if(ad==='bildirim'){ toast('Bildirimler açık'); }
-  else if(ad==='hesap'){ toast('Ödeme bilgileri (demo)'); }
-  else if(ad==='destek'){ toast('Destek ekibine bağlanılıyor… (demo)'); }
-  else if(ad==='ara'){ toast('0850 000 00 00 aranıyor… (demo)'); }
-  else if(ad==='cikis'){
-    toast('Çıkış yapıldı (demo)');
+  else if(ad==='navigasyon'){
+    if(!a) return;
+    var hedef=a.asama==='paket'? a.alis : a.varis;
+    navigasyonBaslat(hedef, a.asama==='paket'? a.isletme : a.musteri);
   }
+  else if(ad==='harita'){
+    if(!a) return;
+    haritadaGoster(a.asama==='paket'? a.alis : a.varis, a.isletme);
+  }
+  else if(ad==='kopyalaAdres'){
+    if(!a) return;
+    kopyala(a.adres, 'Adres kopyalandı');
+  }
+  else if(ad==='musteriAra'){
+    if(!a) return; ara(a.musteriTel);
+  }
+  else if(ad==='musteriYaz'){
+    if(!a) return;
+    whatsapp(a.musteriTel, 'Merhaba '+a.musteri+', Sezar Abi Kurye\'den geliyorum. Yoldayım.');
+  }
+  else if(ad==='gorevAra'){
+    if(!a) return; ara(a.tel);
+  }
+  else if(ad==='paylasGorev'){
+    if(!a) return;
+    paylas('Sezar Abi Kurye · Görev', siparisMetni(a));
+  }
+  else if(ad==='bildir'){
+    if(!a) return;
+    if(bildirimIzni()!=='granted'){ bildirimIste(); return; }
+    bildir('Görev hatırlatması', a.isletme+' · '+a.sure+' dakika kaldı');
+    toast('Hatırlatma gönderildi');
+  }
+  else if(ad==='guncelle'){ guncelle(el && el.dataset ? el.dataset.url : null); }
+  else if(ad==='kopyalaSiparis'){
+    var ks=siparisBul(el); if(!ks) return; kopyala(ks.adres,'Adres kopyalandı');
+  }
+  else if(ad==='siparisHarita'){
+    var kh=siparisBul(el); if(!kh) return; haritadaGoster(kh.alis, kh.isletme);
+  }
+  else if(ad==='isletmeAra'){
+    var ki=siparisBul(el); if(!ki) return; ara(ki.tel);
+  }
+  else if(ad==='paylasSiparis'){
+    var kp=siparisBul(el); if(!kp) return;
+    paylas('Sezar Abi Kurye · Sipariş', siparisMetni(kp));
+  }
+  else if(ad==='bitir'){
+    S.aktifGorev=null; kaydet(); toast('Görev bırakıldı'); gorunumCiz(); durumCiz();
+  }
+  else if(ad==='kur'){ kur(); }
+  else if(ad==='surum'){ surumDenetle(false); }
+  else if(ad==='paylas'){ paylas('Sezar Abi Kurye','Kurye görev uygulaması'); }
+  else if(ad==='bilgi'){ kisiselBilgiKatmani(); }
+  else if(ad==='belge'){ belgeKatmani(); }
+  else if(ad==='bildirim'){ bildirimIste(); }
+  else if(ad==='hesap'){ odemeKatmani(); }
+  else if(ad==='destek'){
+    whatsapp('+905321112200','Merhaba, Sezar Abi Kurye destek.');
+  }
+  else if(ad==='ara'){ ara('08500000000'); }
+  else if(ad==='cikis'){ cikisKatmani(); }
+  else if(ad==='cikisOnay'){ cikisOnay(); }
+}
+
+/* Katman içindeki düğmenin siparişini bul. */
+function siparisBul(el){
+  var id=el && el.dataset ? el.dataset.id : null;
+  if(!id) return null;
+  return S.siparisler.filter(function(x){return x.id===id;})[0]||null;
+}
+
+/* ============ sohbet katmanı ============ */
+/* Mesajlaşma demo veriyle çalışır; gönderilen metin cihazda saklanır.
+   Gerçek sunucu bağlanınca yalnızca gonder() gövdesi değişir. */
+function sohbetKatmani(id){
+  var m=S.mesajlar.filter(function(x){return x.id===id;})[0];
+  if(!m) return;
+  m.gecmis=m.gecmis||[{kim:'onlar', metin:m.son, saat:m.saat}];
+  katmanAc(
+    '<div class="shhead"><div><h3>'+esc(m.kim)+'</h3>'+
+      '<p class="shsub">Görevle ilgili mesajlar</p></div>'+
+      '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
+    '<div class="sohbet" id="sohbet">'+m.gecmis.map(function(x){
+      return '<div class="balon '+(x.kim==='ben'?'ben':'onlar')+'">'+esc(x.metin)+
+        '<span class="bsaat">'+esc(x.saat||'')+'</span></div>';
+    }).join('')+'</div>'+
+    '<div class="yazalim">'+
+      '<input id="yazMetin" type="text" placeholder="Mesaj yaz…" autocomplete="off">'+
+      '<button class="gonder" type="button" id="yazGonder" aria-label="Gönder">'+ic('nav')+'</button>'+
+    '</div>'
+  );
+  var girdi=$('#yazMetin'), dugme=$('#yazGonder');
+  function gonder(){
+    var t=(girdi.value||'').trim();
+    if(!t) return;
+    var saat=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+    m.gecmis.push({kim:'ben', metin:t, saat:saat});
+    m.son=t; m.saat=saat; m.okunmadi=false;
+    kaydet(); girdi.value='';
+    var k=$('#sohbet');
+    var b=document.createElement('div');
+    b.className='balon ben';
+    b.textContent=t;
+    var s=document.createElement('span'); s.className='bsaat'; s.textContent=saat;
+    b.appendChild(s); k.appendChild(b);
+    k.scrollTop=k.scrollHeight;
+    titres(10);
+    /* Sunucu bağlanana kadar karşı taraf otomatik yanıtlar. */
+    setTimeout(function(){
+      var y='Tamamdır, teşekkürler 👍';
+      m.gecmis.push({kim:'onlar', metin:y, saat:saat}); kaydet();
+      var yb=document.createElement('div');
+      yb.className='balon onlar'; yb.textContent=y;
+      var ys=document.createElement('span'); ys.className='bsaat'; ys.textContent=saat;
+      yb.appendChild(ys); k.appendChild(yb); k.scrollTop=k.scrollHeight;
+      titres(8);
+    },1400);
+  }
+  dugme.addEventListener('click',gonder);
+  girdi.addEventListener('keydown',function(e){ if(e.key==='Enter') gonder(); });
+  setTimeout(function(){ girdi.focus(); },260);
+}
+
+/* ============ profil katmanları ============ */
+function kisiselBilgiKatmani(){
+  katmanAc(
+    '<div class="shhead"><div><h3>Kişisel bilgiler</h3>'+
+    '<p class="shsub">Görev alırken kullanılır</p></div>'+
+    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
+    '<div class="det" style="padding:10px 0 0">'+
+      '<div class="row"><div class="rowic">'+ic('user')+'</div><div class="rowbody">'+
+        '<div class="rowk">Ad soyad</div><div class="rowv">'+esc(S.ad)+'</div></div></div>'+
+      '<div class="row"><div class="rowic">'+ic('bike')+'</div><div class="rowbody">'+
+        '<div class="rowk">Araç</div><div class="rowv">'+esc(S.arac)+'</div></div></div>'+
+      '<div class="row"><div class="rowic">'+ic('shield')+'</div><div class="rowbody">'+
+        '<div class="rowk">Durum</div><div class="rowv">Kimlik doğrulandı</div></div></div>'+
+    '</div>'+
+    '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
+      '<button class="btn sec" type="button" data-close>Kapat</button></div>'
+  );
+}
+function belgeKatmani(){
+  var belgeler=[['Kimlik kartı','Onaylı'],['Ehliyet','Onaylı'],['SRC belgesi','Onaylı'],['Adli sicil kaydı','Onaylı']];
+  katmanAc(
+    '<div class="shhead"><div><h3>Belgelerim</h3>'+
+    '<p class="shsub">Hepsi onaylı · görev alabilirsin</p></div>'+
+    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
+    '<div class="list" style="margin-top:8px">'+belgeler.map(function(b){
+      return '<div class="li"><div class="liav" style="color:var(--green2)">'+ic('check')+'</div>'+
+        '<div class="lib"><div class="lit">'+esc(b[0])+'</div>'+
+        '<div class="lis">Geçerlilik süresi dolmadı</div></div>'+
+        '<div class="litime" style="color:var(--green2);font-weight:750">'+esc(b[1])+'</div></div>';
+    }).join('')+'</div>'+
+    '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
+      '<button class="btn sec" type="button" data-close>Kapat</button></div>'
+  );
+}
+function odemeKatmani(){
+  katmanAc(
+    '<div class="shhead"><div><h3>Ödeme bilgileri</h3>'+
+    '<p class="shsub">Hakedişler her gün 18:00\'de yatar</p></div>'+
+    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
+    '<div class="det" style="padding:10px 0 0">'+
+      '<div class="row"><div class="rowic">'+ic('wallet')+'</div><div class="rowbody">'+
+        '<div class="rowk">IBAN</div><div class="rowv">TR•• •••• •••• •••• •••• ••</div></div></div>'+
+      '<div class="row"><div class="rowic">'+ic('clock')+'</div><div class="rowbody">'+
+        '<div class="rowk">Ödeme dönemi</div><div class="rowv">Günlük</div></div></div>'+
+      '<div class="row"><div class="rowic">'+ic('check')+'</div><div class="rowbody">'+
+        '<div class="rowk">Bekleyen hakediş</div><div class="rowv" style="color:var(--green2)">'+
+        para(S.kazanc.bugun)+'</div></div></div>'+
+    '</div>'+
+    '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
+      '<button class="btn sec" type="button" data-close>Kapat</button></div>'
+  );
+}
+function cikisKatmani(){
+  katmanAc(
+    '<div class="shhead"><div><h3>Çıkış yap</h3>'+
+    '<p class="shsub">Bu cihazdaki görevler silinmez</p></div>'+
+    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
+    '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+
+    'Çıkış yaparsan yeni sipariş alamazsın. Tekrar giriş yaptığında kaldığın yerden devam edersin.</p>'+
+    '<div class="acts" style="padding:16px 0 0">'+
+      '<button class="btn sec" type="button" data-close>Vazgeç</button>'+
+      '<button class="btn pri" type="button" data-act="cikisOnay">Çıkış yap</button></div>'
+  );
+}
+function cikisOnay(){
+  katmanKapat();
+  S.online=false; kaydet(); ustCiz(); durumCiz();
+  toast('Çıkış yapıldı');
 }
 
 /* ============ sipariş katmanı ============ */
@@ -638,6 +1079,13 @@ function katmanAc(html){
   scrim.onclick=katmanKapat;
   Array.prototype.forEach.call($('#sheetPanel').querySelectorAll('[data-al]'),function(b){
     b.addEventListener('click',function(){ gorevAl(b.dataset.al); });
+  });
+  /* Katman içindeki eylem düğmeleri de bağlanmalı; yoksa ölü kalır. */
+  Array.prototype.forEach.call($('#sheetPanel').querySelectorAll('[data-close]:not([data-act])'),function(b){
+    b.addEventListener('click',katmanKapat);
+  });
+  Array.prototype.forEach.call($('#sheetPanel').querySelectorAll('[data-act]'),function(b){
+    b.addEventListener('click',function(){ eylem(b.dataset.act, b); });
   });
 }
 function katmanKapat(){
@@ -654,14 +1102,22 @@ function siparisKatman(id){
       '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
     '<div class="det" style="padding:12px 0 0">'+
       '<div class="row"><div class="rowic">'+ic('pin')+'</div><div class="rowbody">'+
-        '<div class="rowk">Alış adresi</div><div class="rowv">'+esc(o.adres)+'</div></div></div>'+
+        '<div class="rowk">Alış adresi</div><div class="rowv">'+esc(o.adres)+'</div></div>'+
+        '<button class="rowbtn" type="button" data-act="kopyalaSiparis" data-id="'+esc(o.id)+'" title="Adresi kopyala">'+ic('doc')+'</button></div>'+
       '<div class="row"><div class="rowic">'+ic('user')+'</div><div class="rowbody">'+
-        '<div class="rowk">Müşteri</div><div class="rowv">'+esc(o.musteri)+'</div></div></div>'+
+        '<div class="rowk">Müşteri</div><div class="rowv">'+esc(o.musteri)+'</div></div>'+
+        '<button class="rowbtn" type="button" data-act="siparisHarita" data-id="'+esc(o.id)+'" title="Haritada gör">'+ic('map')+'</button></div>'+
       '<div class="row"><div class="rowic">'+ic('clock')+'</div><div class="rowbody">'+
         '<div class="rowk">Tahmini süre</div><div class="rowv"><span class="eta">'+ic('clock')+esc(o.sure)+' dakika</span></div></div></div>'+
     '</div>'+
-    '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
+    '<div class="acts" style="padding:16px 0 8px;grid-template-columns:1fr">'+
       '<button class="btn pri" type="button" data-al="'+esc(o.id)+'">'+ic('box')+'Görevi Al</button>'+
+    '</div>'+
+    '<div class="quickrow" style="padding:0 0 4px">'+
+      '<button class="qbtn" type="button" data-act="paylasSiparis" data-id="'+esc(o.id)+'">'+ic('share')+'<span>Paylaş</span></button>'+
+      '<button class="qbtn" type="button" data-act="isletmeAra" data-id="'+esc(o.id)+'">'+ic('phone')+'<span>İşletme</span></button>'+
+      '<button class="qbtn" type="button" data-act="siparisHarita" data-id="'+esc(o.id)+'">'+ic('map')+'<span>Harita</span></button>'+
+      '<button class="qbtn" type="button" data-close>'+ic('close')+'<span>Kapat</span></button>'+
     '</div>'
   );
 }
@@ -685,7 +1141,7 @@ function gorevAl(id){
   if(gecerli) S.sekme=k;
 })();
 
-ustCiz(); navCiz(); gorunumCiz(); durumCiz();
+ustCiz(); navCiz(); gorunumCiz(); durumCiz(); agDurumu(); yenileKur();
 
 /* Çevrimdışı destek: servis çalışanını kaydet. */
 if('serviceWorker' in navigator){
@@ -694,10 +1150,28 @@ if('serviceWorker' in navigator){
   });
 }
 
-/* geri tuşu: katman açıksa kapat */
+/* Geri tuşu / Android geri: katman açıksa kapat. */
 window.addEventListener('keydown',function(e){
   if(e.key==='Escape') katmanKapat();
 });
+history.pushState({katman:false},'');
+window.addEventListener('popstate',function(){
+  var sh=$('#sheet');
+  if(sh && sh.classList.contains('on')){
+    katmanKapat();
+    history.pushState({katman:false},'');
+  }
+});
+
+/* Sürüm denetimi: açılışta sessiz, günde bir kez. */
+try{
+  var sonDeneme=Number(localStorage.getItem('sezar.surumDeneme')||0);
+  if(Date.now()-sonDeneme > 86400000){
+    localStorage.setItem('sezar.surumDeneme',String(Date.now()));
+    setTimeout(function(){ surumDenetle(true); },2500);
+  }
+}catch(e){}
+
 })();
 </script>
 </body>

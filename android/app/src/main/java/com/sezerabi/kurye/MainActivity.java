@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -22,7 +24,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.webkit.WebViewAssetLoader;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Sezar Abi Kurye Android kabuğu.
@@ -157,7 +166,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /* --- sayfa köprüsü ---
-       Dış bağlantıları (Google Maps, telefon) uygulama dışında açar. */
+       Dış bağlantıları (Google Maps, telefon, WhatsApp) uygulama dışında açar.
+       install(): yeni APK'yı indirip sistem kurulum ekranını açar. */
     private class AppBridge {
         @android.webkit.JavascriptInterface
         public void open(String url) {
@@ -173,9 +183,54 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @android.webkit.JavascriptInterface
+        public void install(String url) {
+            if (url == null || url.isEmpty()) return;
+            runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                    "Güncelleme indiriliyor…", Toast.LENGTH_SHORT).show());
+            new Thread(() -> apkIndirKur(url)).start();
+        }
+
+        @android.webkit.JavascriptInterface
         public void toast(String mesaj) {
             if (mesaj == null) return;
             runOnUiThread(() -> Toast.makeText(MainActivity.this, mesaj, Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    /* APK'yı önbelleğe indirir, FileProvider ile sistem kurulum ekranını açar.
+       REQUEST_INSTALL_PACKAGES izni yoksa kullanıcı ayarlara yönlendirilir. */
+    private void apkIndirKur(String url) {
+        try {
+            File hedef = new File(getCacheDir(), "guncelleme.apk");
+            HttpURLConnection bag = (HttpURLConnection) new URL(url).openConnection();
+            bag.setInstanceFollowRedirects(true);
+            bag.setConnectTimeout(15000);
+            bag.setReadTimeout(30000);
+            try (InputStream giris = bag.getInputStream();
+                 FileOutputStream cikis = new FileOutputStream(hedef)) {
+                byte[] tampon = new byte[8192];
+                int n;
+                while ((n = giris.read(tampon)) > 0) cikis.write(tampon, 0, n);
+            }
+            if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Kurulum izni gerekiyor", Toast.LENGTH_LONG).show();
+                    try {
+                        startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                                Uri.parse("package:" + getPackageName())));
+                    } catch (Exception ignored) {
+                    }
+                });
+                return;
+            }
+            Uri apkUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", hedef);
+            Intent kur = new Intent(Intent.ACTION_VIEW);
+            kur.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            kur.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            runOnUiThread(() -> startActivity(kur));
+        } catch (Exception e) {
+            runOnUiThread(() -> Toast.makeText(this, "Güncelleme indirilemedi",
+                    Toast.LENGTH_LONG).show());
         }
     }
 

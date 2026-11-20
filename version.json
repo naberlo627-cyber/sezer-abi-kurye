@@ -1,6 +1,6 @@
 {
-  "version": "1.0",
-  "versionCode": 10000,
-  "notes": "Sezar Abi Kurye ilk sürüm.",
+  "version": "1.1",
+  "versionCode": 10100,
+  "notes": "Gerçek işlevler: navigasyon, telefon, WhatsApp, paylaşım, bildirim, adres kopyalama, mesajlaşma. Ana ekrana ekleme, sürüm denetimi ve uygulama içi güncelleme. Aşağı çekip yenileme, çevrimdışı şeridi, donanım geri tuşu.",
   "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk"
 }
