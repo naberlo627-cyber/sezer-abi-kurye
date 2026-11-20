@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="gorevler"
+        android:enabled="true"
+        android:icon="@drawable/sc_gorev"
+        android:shortcutShortLabel="@string/sc_gorev">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.sezerabi.kurye"
+            android:targetClass="com.sezerabi.kurye.MainActivity"
+            android:data="https://appassets.androidplatform.net/assets/www/index.html?git=home" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="kazanc"
+        android:enabled="true"
+        android:icon="@drawable/sc_kazanc"
+        android:shortcutShortLabel="@string/sc_kazanc">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.sezerabi.kurye"
+            android:targetClass="com.sezerabi.kurye.MainActivity"
+            android:data="https://appassets.androidplatform.net/assets/www/index.html?git=kazanc" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="mesajlar"
+        android:enabled="true"
+        android:icon="@drawable/sc_mesaj"
+        android:shortcutShortLabel="@string/sc_mesaj">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.sezerabi.kurye"
+            android:targetClass="com.sezerabi.kurye.MainActivity"
+            android:data="https://appassets.androidplatform.net/assets/www/index.html?git=mesaj" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="yardim"
+        android:enabled="true"
+        android:icon="@drawable/sc_yardim"
+        android:shortcutShortLabel="@string/sc_yardim">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.sezerabi.kurye"
+            android:targetClass="com.sezerabi.kurye.MainActivity"
+            android:data="https://appassets.androidplatform.net/assets/www/index.html?git=yardim" />
+    </shortcut>
+</shortcuts>

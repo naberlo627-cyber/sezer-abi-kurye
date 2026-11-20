@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.sezerabi.kurye'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.sezerabi.kurye"
+        minSdk 23
+        targetSdk 34
+        versionCode 10000
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            // Yerel geliştirme anahtarı; depoya eklenmez (.gitignore).
+            storeFile file("kurye-release.jks")
+            storePassword "kurye12345"
+            keyAlias "kurye"
+            keyPassword "kurye12345"
+            // Eski cihazlar v1 (JAR) imzası ister; yeni cihazlar v2.
+            enableV1Signing = true
+            enableV2Signing = true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.webkit:webkit:1.11.0'
+}
+
+// androidx.webkit, kotlin-stdlib-jdk8'in eski sürümünü getiriyor; jdk7/jdk8
+// sınıfları 1.8'den itibaren kotlin-stdlib içinde birleştiği için çakışma olur.
+configurations.all {
+    resolutionStrategy {
+        force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+    }
+}

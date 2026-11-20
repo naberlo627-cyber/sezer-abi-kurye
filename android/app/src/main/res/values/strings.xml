@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sezar Abi Kurye</string>
+    <string name="sc_gorev">Görevler</string>
+    <string name="sc_kazanc">Kazanç</string>
+    <string name="sc_mesaj">Mesajlar</string>
+    <string name="sc_yardim">Yardım</string>
+</resources>

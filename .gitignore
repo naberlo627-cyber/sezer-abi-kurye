@@ -1,0 +1,22 @@
+# Android derleme çıktıları
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/.idea/
+
+# İmzalama anahtarı depoya girmez
+android/app/*.jks
+
+# Derlenmiş APK'lar
+indir/*.apk
+
+# Web varlık kopyaları (build-apk.sh üretir)
+android/app/src/main/assets/www/
+
+# Python
+__pycache__/
+*.pyc
+
+# Tasarım dosyaları (depoya gerek yok)
+tasarim/
