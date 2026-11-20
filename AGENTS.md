@@ -51,7 +51,8 @@ Sahibi: Sezer abi. Kardeş proje: Genç (`/workspace/project`, ayrı depo).
 
 Türkiye'de `github.io` ve `pages.dev` bazı ISS'lerde açılmıyor; Genç
 uygulamasında bu yüzden Surge birincil adres. Kurye'de Surge sırları
-tanımlı değil (`sezer-abi-kurye.surge.sh` 404). Erişim şüphesinde:
+tanımlı değil (`sezer-abi-kurye.surge.sh` 404 — hiç yayınlanmamış).
+Erişim şüphesinde:
 
 ```bash
 # TR düğümlerinden gerçek ölçüm
@@ -62,6 +63,19 @@ curl -s -H "Accept: application/json" \
 
 TLS zinciri de önemli: Let's Encrypt (ISRG Root X1) eski Android'lerde
 sorun çıkarabilir; Surge'un Sectigo/AAA zinciri daha geniş uyumlu.
+
+**APK da site üzerinden inmeli.** GitHub indirme sunucusu da engelli
+olabildiğinden `version.json` içine `apkWeb: Kurye.apk` yazılır ve
+`apkAdresi()` göreli adresi tercih eder. Bu alan **yalnız APK gerçekten
+yayın paketindeyse** yazılır; `indir/Kurye.apk` `.gitignore`'da olduğu
+için CI temiz çek eder, dosya bulunmaz ve adres 404 döner. `build_site.sh`
+bu yüzden APK'yı release'den indirir ve zip (PK) imzasıyla doğrular —
+HTML hata sayfasını APK sanmaz.
+
+Surge'u kurye için açmak: aynı Surge hesabını kullan (Genç'teki hesap
+zaten doğrulanmış). `SURGE_TOKEN` + `SURGE_LOGIN` depo sırlarına eklenir,
+`surge` işi sonraki push'ta otomatik yayınlar. Yeni hesap açılırsa
+`*.surge.sh` alanı e-posta doğrulanana kadar "ready" olmaz.
 
 ## Test
 
