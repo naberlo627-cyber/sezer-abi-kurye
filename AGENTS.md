@@ -38,6 +38,30 @@ Sahibi: Sezer abi. Kardeş proje: Genç (`/workspace/project`, ayrı depo).
   Eski kayıtlar için `gocEttir()` içine tamamlama ekle.
 - **Her düğme gerçek iş yapmalı.** "(demo)" metni kullanıcıya "bu sahte" der;
   yayına çıkmadan önce `grep "(demo)"` sıfır olmalı.
+- **`version.json` iki sürüm taşır:** `version` (web) ve `apkVersion`
+  (yayındaki APK). APK kullanıcısına yalnızca `apkVersion` ileriyse
+  güncelleme önerilir; aksi hâlde indirir, sürüm değişmez, döngüye girer.
+  `build-apk.sh` APK derleyince `apkVersion`'ı kendisi yazar.
+- **Sürüm karşılaştırması sayısal olmalı** (`surumKarsilastir`). Metin
+  karşılaştırmasında "1.10" < "1.9" olur.
+- **`dvh` birimleri için `vh` yedeği ver** (`@supports`). Desteklemeyen
+  tarayıcıda yükseklik geçersiz olur ve sayfa boş görünür.
+
+## Türkiye'den erişim
+
+Türkiye'de `github.io` ve `pages.dev` bazı ISS'lerde açılmıyor; Genç
+uygulamasında bu yüzden Surge birincil adres. Kurye'de Surge sırları
+tanımlı değil (`sezer-abi-kurye.surge.sh` 404). Erişim şüphesinde:
+
+```bash
+# TR düğümlerinden gerçek ölçüm
+curl -s -H "Accept: application/json" \
+  "https://check-host.net/check-http?host=<URL>&node=tr1.node.check-host.net&node=tr2.node.check-host.net&max_nodes=2"
+# → request_id ile 10 sn sonra: https://check-host.net/check-result/<id>
+```
+
+TLS zinciri de önemli: Let's Encrypt (ISRG Root X1) eski Android'lerde
+sorun çıkarabilir; Surge'un Sectigo/AAA zinciri daha geniş uyumlu.
 
 ## Test
 
