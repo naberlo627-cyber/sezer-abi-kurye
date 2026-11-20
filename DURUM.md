@@ -21,7 +21,7 @@ yazılarını kapat. Tasarım dili rezalet. Siyah ve beyaz renklerden oluşsun."
 | GitHub | https://github.com/naberlo627-cyber/sezer-abi-kurye | public, master |
 | GitHub Pages | https://naberlo627-cyber.github.io/sezer-abi-kurye/ | ✓ çalışıyor |
 | Cloudflare Pages | https://sezer-abi-kurye.pages.dev/ | ✓ çalışıyor |
-| Surge | https://sezerabikurye.surge.sh/ | ✗ 404 — SURGE_TOKEN yok |
+| Surge | https://sezerabikurye.surge.sh/ | ✓ çalışıyor (birincil) |
 | APK (son sürüm) | https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk | ✓ v1.1 · 2.853.475 bayt |
 
 ## Sürümler
@@ -79,9 +79,11 @@ kapatır), titreşim geri bildirimi, günde bir sessiz sürüm denetimi.
 
 1. **C maddesi** — Kazanç/Mesajlar/Profil/Yardım sekmelerinin tasarımı
    kullanıcıdan bekleniyor. Şu anki hâli benim tasarımım.
-2. **Surge 404** — `sezerabikurye.surge.sh` yayınlanmadı. Hat tamamen hazır;
-   tek eksik `SURGE_TOKEN` depo sırrı. `npx surge login` + `npx surge token`
-   ile alınır. `SURGE_LOGIN` **gerekmez** (Surge yalnız token doğrular).
+2. **Surge otomatik yayın** — site yayında ama kurye deposunda `SURGE_TOKEN`
+   sırrı yok. Şu an elle/tek seferlik yayınlandı. Kalıcı çözüm için Genç
+   deposundaki token'ı kurye deposuna ekle (GitHub sırları okunamaz, yeniden
+   girilmeli): `npx surge login` → `npx surge token` → kurye deposuna
+   `SURGE_TOKEN` olarak ekle. Sonrasında her push otomatik yayınlanır.
 3. **Sunucu yok** — siparişler/mesajlar cihazda (localStorage). Gerçek kurye
    dağıtımı için API gerekir. Kod buna hazır: `gonder()` ve `gorevAl()` tek yer.
 
