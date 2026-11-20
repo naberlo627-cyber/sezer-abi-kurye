@@ -23,6 +23,8 @@ cp "$ROOT/index.html" "$ROOT/manifest.json" "$ROOT/sw.js" "$ASSETS/"
 cp "$ROOT"/icons/*.png "$ASSETS/icons/"
 
 # Notlar version.json'da elle yazılır; betik onları korur.
+# apkVersion, derlenen APK'nın sürümüdür: web sürümü ileri olabilir ama
+# kullanıcıya önerilen güncelleme daima gerçekten indirilebilen APK'dır.
 NOTES="$(python3 -c "
 import json,sys
 try:
@@ -38,7 +40,8 @@ json.dump({
     "version": ver,
     "versionCode": vcode,
     "notes": notlar,
-    "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk"
+    "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk",
+    "apkVersion": ver
 }, open(yol,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
 PYEOF
 cp "$ROOT/version.json" "$ASSETS/"

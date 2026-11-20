@@ -20,9 +20,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  surum-denetimi:
+    name: Sürüm tutarlılığı
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # version.json apkVersion, yayındaki APK'dan yeni olmamalı: aksi
+      # hâlde kullanıcı indirir, sürüm değişmez ve döngüye girer.
+      - name: apkVersion yayındaki APK'yı aşmıyor mu
+        run: |
+          SURUM="$(sed -n "s/.*var SURUM='\([0-9.]*\)'.*/\1/p" index.html | head -1)"
+          APKV="$(python3 -c "import json;d=json.load(open('version.json'));print(d.get('apkVersion') or d['version'])")"
+          echo "index.html SURUM=$SURUM · version.json apkVersion=$APKV"
+          if [ "$SURUM" != "$APKV" ]; then
+            echo "::warning::Web sürümü ($SURUM) APK sürümünden ($APKV) farklı."
+            echo "APK kullanıcısına güncelleme önerilmez (döngüyü önler)."
+            echo "APK'yı derleyip yayınladıktan sonra apkVersion'ı güncelle."
+          fi
+          python3 -c "import json;json.load(open('version.json'))" && echo "✓ version.json geçerli"
+
   sayfa:
     name: Yayın paketi
     runs-on: ubuntu-latest
+    needs: surum-denetimi
     steps:
       - uses: actions/checkout@v4
       - name: Paketi hazırla

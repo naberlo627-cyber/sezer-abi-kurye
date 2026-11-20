@@ -559,16 +559,53 @@ function kur(){
 }
 
 /* ---------- sürüm / güncelleme ---------- */
+/* "1.10" ile "1.9" metin olarak yanlış sıralanır; parça parça sayı
+   karşılaştır. a>b ise 1, a<b ise -1, eşitse 0. */
+function surumKarsilastir(a,b){
+  var pa=String(a||'').split('.'), pb=String(b||'').split('.');
+  for(var i=0;i<Math.max(pa.length,pb.length);i++){
+    var x=parseInt(pa[i],10)||0, y=parseInt(pb[i],10)||0;
+    if(x>y) return 1;
+    if(x<y) return -1;
+  }
+  return 0;
+}
 function surumDenetle(sessiz){
   fetch('version.json?t='+Date.now(),{cache:'no-store'})
     .then(function(r){ return r.ok? r.json():null; })
     .then(function(v){
       if(!v) { if(!sessiz) toast('Sürüm bilgisi alınamadı'); return; }
-      var yeni=v.version!==SURUM;
+      /* Web sürümü service worker ile kendini günceller; burada
+         "güncelleme var" demek anlamsız. APK'da ise karşılaştırma
+         yayındaki APK'nın sürümüne göre yapılır — web sürümü ileri
+         olabilir ama indirilecek APK henüz derlenmemiş olabilir. */
+      if(!apkMi()){ if(!sessiz) toast('Uygulama güncel · v'+SURUM); return; }
+      var hedef=v.apkVersion||v.version;
+      var yeni=surumKarsilastir(hedef,SURUM)>0;
       if(!yeni){ if(!sessiz) toast('Uygulama güncel · v'+SURUM); return; }
+      /* Aynı sürüme daha önce güncelleme denendi ve sürüm değişmediyse
+         indirilen APK eskidir. Tekrar önermek kullanıcıyı döngüye sokar. */
+      var denenen=null;
+      try{ denenen=localStorage.getItem('sezar.denenenSurum'); }catch(e){}
+      if(denenen===String(hedef)){
+        if(!sessiz){
+          katmanAc(
+            '<div class="shhead"><div><h3>Güncelleme tamamlanmadı</h3>'+
+            '<p class="shsub">v'+esc(SURUM)+' → v'+esc(hedef)+'</p></div>'+
+            '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
+            '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+
+            'v'+esc(hedef)+' indirildi ama uygulama hâlâ v'+esc(SURUM)+' görünüyor. '+
+            'Kurulumu tamamladıktan sonra uygulamayı kapatıp yeniden aç.</p>'+
+            '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
+            '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(v.apk||'')+'">'+
+            ic('box')+'Yeniden indir</button></div>'
+          );
+        }
+        return;
+      }
       katmanAc(
         '<div class="shhead"><div><h3>Güncelleme var</h3>'+
-        '<p class="shsub">v'+esc(SURUM)+' → v'+esc(v.version)+'</p></div>'+
+        '<p class="shsub">v'+esc(SURUM)+' → v'+esc(hedef)+'</p></div>'+
         '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
         '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+esc(v.notes||'Yeni sürüm hazır.')+'</p>'+
         '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
@@ -581,6 +618,14 @@ function surumDenetle(sessiz){
 function guncelle(url){
   if(!url){ toast('İndirme adresi yok'); return; }
   katmanKapat();
+  /* Denemeyi kaydet: indirilen APK eskiyse bir sonraki denetimde
+     kullanıcıya "tamamlanmadı" denir, sonsuz döngü olmaz. */
+  try{
+    fetch('version.json?t='+Date.now(),{cache:'no-store'})
+      .then(function(r){ return r.ok? r.json():null; })
+      .then(function(v){ if(v&&v.version) localStorage.setItem('sezar.denenenSurum',String(v.version)); })
+      .catch(function(){});
+  }catch(e){}
   if(apkMi() && window.SEZAR_APP.install){
     try{ window.SEZAR_APP.install(url); toast('Güncelleme indiriliyor…'); return; }catch(e){}
   }
