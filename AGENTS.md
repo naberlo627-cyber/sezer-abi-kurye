@@ -47,6 +47,41 @@ Sahibi: Sezer abi. Kardeş proje: Genç (`/workspace/project`, ayrı depo).
 - **`dvh` birimleri için `vh` yedeği ver** (`@supports`). Desteklemeyen
   tarayıcıda yükseklik geçersiz olur ve sayfa boş görünür.
 
+## Tasarım dili
+
+Uygulama **saf siyah–beyaz**. Yeşil, mavi, turuncu yok; vurgu rengi
+kullanılmıyor. Hiyerarşi renkle değil **ağırlık, boyut ve boşlukla**
+kurulur. Yeni bir renk eklemek istersen önce siyah tonlarıyla çözmeyi
+dene.
+
+- Renk değişkenleri: `--ink` (#0A0A0B), `--ink2` (#5C5C64), `--ink3`
+  (#63636B), `--sunken` (#F6F6F7), `--line`/`--line2`.
+- Eski adlar (`--green`, `--brand`) duruyor ama siyaha bağlı; kaçak renk
+  çıkmasın diye silmek yerine tek renge bağlandı.
+- Kontrast **ölçülür, varsayılmaz**: metin WCAG AA üstü olmalı. `--ink3`
+  bir kez 2.56 kontrastla yayınlandı ve küçük etiketler okunamadı; bu
+  yüzden #63636B (5.95) kullanılıyor.
+- Yazı tabanı 11px; 10px altı yok.
+- Listeler **tek yüzeyde ince çizgilerle** gruplanır (`.orders`, `.list`,
+  `.faqs`). Her satıra ayrı kart vermek kalabalık yapar.
+
+### Görev kartı
+
+Sıra: rota şeridi → kazanç → tek birincil düğme → 4 kısayol.
+Adres/telefon/müşteri bilgisi rota şeridinde; ayrı satırlarda
+**tekrarlanmaz**.
+
+Sahte harita çizilmiyor. Kurye için asıl bilgi sıralı duraklardır
+(`Alış` → `Teslim`), aşama ilerledikçe noktalar dolar. Gerçek harita
+gerektiğinde "Yol tarifi al" düğmesi dış uygulamayı açar.
+
+### Gereksiz yazı kuralı
+
+Aynı bilgiyi iki yerde gösterme. Örnek: alt durum şeridi
+("Çevrimiçi · 3 bekleyen sipariş") kaldırıldı çünkü aynı bilgi üst
+rozet ve bölüm sayısında vardı. "Aktif"/"Çevrimiçi" gibi kelimeler
+arayüzden çıkarıldı; rozet `Açık`/`Kapalı` diyor.
+
 ## Türkiye'den erişim
 
 Türkiye'de `github.io` ve `pages.dev` bazı ISS'lerde açılmıyor; Genç
