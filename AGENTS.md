@@ -21,11 +21,23 @@ Sahibi: Sezer abi. Kardeş proje: Genç (`/workspace/project`, ayrı depo).
 ## Kurallar
 
 - **Sürüm tek kaynak:** sadece `index.html` içindeki `SURUM`. Başka yerde tekrarlama.
+  `build-apk.sh` bundan `versionCode` üretir ve `version.json`'ı günceller;
+  `version.json`'daki `notes` alanı elle yazılır, betik onu korur.
+- **Service worker önbellek adı** `sw.js` içindeki `CACHE`; her sürümde artır.
+  Aksi hâlde eski dosyalar önbellekten servis edilir.
+- **`version.json` ağ öncelikli olmalı** (sw.js). Önbellekten verilirse
+  güncelleme denetimi eski sürümü görür ve güncelleme hiç görünmez.
 - **Keystore depoya girmez.** `android/app/*.jks` .gitignore'da.
 - **Remote URL'de token olmaz.** `credential.helper` kullan.
 - Tasarım sadakati: renkler `#F1F7F7` zemin, `#FFFFFF` kart, `#141F31` buton,
   `#309048` yeşil aksan. Sapma yapma; kullanıcı tasarımı önemser.
-- Test: gerçek UI üzerinden (tıklama/seçici). İç fonksiyonlar IIFE'de gizli.
+- Test: gerçek UI üzerinden (tıklama/seçici). İç fonksiyonlar IIFE'de gizli;
+  `S` ve iç fonksiyonlar `page.evaluate` ile erişilemez, `localStorage` kullan.
+- **Veri nesnesine alan eklerken** `gorevAl()` gibi kopyalama yerlerini denetle.
+  Alan alan kurmak (`{id:o.id, ...}`) yeni alanları düşürür; nesneyi kopyala.
+  Eski kayıtlar için `gocEttir()` içine tamamlama ekle.
+- **Her düğme gerçek iş yapmalı.** "(demo)" metni kullanıcıya "bu sahte" der;
+  yayına çıkmadan önce `grep "(demo)"` sıfır olmalı.
 
 ## Test
 
