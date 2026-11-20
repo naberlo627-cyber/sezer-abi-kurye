@@ -1148,6 +1148,14 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
     navigator.serviceWorker.register('sw.js').catch(function(){});
   });
+  /* Yeni sürüm devreye girince bir kez yenile; yoksa kullanıcı eski
+     sürümde takılı kalır. Sonsuz döngüyü bayrakla engelle. */
+  var yenilendi=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+    if(yenilendi) return;
+    yenilendi=true;
+    location.reload();
+  });
 }
 
 /* Geri tuşu / Android geri: katman açıksa kapat. */

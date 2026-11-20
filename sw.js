@@ -1,5 +1,5 @@
 /* Sezar Abi Kurye — çevrimdışı destek */
-var CACHE = "sezar-v1";
+var CACHE = "sezar-v1.1";
 var ASSETS = [
   "./",
   "./index.html",
@@ -29,7 +29,8 @@ self.addEventListener("activate", function(e){
   );
 });
 
-/* Sayfa: ağ öncelikli (düzenlemeler anında görünsün). Simgeler: önbellek öncelikli. */
+/* Sayfa ve sürüm bilgisi: ağ öncelikli (düzenlemeler anında görünsün).
+   version.json önbellekten verilirse güncelleme denetimi eski sürümü görür. */
 self.addEventListener("fetch", function(e){
   var istek = e.request;
   if(istek.method !== "GET") return;
@@ -37,7 +38,8 @@ self.addEventListener("fetch", function(e){
   if(url.origin !== location.origin) return;
 
   var sayfa = istek.mode === "navigate" || /\.html$/.test(url.pathname);
-  if(sayfa){
+  var surumDosyasi = /version\.json$/.test(url.pathname);
+  if(sayfa || surumDosyasi){
     e.respondWith(
       fetch(istek).then(function(yanit){
         var kopya = yanit.clone();
