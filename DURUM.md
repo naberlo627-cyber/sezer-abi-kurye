@@ -2,15 +2,17 @@
 
 Bu dosya "nerede kaldık" sorusunun tek cevabıdır. Yeni oturumda **önce bunu oku**.
 
-Son güncelleme: 2026-11-20 · **v1.1 yayında**
+Son güncelleme: 2026-11-14 · **v1.4 yayında**
 
 ## Nerede kaldık
 
-v1.1 yayında. Tasarım birebir aktarıldı **ve** uygulama artık gerçek iş yapıyor:
-navigasyon, telefon, WhatsApp, paylaşım, bildirim, mesajlaşma, güncelleme.
+v1.4 yayında. Tasarım sıfırdan kuruldu: **saf siyah–beyaz**, sahte harita
+yerine rota şeridi, sadeleşmiş görev kartı, tek yüzeyde gruplanmış listeler.
+Kontrast WCAG AA üstü (ölçüldü).
 
-Kullanıcı **A + C** seçti: (A) yayına al + APK, (C) diğer sekmelerin tasarımını
-gönderince uyarla. **A tamamlandı. C bekliyor** (kullanıcı yeni ekran gönderecek).
+Kullanıcı geri bildirimi v1.3'te şuydu: "Yeşil rengi kullanma. Gereksiz aktif
+yazılarını kapat. Tasarım dili rezalet. Siyah ve beyaz renklerden oluşsun."
+Üçü de karşılandı. Sıradaki iş: **Surge yayını** (token bekliyor).
 
 ## Adresler
 
@@ -19,16 +21,16 @@ gönderince uyarla. **A tamamlandı. C bekliyor** (kullanıcı yeni ekran gönde
 | GitHub | https://github.com/naberlo627-cyber/sezer-abi-kurye | public, master |
 | GitHub Pages | https://naberlo627-cyber.github.io/sezer-abi-kurye/ | ✓ çalışıyor |
 | Cloudflare Pages | https://sezer-abi-kurye.pages.dev/ | ✓ çalışıyor |
-| Surge | https://sezer-abi-kurye.surge.sh/ | ✗ 404 — sır yok |
+| Surge | https://sezerabikurye.surge.sh/ | ✗ 404 — SURGE_TOKEN yok |
 | APK (son sürüm) | https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk | ✓ v1.1 · 2.853.475 bayt |
 
 ## Sürümler
 
-- Uygulama sürümü: **1.1** (`index.html` içinde `var SURUM='1.1'`)
-- versionCode: **10100**
+- Uygulama sürümü: **1.4** (`index.html` içinde `var SURUM='1.4'`)
+- versionCode: **10400**
 - Paket adı: `com.sezerabi.kurye`
 - APK boyutu: 2.853.475 bayt (2,8 MB)
-- Service worker önbelleği: `sezar-v1`
+- Service worker önbelleği: `sezar-v1.4`
 - Release: **v1.1** (id 452323570) · v1.0 (id 452315067)
 
 ## v1.1 — gerçek işlevler (bu turda eklendi)
@@ -57,8 +59,8 @@ kapatır), titreşim geri bildirimi, günde bir sessiz sürüm denetimi.
 
 ## Kapanan işler
 
-- Tasarımdan birebir UI: zemin `#F1F7F7`, kart beyaz, buton `#141F31`, yeşil `#309048`
-- Görevler: haritalı kart (SVG rota), Paketi Aldım → Teslim Ettim → Tamamlandı
+- ~~Tasarımdan birebir UI: yeşil `#309048`~~ → **v1.4'te kaldırıldı** (kullanıcı istemedi)
+- Görevler: rota şeridi (Alış → Teslim), Paketi Aldım → Teslim Ettim → Tamamlandı
 - Bekleyen siparişler: 6 kayıt, karta dokun → alt panel → Görevi Al
 - Aktif/Kapalı rozeti, durum şeridi canlı sayı
 - Kazanç: günlük/hafta/ay, 7 günlük çubuk grafik, son işlemler
@@ -77,8 +79,9 @@ kapatır), titreşim geri bildirimi, günde bir sessiz sürüm denetimi.
 
 1. **C maddesi** — Kazanç/Mesajlar/Profil/Yardım sekmelerinin tasarımı
    kullanıcıdan bekleniyor. Şu anki hâli benim tasarımım.
-2. **Surge 404** — `sezer-abi-kurye.surge.sh` yayınlanmadı (sır yok).
-   İki adres çalışıyor; Surge istenirse token gerekiyor.
+2. **Surge 404** — `sezerabikurye.surge.sh` yayınlanmadı. Hat tamamen hazır;
+   tek eksik `SURGE_TOKEN` depo sırrı. `npx surge login` + `npx surge token`
+   ile alınır. `SURGE_LOGIN` **gerekmez** (Surge yalnız token doğrular).
 3. **Sunucu yok** — siparişler/mesajlar cihazda (localStorage). Gerçek kurye
    dağıtımı için API gerekir. Kod buna hazır: `gonder()` ve `gorevAl()` tek yer.
 

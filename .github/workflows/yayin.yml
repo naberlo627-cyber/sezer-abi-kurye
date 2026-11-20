@@ -3,7 +3,7 @@ name: Yayın (GitHub Pages + Cloudflare Pages + Surge)
 # master'a her push'ta siteyi yayınlar.
 #   - GitHub Pages (naberlo627-cyber.github.io/sezer-abi-kurye) → her zaman
 #   - Cloudflare Pages (sezer-abi-kurye.pages.dev) → CF sırları varsa
-#   - Surge (sezer-abi-kurye.surge.sh) → Surge sırları varsa
+#   - Surge (sezerabikurye.surge.sh) → Surge sırları varsa
 
 on:
   push:
@@ -98,14 +98,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
-      SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
     steps:
       - name: Sır denetimi
         id: check
         run: |
-          if [ -z "$SURGE_TOKEN" ] || [ -z "$SURGE_LOGIN" ]; then
+          # Surge yalnız token ile doğrular; SURGE_LOGIN gerekmez.
+          if [ -z "$SURGE_TOKEN" ]; then
             echo "hazir=false" >> "$GITHUB_OUTPUT"
-            echo "Surge sırları tanımlı değil; yayın atlandı."
+            echo "SURGE_TOKEN tanımlı değil; yayın atlandı."
           else
             echo "hazir=true" >> "$GITHUB_OUTPUT"
           fi

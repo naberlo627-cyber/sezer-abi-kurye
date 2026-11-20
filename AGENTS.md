@@ -86,7 +86,7 @@ arayüzden çıkarıldı; rozet `Açık`/`Kapalı` diyor.
 
 Türkiye'de `github.io` ve `pages.dev` bazı ISS'lerde açılmıyor; Genç
 uygulamasında bu yüzden Surge birincil adres. Kurye'de Surge sırları
-tanımlı değil (`sezer-abi-kurye.surge.sh` 404 — hiç yayınlanmamış).
+tanımlı değil (`sezerabikurye.surge.sh` 404 — hiç yayınlanmamış).
 Erişim şüphesinde:
 
 ```bash
@@ -107,10 +107,31 @@ için CI temiz çek eder, dosya bulunmaz ve adres 404 döner. `build_site.sh`
 bu yüzden APK'yı release'den indirir ve zip (PK) imzasıyla doğrular —
 HTML hata sayfasını APK sanmaz.
 
-Surge'u kurye için açmak: aynı Surge hesabını kullan (Genç'teki hesap
-zaten doğrulanmış). `SURGE_TOKEN` + `SURGE_LOGIN` depo sırlarına eklenir,
-`surge` işi sonraki push'ta otomatik yayınlar. Yeni hesap açılırsa
-`*.surge.sh` alanı e-posta doğrulanana kadar "ready" olmaz.
+### Surge yayını
+
+Adres: **https://sezerabikurye.surge.sh** (Genç'teki gibi birincil;
+pages.dev ve github.io TR'de güvenilmez).
+
+Kurulum — tek sır yeter:
+
+```bash
+npx surge login          # bir kez, tarayıcıdan
+npx surge token          # çıkan token'ı depoya ekle
+```
+
+`SURGE_TOKEN` depo sırrı olarak eklenir; `surge` işi sonraki push'ta
+otomatik yayınlar. **`SURGE_LOGIN` gerekmez** — Surge kimliği yalnız
+token ile doğrular (`--token` bayrağı).
+
+Elle yayın:
+
+```bash
+SURGE_TOKEN=<token> bash tools/deploy_surge.sh
+```
+
+Yeni hesap açılırsa `*.surge.sh` alanı e-posta doğrulanana kadar "ready"
+olmaz. Yayın öncesi `dist/index.html` ve `dist/version.json` varlığı
+denetlenir; eksikse boş site yüklenmez.
 
 ## Test
 
