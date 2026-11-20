@@ -3,245 +3,276 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F1F7F7">
+<meta name="theme-color" content="#FFFFFF">
 <title>Sezar Abi Kurye</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <style>
 :root{
-  --bg:#F1F7F7;
-  --card:#FFFFFF;
-  --ink:#101830;
-  --ink2:#5A6675;
-  --ink3:#8A94A3;
-  --brand:#141F31;
-  --brand2:#1E2C44;
-  --green:#184824;
-  --green2:#309048;
-  --greenbg:#E6F2E8;
-  --line:#E3EBEA;
-  --danger:#B3261E;
-  --r:16px;
-  --shadow:0 1px 2px rgba(16,24,48,.05), 0 6px 18px rgba(16,24,48,.05);
+  /* Tek renk dili: siyah–beyaz. Hiyerarşi renkle değil, ağırlık ve
+     boşlukla kurulur. Eski değişken adları korunur; hepsi tek renge bağlı. */
+  --bg:#FFFFFF;
+  --surface:#FFFFFF;
+  --sunken:#F6F6F7;
+  --ink:#0A0A0B;
+  --ink2:#5C5C64;
+  --ink3:#63636B;
+  --line:#ECECEF;
+  --line2:#DCDCE0;
+  --r:18px;
+  --hair:1px solid var(--line);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  /* eski adlar */
+  --card:#FFFFFF;--brand:#0A0A0B;--brand2:#0A0A0B;
+  --green:#0A0A0B;--green2:#0A0A0B;--greenbg:#F6F6F7;--danger:#0A0A0B;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;height:100%}
 body{
   background:var(--bg);color:var(--ink);
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  font-size:15px;line-height:1.45;
+  font-size:15px;line-height:1.5;
   overscroll-behavior-y:none;
   -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
 }
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
-.ic{width:22px;height:22px;display:block;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ic{width:22px;height:22px;display:block;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- iskelet ---------- */
 #app{display:flex;flex-direction:column;height:100vh;max-width:520px;margin:0 auto;position:relative;background:var(--bg)}
 @supports (height:100dvh){#app{height:100dvh}}
-#top{flex:none;padding:calc(env(safe-area-inset-top,0px) + 14px) 18px 10px}
-#view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 18px 16px}
+#top{flex:none;padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 12px}
+#view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 20px 20px}
 #view::-webkit-scrollbar{display:none}
 
 /* ---------- üst çubuk ---------- */
-.toprow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.brandline{display:flex;align-items:center;gap:9px;min-width:0}
-.logo{width:30px;height:30px;flex:none;border-radius:9px;background:var(--brand);display:grid;place-items:center}
-.logo svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tagline{font-size:12px;color:var(--ink2);margin:3px 0 0;font-weight:500}
-.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:700;flex:none}
-.pill.on{background:var(--greenbg);color:var(--green)}
-.pill.off{background:#EDEFF2;color:var(--ink2)}
-.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
-.pill.on .dot{box-shadow:0 0 0 3px rgba(48,144,72,.18)}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brandline{display:flex;align-items:center;gap:11px;min-width:0}
+.logo{width:32px;height:32px;flex:none;border-radius:10px;background:var(--ink);display:grid;place-items:center}
+.logo svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+h1{font-size:17px;font-weight:650;margin:0;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;
+  font-size:12.5px;font-weight:600;letter-spacing:-.1px;flex:none;
+  border:1px solid var(--line2);background:var(--surface);color:var(--ink2);
+  transition:background .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease)}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.pill.on .dot{background:#fff}
 
 /* ---------- bölüm başlığı ---------- */
-.sechead{display:flex;align-items:baseline;justify-content:space-between;margin:16px 0 9px}
-.seclabel{font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink3)}
-.seclink{font-size:12.5px;font-weight:600;color:var(--green)}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 10px}
+.seclabel{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink3)}
+.seclink{font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:-.1px}
 
 /* ---------- kartlar ---------- */
-.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.card{background:var(--surface);border-radius:var(--r);border:var(--hair);overflow:hidden}
 .card + .card{margin-top:12px}
 
 /* harita */
-.mapwrap{position:relative;height:196px;background:#E8EFEE}
-.mapwrap svg{width:100%;height:100%;display:block}
-.mapoverlay{position:absolute;left:0;right:0;bottom:0;padding:10px 12px 11px;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  background:linear-gradient(to top,rgba(255,255,255,.97) 42%,rgba(255,255,255,0))}
-.mapname{font-size:15.5px;font-weight:750;letter-spacing:-.2px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.maplink{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--green);flex:none;padding:6px 10px;border-radius:999px;background:var(--greenbg)}
-.maplink .ic{width:14px;height:14px}
+/* rota şeridi — sahte harita yerine gerçek durak akışı */
+.rota{padding:18px 16px 4px;background:var(--sunken);border-bottom:var(--hair)}
+.rdura{display:flex;align-items:flex-start;gap:13px;position:relative}
+.rdura + .rdura{margin-top:2px}
+.rray{width:14px;flex:none;display:flex;flex-direction:column;align-items:center;padding-top:5px}
+.rnokta{width:11px;height:11px;border-radius:50%;border:2.5px solid var(--ink);background:var(--surface);flex:none;box-sizing:border-box}
+.rnokta.dolu{background:var(--ink)}
+.rnokta.halka{background:var(--surface)}
+.rcizgi{width:2px;flex:1;min-height:22px;background:repeating-linear-gradient(to bottom,var(--line2) 0 4px,transparent 4px 8px);margin:3px 0}
+.rgovde{flex:1;min-width:0;padding-bottom:14px}
+.rdura:last-child .rgovde{padding-bottom:0}
+.rrol{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink3)}
+.rad{font-size:14px;font-weight:600;letter-spacing:-.2px;margin-top:2px;overflow-wrap:anywhere;line-height:1.35}
+.ralt{font-size:12px;color:var(--ink2);margin-top:2px;font-weight:500}
+.rgit{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding:11px;width:100%;
+  border-radius:12px;background:var(--surface);border:1px solid var(--line2);
+  font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:-.1px}
+.rgit .ic{width:14px;height:14px;stroke-width:1.8}
 
 /* detay */
-.det{padding:15px 16px 4px}
-.det h2{font-size:16.5px;font-weight:750;margin:0 0 11px;letter-spacing:-.25px}
-.row{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-top:1px solid var(--line)}
+.det{padding:16px 16px 6px}
+.det h2{display:none}
+.row{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-top:var(--hair)}
 .row:first-of-type{border-top:0}
-.rowic{width:32px;height:32px;border-radius:10px;background:#F2F6F6;display:grid;place-items:center;flex:none;color:var(--brand)}
-.rowic .ic{width:16px;height:16px}
-.rowbody{min-width:0;flex:1;padding-top:1px}
-.rowk{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3)}
-.rowv{font-size:14px;font-weight:600;margin-top:1px;overflow-wrap:anywhere}
+.rowic{width:34px;height:34px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;flex:none;color:var(--ink)}
+.rowic .ic{width:16px;height:16px;stroke-width:1.7}
+.rowbody{min-width:0;flex:1;padding-top:2px}
+.rowk{font-size:11px;font-weight:650;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3)}
+.rowv{font-size:14.5px;font-weight:550;margin-top:2px;overflow-wrap:anywhere;letter-spacing:-.1px}
 .rowv small{font-weight:500;color:var(--ink2)}
-.eta{display:inline-flex;align-items:center;gap:6px;background:var(--greenbg);color:var(--green);font-weight:750;font-size:13px;padding:4px 10px;border-radius:999px;margin-top:3px}
+.eta{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;font-weight:600;font-size:12.5px;padding:5px 11px;border-radius:999px;margin-top:2px}
+.eta .ic{width:13px;height:13px;stroke-width:1.8}
 
 /* satır içi küçük işlem düğmeleri */
-.rowbtn{width:34px;height:34px;border-radius:10px;background:#F0F4F4;display:grid;place-items:center;flex:none;
-  color:var(--brand);box-shadow:inset 0 0 0 1px var(--line);transition:transform .08s}
-.rowbtn:active{transform:scale(.92)}
-.rowbtn .ic{width:16px;height:16px}
+.rowbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);display:grid;place-items:center;flex:none;
+  color:var(--ink);border:1px solid var(--line2);transition:transform .12s var(--ease),background .15s}
+.rowbtn:active{transform:scale(.94);background:var(--sunken)}
+.rowbtn .ic{width:16px;height:16px;stroke-width:1.7}
 
 /* hızlı işlem şeridi */
 .quickrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px 16px}
-.qbtn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:12px;
-  background:#F4F8F7;color:var(--ink2);transition:transform .08s,background .15s}
-.qbtn:active{transform:scale(.95);background:#E8F0EE}
-.qbtn .ic{width:19px;height:19px;color:var(--brand)}
-.qbtn span{font-size:10.5px;font-weight:700;letter-spacing:.1px;text-align:center;line-height:1.2}
+.qbtn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:13px;
+  background:var(--sunken);color:var(--ink2);transition:transform .12s var(--ease),background .15s}
+.qbtn:active{transform:scale(.95);background:#EFEFF1}
+.qbtn .ic{width:18px;height:18px;color:var(--ink);stroke-width:1.7}
+.qbtn span{font-size:11px;font-weight:600;letter-spacing:.1px;text-align:center;line-height:1.25}
 
 /* ağ durumu şeridi */
-.agserit{display:none;flex:none;text-align:center;font-size:12px;font-weight:700;padding:6px 14px;
-  background:#FDF1D8;color:#7A5A12}
+.agserit{display:none;flex:none;text-align:center;font-size:12px;font-weight:600;padding:8px 14px;
+  background:var(--ink);color:#fff;letter-spacing:-.1px}
 .agserit.on{display:block}
 
 /* sohbet */
-.sohbet{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;padding:12px 0 6px}
+.sohbet{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;padding:14px 0 6px}
 @supports (height:46dvh){.sohbet{max-height:46dvh}}
-.balon{max-width:82%;padding:10px 13px;border-radius:16px;font-size:13.5px;font-weight:550;line-height:1.4;
-  position:relative;overflow-wrap:anywhere}
-.balon.onlar{background:#F1F5F4;color:var(--ink);align-self:flex-start;border-bottom-left-radius:5px}
-.balon.ben{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
-.bsaat{display:block;font-size:10px;font-weight:600;opacity:.55;margin-top:4px;text-align:right}
-.yazalim{display:flex;align-items:center;gap:9px;padding:8px 0 4px;border-top:1px solid var(--line);margin-top:6px}
-.yazalim input{flex:1;height:44px;border-radius:22px;border:0;background:#F1F5F4;padding:0 16px;
+.balon{max-width:82%;padding:11px 14px;border-radius:16px;font-size:13.5px;font-weight:500;line-height:1.45;
+  position:relative;overflow-wrap:anywhere;letter-spacing:-.1px}
+.balon.onlar{background:var(--sunken);color:var(--ink);align-self:flex-start;border-bottom-left-radius:6px}
+.balon.ben{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
+.bsaat{display:block;font-size:11px;font-weight:550;opacity:.5;margin-top:5px;text-align:right}
+.yazalim{display:flex;align-items:center;gap:9px;padding:10px 0 4px;border-top:var(--hair);margin-top:8px}
+.yazalim input{flex:1;height:46px;border-radius:23px;border:1px solid var(--line2);background:var(--surface);padding:0 17px;
   font:inherit;font-size:14px;color:var(--ink);min-width:0}
-.yazalim input:focus{outline:2px solid var(--green2);outline-offset:-2px}
-.gonder{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;flex:none}
-.gonder .ic{width:18px;height:18px;transform:rotate(45deg)}
+.yazalim input::placeholder{color:var(--ink3)}
+.yazalim input:focus{outline:2px solid var(--ink);outline-offset:-2px}
+.gonder{width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;flex:none}
+.gonder .ic{width:18px;height:18px;transform:rotate(45deg);stroke-width:1.8}
 
 /* butonlar */
-.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 16px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:13px;font-size:14.5px;font-weight:700;letter-spacing:-.1px;
-  transition:transform .08s ease,opacity .15s}
-.btn:active{transform:scale(.975)}
-.btn .ic{width:17px;height:17px}
-.btn.pri{background:var(--brand);color:#fff}
-.btn.sec{background:#F0F4F4;color:var(--brand);box-shadow:inset 0 0 0 1px var(--line)}
-.btn.done{background:var(--green);color:#fff}
-.btn[disabled]{opacity:.45}
+.ozet{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 16px 0}
+.ozetU{min-width:0}
+.ozetK{font-size:11px;font-weight:650;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3)}
+.ozetV{font-size:24px;font-weight:680;letter-spacing:-1px;margin-top:3px;font-variant-numeric:tabular-nums}
+.ozetS{display:flex;gap:7px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.cip{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:999px;
+  background:var(--sunken);font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap;letter-spacing:-.1px}
+.cip .ic{width:13px;height:13px;stroke-width:1.8;color:var(--ink2)}
+.acts{display:grid;grid-template-columns:1fr;gap:10px;padding:16px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:14px;
+  font-size:14px;font-weight:600;letter-spacing:-.1px;transition:transform .12s var(--ease),opacity .15s}
+.btn:active{transform:scale(.978)}
+.btn .ic{width:17px;height:17px;stroke-width:1.8}
+.btn.pri,.btn.done{background:var(--ink);color:#fff}
+.btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line2)}
+.btn[disabled]{opacity:.4}
 
 /* bekleyen siparişler */
-.orders{display:flex;flex-direction:column;gap:9px}
-.order{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:13px;box-shadow:var(--shadow);padding:13px 14px;text-align:left;width:100%;
-  transition:transform .08s}
-.order:active{transform:scale(.985)}
-.oav{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none;font-weight:800;font-size:15px;color:#fff;background:var(--brand2)}
+.orders{background:var(--surface);border-radius:15px;border:var(--hair);overflow:hidden}
+.order{display:flex;align-items:center;gap:13px;background:var(--surface);
+  padding:15px;text-align:left;width:100%;transition:background .15s}
+.order + .order{border-top:var(--hair)}
+.order:active{background:var(--sunken)}
+.oav{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;
+  font-weight:650;font-size:15px;color:#fff;background:var(--ink);letter-spacing:-.2px}
 .obody{flex:1;min-width:0}
-.oname{font-size:14.5px;font-weight:700;letter-spacing:-.15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ometa{font-size:12.5px;color:var(--ink2);margin-top:1px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.ometa b{color:var(--green);font-weight:750}
+.oname{font-size:14.5px;font-weight:600;letter-spacing:-.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ometa{font-size:12.5px;color:var(--ink2);margin-top:2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.ometa b{color:var(--ink);font-weight:650}
 .chev{color:var(--ink3);flex:none}
-.chev .ic{width:18px;height:18px}
+.chev .ic{width:17px;height:17px;stroke-width:1.7}
 
-/* durum şeridi */
-.statusbar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:8px 18px;font-size:12.5px;font-weight:650;color:var(--ink2);background:var(--bg)}
-.sleft{display:flex;align-items:center;gap:7px}
-.sleft .dot{width:8px;height:8px;background:var(--green2)}
-.sleft.off .dot{background:#B6BEC9}
-.sright{color:var(--ink3);font-weight:600}
+/* durum şeridi: kaldırıldı — üst çubuktaki rozet tek gösterge */
+.statusbar{display:none}
+.sleft,.sright{display:none}
 
 /* alt menü */
 #nav{flex:none;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
-  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
-  border-top:1px solid var(--line);
-  padding:7px 6px calc(env(safe-area-inset-bottom,0px) + 7px)}
-.navb{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border-radius:11px;color:var(--ink3);transition:color .15s}
-.navb .ic{width:21px;height:21px}
-.navb span{font-size:10px;font-weight:650;letter-spacing:.1px}
-.navb.on{color:var(--brand)}
-.navb.on .ic{stroke-width:2.2}
+  background:rgba(255,255,255,.94);backdrop-filter:blur(16px) saturate(180%);
+  border-top:var(--hair);
+  padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 8px)}
+.navb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;border-radius:12px;
+  color:var(--ink3);transition:color .15s var(--ease)}
+.navb .ic{width:21px;height:21px;stroke-width:1.6}
+.navb span{font-size:11px;font-weight:600;letter-spacing:.1px}
+.navb.on{color:var(--ink)}
+.navb.on .ic{stroke-width:2}
 
 /* ---------- ikincil ekranlar ---------- */
-.phead{margin:14px 0 4px}
-.phead h2{font-size:23px;font-weight:780;margin:0;letter-spacing:-.5px}
-.phead p{margin:4px 0 0;font-size:13px;color:var(--ink2)}
+.phead{margin:10px 0 2px}
+.phead h2{font-size:26px;font-weight:680;margin:0;letter-spacing:-.9px}
+.phead p{margin:5px 0 0;font-size:13px;color:var(--ink2);letter-spacing:-.1px}
 
-.stat2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.stat{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:14px}
-.statk{font-size:11px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3)}
-.statv{font-size:22px;font-weight:780;margin-top:4px;letter-spacing:-.6px}
-.statv small{font-size:13px;font-weight:650;color:var(--ink2);letter-spacing:0}
-.delta{font-size:12px;font-weight:700;margin-top:2px}
-.up{color:var(--green2)}.down{color:var(--danger)}
+.stat2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stat{background:var(--surface);border-radius:15px;border:var(--hair);padding:15px}
+.statk{font-size:11px;font-weight:650;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3)}
+.statv{font-size:23px;font-weight:680;margin-top:5px;letter-spacing:-.9px;font-variant-numeric:tabular-nums}
+.statv small{font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:0}
+.delta{font-size:12px;font-weight:600;margin-top:3px;color:var(--ink2)}
+.up{color:var(--ink)}
 
-.bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:16px;padding:0 2px}
-.barcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px}
-.bar{width:100%;border-radius:7px 7px 4px 4px;background:#DDE7E4;min-height:5px;transition:height .4s cubic-bezier(.3,1.2,.5,1)}
-.bar.top{background:var(--brand)}
-.barlab{font-size:10.5px;color:var(--ink3);font-weight:650}
-.barval{font-size:10.5px;font-weight:750;color:var(--ink2)}
+.bars{display:flex;align-items:flex-end;gap:9px;height:124px;margin-top:18px;padding:0 2px}
+.barcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.bar{width:100%;border-radius:6px 6px 3px 3px;background:#E9E9EC;min-height:4px;transition:height .45s var(--ease)}
+.bar.top{background:var(--ink)}
+.barlab{font-size:11px;color:var(--ink3);font-weight:600}
+.barval{font-size:11px;font-weight:650;color:var(--ink2);font-variant-numeric:tabular-nums}
 
-.list{display:flex;flex-direction:column;gap:9px;margin-top:14px}
-.li{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:13px;box-shadow:var(--shadow);padding:13px 14px;width:100%;text-align:left}
-.liav{width:40px;height:40px;border-radius:50%;background:#EEF3F3;display:grid;place-items:center;flex:none;font-weight:750;color:var(--brand);font-size:14px}
+.list{background:var(--surface);border-radius:15px;border:var(--hair);overflow:hidden;margin-top:16px}
+.li{display:flex;align-items:center;gap:13px;background:var(--surface);padding:15px;width:100%;text-align:left;transition:background .15s}
+.li + .li{border-top:var(--hair)}
+.li:active{background:var(--sunken)}
+.liav{width:40px;height:40px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;flex:none;font-weight:650;color:var(--ink);font-size:14px}
+.liav .ic{width:17px;height:17px;stroke-width:1.8}
 .lib{flex:1;min-width:0}
-.lit{font-size:14.5px;font-weight:700;letter-spacing:-.15px}
-.lis{font-size:12.5px;color:var(--ink2);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.litime{font-size:11.5px;color:var(--ink3);font-weight:650;flex:none;align-self:flex-start;margin-top:3px}
-.unread{width:8px;height:8px;border-radius:50%;background:var(--green2);flex:none}
+.lit{font-size:14.5px;font-weight:600;letter-spacing:-.2px}
+.lis{font-size:12.5px;color:var(--ink2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.litime{font-size:12px;color:var(--ink3);font-weight:600;flex:none;align-self:flex-start;margin-top:3px;font-variant-numeric:tabular-nums}
+.unread{width:7px;height:7px;border-radius:50%;background:var(--ink);flex:none}
 
-.kv{background:var(--card);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-top:14px}
-.kvrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;border-top:1px solid var(--line);width:100%;text-align:left}
+.kv{background:var(--surface);border-radius:15px;border:var(--hair);overflow:hidden;margin-top:16px}
+.kvrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;border-top:var(--hair);width:100%;text-align:left;transition:background .15s}
+.kvrow:active{background:var(--sunken)}
 .kvrow:first-child{border-top:0}
-.kvk{font-size:14px;font-weight:600;display:flex;align-items:center;gap:11px}
-.kvk .ic{width:18px;height:18px;color:var(--ink2)}
-.kvv{font-size:13.5px;color:var(--ink2);font-weight:600;text-align:right}
+.kvk{font-size:14px;font-weight:550;display:flex;align-items:center;gap:12px;letter-spacing:-.1px}
+.kvk .ic{width:18px;height:18px;color:var(--ink2);stroke-width:1.7}
+.kvv{font-size:13px;color:var(--ink3);font-weight:550;text-align:right}
 .kvrow .chev .ic{width:16px;height:16px}
 
-.hero{background:var(--brand);color:#fff;border-radius:16px;padding:18px;margin-top:14px;display:flex;align-items:center;gap:14px}
-.heroav{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:20px;font-weight:780;flex:none}
+.hero{background:var(--ink);color:#fff;border-radius:18px;padding:20px;margin-top:16px;display:flex;align-items:center;gap:15px}
+.heroav{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center;font-size:19px;font-weight:650;flex:none;letter-spacing:-.5px}
 .herobody{min-width:0;flex:1}
-.heron{font-size:17px;font-weight:750;letter-spacing:-.3px}
-.herom{font-size:12.5px;opacity:.72;margin-top:2px}
-.herostat{display:flex;gap:14px;margin-top:9px}
-.herostat div{font-size:11px;opacity:.72;font-weight:650}
-.herostat b{display:block;font-size:14px;opacity:1;font-weight:780;margin-top:1px}
+.heron{font-size:17px;font-weight:650;letter-spacing:-.4px}
+.herom{font-size:12.5px;opacity:.6;margin-top:2px}
+.herostat{display:flex;gap:18px;margin-top:11px}
+.herostat div{font-size:11px;opacity:.6;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.herostat b{display:block;font-size:15px;opacity:1;font-weight:680;margin-top:2px;letter-spacing:-.3px;text-transform:none}
 
-.faq{background:var(--card);border-radius:13px;box-shadow:var(--shadow);margin-top:9px;overflow:hidden}
-.faqq{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;width:100%;text-align:left;font-size:14px;font-weight:680}
-.faqq .ic{width:16px;height:16px;color:var(--ink3);transition:transform .2s}
+.faqs{margin-top:16px;border:var(--hair);border-radius:15px;overflow:hidden;background:var(--surface)}
+.faq{background:var(--surface);border-radius:0;border:0;border-top:var(--hair);margin-top:0;overflow:hidden}
+.faq:first-of-type{border-top:0;border-radius:15px 15px 0 0}
+.faq:last-of-type{border-radius:0 0 15px 15px}
+.faqq{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;width:100%;text-align:left;font-size:14px;font-weight:600;letter-spacing:-.15px}
+.faqq .ic{width:16px;height:16px;color:var(--ink3);transition:transform .22s var(--ease)}
 .faq.open .faqq .ic{transform:rotate(180deg)}
-.faqa{display:none;padding:0 15px 14px;font-size:13.5px;color:var(--ink2);line-height:1.55}
+.faqa{display:none;padding:0 16px 15px;font-size:13.5px;color:var(--ink2);line-height:1.6}
 .faq.open .faqa{display:block}
 
 /* ---------- katman (sheet) ---------- */
 #sheet{position:fixed;inset:0;z-index:50;display:none}
 #sheet.on{display:block}
-#sheet .scrim{position:absolute;inset:0;background:rgba(16,24,48,.42);opacity:0;transition:opacity .22s}
+#sheet .scrim{position:absolute;inset:0;background:rgba(10,10,11,.38);opacity:0;transition:opacity .24s var(--ease)}
 #sheet.in .scrim{opacity:1}
-#sheet .panel{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--card);
-  border-radius:22px 22px 0 0;padding:8px 18px calc(env(safe-area-inset-bottom,0px) + 18px);
-  transform:translateY(100%);transition:transform .26s cubic-bezier(.3,1.1,.4,1);max-height:88vh;overflow-y:auto}
+#sheet .panel{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--surface);
+  border-radius:24px 24px 0 0;padding:8px 20px calc(env(safe-area-inset-bottom,0px) + 20px);
+  transform:translateY(100%);transition:transform .3s var(--ease);max-height:88vh;overflow-y:auto;
+  border-top:var(--hair)}
 @supports (height:88dvh){#sheet .panel{max-height:88dvh}}
 #sheet.in .panel{transform:translateY(0)}
-.grab{width:38px;height:4px;border-radius:99px;background:#DDE4E4;margin:6px auto 14px}
-.shhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px}
-.shhead h3{font-size:19px;font-weight:780;margin:0;letter-spacing:-.4px}
-.shclose{width:32px;height:32px;border-radius:50%;background:#F0F4F4;display:grid;place-items:center;flex:none;color:var(--ink2)}
-.shclose .ic{width:16px;height:16px}
-.shsub{font-size:13px;color:var(--ink2);margin:2px 0 0}
+.grab{width:36px;height:4px;border-radius:99px;background:var(--line2);margin:8px auto 16px}
+.shhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.shhead h3{font-size:19px;font-weight:680;margin:0;letter-spacing:-.5px}
+.shclose{width:32px;height:32px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;flex:none;color:var(--ink2)}
+.shclose .ic{width:15px;height:15px;stroke-width:1.8}
+.shsub{font-size:13px;color:var(--ink2);margin:3px 0 0}
 
 /* toast */
-#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);transform:translate(-50%,14px);
-  background:var(--brand);color:#fff;font-size:13.5px;font-weight:650;padding:11px 18px;border-radius:999px;
-  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:80;max-width:88vw;text-align:center}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);transform:translate(-50%,14px);
+  background:var(--ink);color:#fff;font-size:13px;font-weight:550;padding:12px 20px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease);z-index:80;max-width:88vw;text-align:center;letter-spacing:-.1px}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 
-.empty{text-align:center;padding:34px 20px;color:var(--ink3);font-size:13.5px}
-.empty .ic{width:38px;height:38px;margin:0 auto 10px;color:#C6D0D0}
+.empty{text-align:center;padding:38px 22px;color:var(--ink3);font-size:13px;line-height:1.6}
+.empty .ic{width:34px;height:34px;margin:0 auto 12px;color:var(--line2);stroke-width:1.5}
 </style>
 </head>
 <body>
@@ -286,7 +317,7 @@ h1{font-size:19px;font-weight:750;margin:0;letter-spacing:-.3px;white-space:nowr
 (function(){
 'use strict';
 
-var SURUM='1.3';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
+var SURUM='1.4';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
 
 /* ============ durum ============ */
 var KEY='sezar.v1';
@@ -298,15 +329,16 @@ var VARSAYILAN={
   teslimat:1284,
   /* Açılışta tasarımdaki ekran birebir görünsün diye devam eden bir görev var. */
   aktifGorev:{id:'a0', isletme:'Evrensel Kebab Evi', adres:'Caferağa Mahallesi, Moda Cd. No:15',
-    musteri:'Zeynep A.', sure:12, km:2.4, ucret:35, asama:'paket',
+    musteri:'Zeynep A.', musteriAdres:'Caferağa Mah. Şair Nefi Sk. No:7 D:4',
+    sure:12, km:2.4, ucret:35, asama:'paket',
     alis:[40.9878,29.0258], varis:[40.9822,29.0212], tel:'+902163456789', musteriTel:'+905321112233'},
   siparisler:[
     {id:'s1', isletme:'Espresso Lab', adres:'Caferağa Mah. Bahariye Cd. No:22', musteri:'Ayşe K.', km:3.5, sure:18, ucret:42,
       alis:[40.9890,29.0270], varis:[40.9760,29.0402], tel:'+902163456790', musteriTel:'+905321112234'},
     {id:'s2', isletme:'Midyeci Ahmet', adres:'Osmanağa Mah. Söğütlü Çeşme Cd. No:8', musteri:'Mehmet T.', km:1.8, sure:11, ucret:28,
       alis:[40.9905,29.0300], varis:[40.9952,29.0344], tel:'+902163456791', musteriTel:'+905321112235'},
-    {id:'s3', isletme:'Evrensel Kebab Evi', adres:'Caferağa Mah. Moda Cd. No:15', musteri:'Zeynep A.', km:2.4, sure:14, ucret:35,
-      alis:[40.9878,29.0258], varis:[40.9822,29.0212], tel:'+902163456789', musteriTel:'+905321112233'},
+    {id:'s3', isletme:'Simit Sarayı', adres:'Caferağa Mah. Moda Cd. No:41', musteri:'Deniz Y.', km:2.6, sure:15, ucret:31,
+      alis:[40.9871,29.0249], varis:[40.9835,29.0203], tel:'+902163456789', musteriTel:'+905321112233'},
     {id:'s4', isletme:'Kahve Durağı', adres:'Bahariye Cd. No:47', musteri:'Can B.', km:4.2, sure:22, ucret:51,
       alis:[40.9885,29.0280], varis:[40.9702,29.0501], tel:'+902163456792', musteriTel:'+905321112236'},
     {id:'s5', isletme:'Pide Sarayı', adres:'Moda Cd. No:91', musteri:'Elif D.', km:2.9, sure:16, ucret:38,
@@ -384,11 +416,11 @@ function ustCiz(){
         '<div class="logo">'+ic('bike')+'</div>'+
         '<div style="min-width:0">'+
           '<h1>Sezar Abi Kurye</h1>'+
-          '<p class="tagline">Hızlı ve Güvenli</p>'+
+          
         '</div>'+
       '</div>'+
       '<button class="pill '+(on?'on':'off')+'" id="onlineBtn" type="button" aria-pressed="'+on+'">'+
-        '<span class="dot"></span>'+(on?'Aktif':'Kapalı')+
+        '<span class="dot"></span>'+(on?'Açık':'Kapalı')+
       '</button>'+
     '</div>';
   $('#onlineBtn').addEventListener('click',function(){
@@ -401,11 +433,9 @@ function ustCiz(){
 
 /* ============ durum şeridi ============ */
 function durumCiz(){
-  var n=S.siparisler.length;
-  $('#statusbar').innerHTML=
-    '<div class="sleft'+(S.online?'':' off')+'"><span class="dot"></span>'+
-      (S.online?'Çevrimiçi':'Çevrimdışı')+'</div>'+
-    '<div class="sright">'+(S.online? (n? n+' bekleyen sipariş' : 'Bekleyen sipariş yok') : 'Sipariş alımı kapalı')+'</div>';
+  /* Durum şeridi kaldırıldı: aynı bilgi üst çubuktaki rozette ve
+     bölüm başlığındaki sayıda var. Tekrar eden yazı kalabalık yapar. */
+  var el=$('#statusbar'); if(el) el.innerHTML='';
 }
 
 /* ============ alt menü ============ */
@@ -674,51 +704,26 @@ function yenileKur(){
   },{passive:true});
 }
 
-/* ============ harita çizimi ============ */
-function haritaSVG(){
-  return '<svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
-    '<rect width="400" height="200" fill="#E9F0EE"/>'+
-    /* bloklar */
-    '<g fill="#DDE8E4">'+
-      '<rect x="14" y="16" width="86" height="52" rx="6"/>'+
-      '<rect x="112" y="8" width="70" height="38" rx="6"/>'+
-      '<rect x="196" y="20" width="92" height="46" rx="6"/>'+
-      '<rect x="302" y="12" width="84" height="40" rx="6"/>'+
-      '<rect x="20" y="86" width="64" height="60" rx="6"/>'+
-      '<rect x="96" y="96" width="82" height="72" rx="6"/>'+
-      '<rect x="192" y="88" width="58" height="52" rx="6"/>'+
-      '<rect x="262" y="96" width="54" height="64" rx="6"/>'+
-      '<rect x="330" y="86" width="56" height="46" rx="6"/>'+
-      '<rect x="30" y="160" width="90" height="34" rx="6"/>'+
-      '<rect x="140" y="176" width="110" height="22" rx="6"/>'+
-      '<rect x="270" y="170" width="112" height="28" rx="6"/>'+
-    '</g>'+
-    /* yollar */
-    '<g stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" fill="none">'+
-      '<path d="M0 76h400"/><path d="M0 154h400"/><path d="M104 0v200"/><path d="M254 0v200"/><path d="M320 0v200"/>'+
-    '</g>'+
-    '<g stroke="#F7FBFA" stroke-width="3" stroke-linecap="round" fill="none" opacity=".9">'+
-      '<path d="M0 118h400"/><path d="M180 0v200"/>'+
-    '</g>'+
-    /* rota */
-    '<path d="M92 152 L104 128 L104 76 L180 76 L180 46 L232 46" stroke="#309048" stroke-width="4.5" '+
-      'fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>'+
-    '<path d="M92 152 L104 128 L104 76 L180 76 L180 46 L232 46" stroke="#FFFFFF" stroke-width="1.8" '+
-      'fill="none" stroke-dasharray="7 9" stroke-linecap="round" opacity=".85"/>'+
-    /* başlangıç */
-    '<circle cx="92" cy="152" r="7.5" fill="#141F31"/>'+
-    '<circle cx="92" cy="152" r="2.8" fill="#fff"/>'+
-    /* varış */
-    '<g transform="translate(232 46)">'+
-      '<circle r="11" fill="#309048" opacity=".18"/>'+
-      '<circle r="7" fill="#309048"/>'+
-      '<path d="M0 -3.4 L3 2.2 H-3 Z" fill="#fff"/>'+
-    '</g>'+
-    /* konum iğnesi */
-    '<g transform="translate(92 152) translate(-9 -26)">'+
-      '<rect x="1" y="0" width="16" height="16" rx="5" fill="#141F31" opacity=".0"/>'+
-    '</g>'+
-  '</svg>';
+/* ============ rota şeridi ============ */
+/* Sahte harita çizmiyoruz: kurye uygulamasında asıl bilgi sıralı
+   duraklardır (işletme -> müşteri). Harita düğmesi gerçek uygulamayı açar. */
+function rotaSeridi(a){
+  var alis = a.asama==='paket';
+  var adim = a.asama==='paket'? 0 : (a.asama==='yolda'? 1 : 2);
+  function dura(rol, ad, alt, dolu, son){
+    return '<div class="rdura">'+
+      '<div class="rray"><span class="rnokta '+(dolu?'dolu':'halka')+'"></span>'+
+        (son?'':'<span class="rcizgi"></span>')+'</div>'+
+      '<div class="rgovde"><div class="rrol">'+esc(rol)+'</div>'+
+        '<div class="rad">'+esc(ad)+'</div>'+
+        (alt?'<div class="ralt">'+esc(alt)+'</div>':'')+
+      '</div></div>';
+  }
+  return '<div class="rota">'+
+      dura('Alış', a.isletme, a.adres, adim>=0, false)+
+      dura('Teslim', a.musteri, a.musteriAdres, adim>=1, true)+
+      '<button class="rgit" type="button" data-act="harita">'+ic('nav')+'Yol tarifi al</button>'+
+    '</div>';
 }
 
 /* ============ ANA SAYFA ============ */
@@ -727,41 +732,22 @@ function gorevKarti(a){
   var asamaIkon={paket:'box', yolda:'check', teslim:'check'};
   var bsinif=asamaEtiket[a.asama]==='Teslim Ettim'?'done':'pri';
   return '<div class="card">'+
-      '<div class="mapwrap">'+haritaSVG()+
-        '<div class="mapoverlay">'+
-          '<div class="mapname">'+esc(a.isletme)+'</div>'+
-          '<button class="maplink" type="button" data-act="harita">'+ic('map')+'Google Maps</button>'+
-        '</div>'+
-      '</div>'+
-      '<div class="det">'+
-        '<h2>'+esc(a.isletme)+'</h2>'+
-        '<div class="row">'+
-          '<div class="rowic">'+ic('pin')+'</div>'+
-          '<div class="rowbody"><div class="rowk">Adres</div>'+
-            '<div class="rowv">'+esc(a.adres)+'</div></div>'+
-          '<button class="rowbtn" type="button" data-act="kopyalaAdres" title="Adresi kopyala">'+ic('doc')+'</button>'+
-        '</div>'+
-        '<div class="row">'+
-          '<div class="rowic">'+ic('clock')+'</div>'+
-          '<div class="rowbody"><div class="rowk">Teslimat</div>'+
-            '<div class="rowv"><span class="eta">'+ic('clock')+esc(a.sure)+' dakika · '+esc(String(a.km).replace('.',','))+' km</span></div></div>'+
-        '</div>'+
-        '<div class="row">'+
-          '<div class="rowic">'+ic('user')+'</div>'+
-          '<div class="rowbody"><div class="rowk">Müşteri</div>'+
-            '<div class="rowv">'+esc(a.musteri)+' <small>· '+para(a.ucret)+' kazanç</small></div></div>'+
-          '<button class="rowbtn" type="button" data-act="musteriAra" title="Müşteriyi ara">'+ic('phone')+'</button>'+
-          '<button class="rowbtn" type="button" data-act="musteriYaz" title="WhatsApp ile yaz">'+ic('msg')+'</button>'+
+      rotaSeridi(a)+
+      '<div class="ozet">'+
+        '<div class="ozetU"><div class="ozetK">Kazanç</div>'+
+          '<div class="ozetV">'+para(a.ucret)+'</div></div>'+
+        '<div class="ozetS">'+
+          '<span class="cip">'+ic('clock')+esc(a.sure)+' dk</span>'+
+          '<span class="cip">'+ic('nav')+esc(String(a.km).replace('.',','))+' km</span>'+
         '</div>'+
       '</div>'+
       '<div class="acts">'+
         '<button class="btn '+bsinif+'" type="button" data-act="asama">'+ic(asamaIkon[a.asama]||'box')+asamaEtiket[a.asama]+'</button>'+
-        '<button class="btn sec" type="button" data-act="navigasyon">'+ic('nav')+'Navigasyonu Başlat</button>'+
       '</div>'+
       '<div class="quickrow">'+
-        '<button class="qbtn" type="button" data-act="paylasGorev">'+ic('share')+'<span>Paylaş</span></button>'+
-        '<button class="qbtn" type="button" data-act="gorevAra">'+ic('phone')+'<span>İşletmeyi ara</span></button>'+
-        '<button class="qbtn" type="button" data-act="harita">'+ic('map')+'<span>Harita</span></button>'+
+        '<button class="qbtn" type="button" data-act="musteriAra">'+ic('phone')+'<span>Müşteri</span></button>'+
+        '<button class="qbtn" type="button" data-act="gorevAra">'+ic('bike')+'<span>İşletme</span></button>'+
+        '<button class="qbtn" type="button" data-act="kopyalaAdres">'+ic('doc')+'<span>Adres</span></button>'+
         '<button class="qbtn" type="button" data-act="bildir">'+ic('bell')+'<span>Hatırlat</span></button>'+
       '</div>'+
     '</div>';
@@ -787,11 +773,11 @@ function anaSayfa(){
     (a?'<button class="seclink" type="button" data-act="bitir">Görevi bitir</button>':'')+'</div>';
   html+= a? gorevKarti(a) : bosKart();
   html+='<div class="sechead" style="margin-top:20px"><div class="seclabel">Bekleyen Siparişler</div>'+
-    '<span class="seclink" style="color:var(--ink3)">'+S.siparisler.length+' adet</span></div>';
+    '<span class="seclink" style="color:var(--ink3)">'+S.siparisler.length+'</span></div>';
   if(!S.online){
     html+='<div class="card"><div class="empty">'+ic('shield')+
       '<div style="font-weight:700;color:var(--ink);font-size:14.5px;margin-bottom:4px">Sipariş alımı kapalı</div>'+
-      'Yeni sipariş görmek için yukarıdan <b>Aktif</b> yap.</div></div>';
+      'Sipariş almak için yukarıdaki düğmeyi aç.</div></div>';
   }else if(!S.siparisler.length){
     html+='<div class="card"><div class="empty">'+ic('check')+'Şu an bekleyen sipariş yok.</div></div>';
   }else{
@@ -830,7 +816,7 @@ function kazancSayfasi(){
     '<div class="list">'+k.son.map(function(x){
       return '<div class="li"><div class="liav">'+ic('check')+'</div>'+
         '<div class="lib"><div class="lit">'+esc(x.t)+'</div><div class="lis">Teslimat tamamlandı · '+esc(x.s)+'</div></div>'+
-        '<div class="litime" style="color:var(--green);font-weight:750">+'+para(x.u)+'</div></div>';
+        '<div class="litime" style="color:var(--ink);font-weight:650">+'+para(x.u)+'</div></div>';
     }).join('')+'</div>';
 }
 
@@ -889,10 +875,10 @@ var SSS=[
 ];
 function yardimSayfasi(){
   return '<div class="phead"><h2>Yardım</h2><p>Sık sorulan sorular ve destek</p></div>'+
-    SSS.map(function(x,i){
+    '<div class="faqs">'+SSS.map(function(x,i){
       return '<div class="faq" data-faq="'+i+'"><button class="faqq" type="button" data-faqbtn="'+i+'">'+
         esc(x.s)+ic('chev-d')+'</button><div class="faqa">'+x.c+'</div></div>';
-    }).join('')+
+    }).join('')+'</div>'+
     '<div class="kv" style="margin-top:14px">'+
       '<button class="kvrow" type="button" data-act="destek"><span class="kvk">'+ic('msg')+'Destek ekibine yaz</span><span class="chev">'+ic('chev')+'</span></button>'+
       '<button class="kvrow" type="button" data-act="ara"><span class="kvk">'+ic('phone')+'7/24 çağrı merkezi</span><span class="kvv">0850 000 00 00</span></button>'+
@@ -1099,10 +1085,10 @@ function belgeKatmani(){
     '<p class="shsub">Hepsi onaylı · görev alabilirsin</p></div>'+
     '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
     '<div class="list" style="margin-top:8px">'+belgeler.map(function(b){
-      return '<div class="li"><div class="liav" style="color:var(--green2)">'+ic('check')+'</div>'+
+      return '<div class="li"><div class="liav" style="color:var(--ink)">'+ic('check')+'</div>'+
         '<div class="lib"><div class="lit">'+esc(b[0])+'</div>'+
         '<div class="lis">Geçerlilik süresi dolmadı</div></div>'+
-        '<div class="litime" style="color:var(--green2);font-weight:750">'+esc(b[1])+'</div></div>';
+        '<div class="litime" style="color:var(--ink);font-weight:650">'+esc(b[1])+'</div></div>';
     }).join('')+'</div>'+
     '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
       '<button class="btn sec" type="button" data-close>Kapat</button></div>'
@@ -1119,7 +1105,7 @@ function odemeKatmani(){
       '<div class="row"><div class="rowic">'+ic('clock')+'</div><div class="rowbody">'+
         '<div class="rowk">Ödeme dönemi</div><div class="rowv">Günlük</div></div></div>'+
       '<div class="row"><div class="rowic">'+ic('check')+'</div><div class="rowbody">'+
-        '<div class="rowk">Bekleyen hakediş</div><div class="rowv" style="color:var(--green2)">'+
+        '<div class="rowk">Bekleyen hakediş</div><div class="rowv" style="color:var(--ink)">'+
         para(S.kazanc.bugun)+'</div></div></div>'+
     '</div>'+
     '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+

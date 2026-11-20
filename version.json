@@ -1,7 +1,7 @@
 {
-  "version": "1.3",
-  "versionCode": 10300,
-  "notes": "Eski Android tarayıcı desteği: sayfa yüksekliği için yedek eklendi. Daha önce desteklenmeyen tarayıcılarda ekran boş görünebiliyordu.",
+  "version": "1.4",
+  "versionCode": 10400,
+  "notes": "Tasarım yenilendi: siyah-beyaz arayüz, sadeleştirilmiş görev kartı ve rota şeridi.",
   "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk",
   "apkVersion": "1.2"
 }
