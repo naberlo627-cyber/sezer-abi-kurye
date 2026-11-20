@@ -570,6 +570,13 @@ function surumKarsilastir(a,b){
   }
   return 0;
 }
+/* APK adresi: site kendi sunucusunda APK barındırıyorsa (apkWeb) onu
+   kullan — GitHub indirme sunucusu bazı ağlarda engelli. */
+function apkAdresi(v){
+  var y=(v&&v.apkWeb)||'';
+  if(y){ try{ return new URL(y,location.href).href; }catch(e){ return y; } }
+  return (v&&v.apk)||'';
+}
 function surumDenetle(sessiz){
   fetch('version.json?t='+Date.now(),{cache:'no-store'})
     .then(function(r){ return r.ok? r.json():null; })
@@ -597,7 +604,7 @@ function surumDenetle(sessiz){
             'v'+esc(hedef)+' indirildi ama uygulama hâlâ v'+esc(SURUM)+' görünüyor. '+
             'Kurulumu tamamladıktan sonra uygulamayı kapatıp yeniden aç.</p>'+
             '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
-            '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(v.apk||'')+'">'+
+            '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(apkAdresi(v))+'">'+
             ic('box')+'Yeniden indir</button></div>'
           );
         }
@@ -609,7 +616,7 @@ function surumDenetle(sessiz){
         '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
         '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+esc(v.notes||'Yeni sürüm hazır.')+'</p>'+
         '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
-        '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(v.apk||'')+'">'+
+        '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(apkAdresi(v))+'">'+
         ic('box')+'Güncelle</button></div>'
       );
     })

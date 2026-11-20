@@ -3,5 +3,6 @@
   "versionCode": 10300,
   "notes": "Eski Android tarayıcı desteği: sayfa yüksekliği için yedek eklendi. Daha önce desteklenmeyen tarayıcılarda ekran boş görünebiliyordu.",
   "apk": "https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk",
-  "apkVersion": "1.2"
+  "apkVersion": "1.2",
+  "apkWeb": "Kurye.apk"
 }
