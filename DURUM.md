@@ -2,13 +2,15 @@
 
 Bu dosya "nerede kaldık" sorusunun tek cevabıdır. Yeni oturumda **önce bunu oku**.
 
-Son güncelleme: 2026-11-20
+Son güncelleme: 2026-11-20 · **v1.1 yayında**
 
 ## Nerede kaldık
 
-v1.0 yayında. Tasarım (kullanıcının gönderdiği tek ekran) birebir aktarıldı.
-Kullanıcı **A + C** seçti: (A) yayına al + APK, (C) diğer 4 sekmenin tasarımını
-gönderince uyarla. **A tamamlandı. C bekliyor.**
+v1.1 yayında. Tasarım birebir aktarıldı **ve** uygulama artık gerçek iş yapıyor:
+navigasyon, telefon, WhatsApp, paylaşım, bildirim, mesajlaşma, güncelleme.
+
+Kullanıcı **A + C** seçti: (A) yayına al + APK, (C) diğer sekmelerin tasarımını
+gönderince uyarla. **A tamamlandı. C bekliyor** (kullanıcı yeni ekran gönderecek).
 
 ## Adresler
 
@@ -18,16 +20,40 @@ gönderince uyarla. **A tamamlandı. C bekliyor.**
 | GitHub Pages | https://naberlo627-cyber.github.io/sezer-abi-kurye/ | ✓ çalışıyor |
 | Cloudflare Pages | https://sezer-abi-kurye.pages.dev/ | ✓ çalışıyor |
 | Surge | https://sezer-abi-kurye.surge.sh/ | ✗ 404 — sır yok |
-| APK (son sürüm) | https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk | ✓ 2.846.341 bayt |
+| APK (son sürüm) | https://github.com/naberlo627-cyber/sezer-abi-kurye/releases/latest/download/Kurye.apk | ✓ v1.1 · 2.853.475 bayt |
 
 ## Sürümler
 
-- Uygulama sürümü: **1.0** (`index.html` içinde `var SURUM='1.0'`)
-- versionCode: **10000**
+- Uygulama sürümü: **1.1** (`index.html` içinde `var SURUM='1.1'`)
+- versionCode: **10100**
 - Paket adı: `com.sezerabi.kurye`
-- APK boyutu: 2.846.341 bayt (2,8 MB)
+- APK boyutu: 2.853.475 bayt (2,8 MB)
 - Service worker önbelleği: `sezar-v1`
-- Release: **v1.0** (release id 452315067)
+- Release: **v1.1** (id 452323570) · v1.0 (id 452315067)
+
+## v1.1 — gerçek işlevler (bu turda eklendi)
+
+Her düğme artık gerçek bir iş yapıyor; uygulamada tek bir "(demo)" kalmadı.
+
+| Düğme | Ne yapıyor |
+|---|---|
+| Navigasyonu Başlat | Google Maps yol tarifi; aşamaya göre alış veya varış noktası |
+| Google Maps | Haritada konum göster (`maps/search`) |
+| Müşteriyi ara | `tel:` ile gerçek arama ekranı |
+| WhatsApp | `wa.me` ile hazır mesaj |
+| İşletmeyi ara | `tel:` işletme numarası |
+| Paylaş | Native paylaşım sayfası, yoksa panoya kopyalar |
+| Adres kopyala | Panoya kopyalar (eski tarayıcı yedeği var) |
+| Hatırlat | Bildirim izni ister, izin varsa bildirim gönderir |
+| Ana ekrana ekle | `beforeinstallprompt` ile gerçek kurulum |
+| Sürümü denetle | `version.json` ile karşılaştırır, güncelleme katmanı açar |
+| Güncelle | APK'yı indirir; APK içinde native kurulum ekranı açılır |
+| Mesajlar | Balonlu sohbet ekranı, gönderilen mesaj kalıcı |
+| Kişisel bilgiler / Belgeler / Ödeme | Gerçek içerikli alt katmanlar |
+| Çıkış yap | Onay katmanı, sonra çevrimdışı duruma geçer |
+
+Ayrıca: aşağı çekip yenileme, çevrimdışı şeridi, donanım geri tuşu (katmanı
+kapatır), titreşim geri bildirimi, günde bir sessiz sürüm denetimi.
 
 ## Kapanan işler
 
@@ -49,12 +75,12 @@ gönderince uyarla. **A tamamlandı. C bekliyor.**
 
 ## Açık işler
 
-1. **Surge 404** — `sezer-abi-kurye.surge.sh` yayınlanmadı. Surge sırları
-   Genç deposunda var ama GitHub sır değerleri okunamaz. Çözüm: kullanıcıdan
-   Surge token/login al (form ile) ya da Surge'u tamamen bırak (iki adres yeter).
-2. **C maddesi** — Kazanç/Mesajlar/Profil/Yardım sekmelerinin tasarımı
+1. **C maddesi** — Kazanç/Mesajlar/Profil/Yardım sekmelerinin tasarımı
    kullanıcıdan bekleniyor. Şu anki hâli benim tasarımım.
-3. Gerçek veri kaynağı belirsiz (şimdilik demo veri, localStorage).
+2. **Surge 404** — `sezer-abi-kurye.surge.sh` yayınlanmadı (sır yok).
+   İki adres çalışıyor; Surge istenirse token gerekiyor.
+3. **Sunucu yok** — siparişler/mesajlar cihazda (localStorage). Gerçek kurye
+   dağıtımı için API gerekir. Kod buna hazır: `gonder()` ve `gorevAl()` tek yer.
 
 ## Doğrulama komutları
 
