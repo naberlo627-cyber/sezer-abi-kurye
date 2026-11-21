@@ -397,8 +397,10 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   <h1 class="h h3">Dükkanını ekleyelim.</h1>
   <div class="field"><label for="dukkan">Dükkanın adı</label><input id="dukkan" class="in" type="text" placeholder="Dükkan adı"></div>
   <div class="field"><label for="yetkili">Yetkili adı soyadı</label><input id="yetkili" class="in" type="text" autocomplete="name" placeholder="Ad Soyad"></div>
-  <div class="field"><label for="adres">Dükkan adresi</label><input id="adres" class="in" type="text" autocomplete="street-address" placeholder="Mahalle, cadde, no">
-    <button type="button" class="maplink" id="mapBtn">Haritada konumu işaretle</button></div>
+  <div class="field"><label for="adres">Dükkanın açık adresi</label>
+    <input id="adres" class="in" type="text" autocomplete="street-address" placeholder="Mahalle, cadde, no, ilçe">
+    <span class="hint" id="adresHint">Kurye kapıyı bulabilsin diye açık yaz. Konum işaretlemek zorunlu değil.</span>
+    <button type="button" class="maplink" id="mapBtn">Haritada konumu işaretle (isteğe bağlı)</button></div>
   <div class="field"><span class="lab" id="kodSL">Sezer abiden aldığın davet kodu</span>
     <div class="seg seg2" role="group" aria-labelledby="kodSL" id="kodSegS">
       <button type="button" aria-pressed="true" data-kod="var">Kodum var</button>
@@ -566,7 +568,7 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   var dk=$('#dukkan'), yt=$('#yetkili'), ad2=$('#adres'), kvS=$('#kvkkS'), subS=$('#submitS'), kodS=$('#kod');
   var kodModeS='var';
   function kodVarS(){ return kodModeS==='var' && kodS.value.trim().length>=4 }
-  function chkS(){ subS.disabled=!(dk.value.trim().length>=2 && yt.value.trim().length>=3 && ad2.value.trim().length>=5 && (kodModeS==='yok' || kodS.value.trim().length>=4) && kvS.checked) }
+  function chkS(){ subS.disabled=!(dk.value.trim().length>=2 && yt.value.trim().length>=3 && ad2.value.trim().length>=10 && (kodModeS==='yok' || kodS.value.trim().length>=4) && kvS.checked) }
   $$('#kodSegS button').forEach(function(b){
     b.addEventListener('click',function(){
       kodModeS=b.dataset.kod;
@@ -584,7 +586,7 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
     var b=this;
     if(!navigator.geolocation){ b.textContent='Konum bu cihazda kullanılamıyor'; return }
     b.textContent='Konum alınıyor…';
-    navigator.geolocation.getCurrentPosition(function(){ b.textContent='✓ Konum işaretlendi'; b.classList.add('ok') },
+    navigator.geolocation.getCurrentPosition(function(){ b.textContent='✓ Konum işaretlendi · değiştir'; b.classList.add('ok') },
       function(){ b.textContent='Konum alınamadı, tekrar dene' },{timeout:8000});
   });
   subS.addEventListener('click',function(){ showDone(kodVarS()) });
