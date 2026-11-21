@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#FFF3E4">
 <title>Sezer Abi Kurye · Vardiya</title>
 <link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
   --orange:#E8431C; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55;
@@ -20,138 +21,133 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 h1,h2,p,ul{margin:0}
 ul{list-style:none;padding:0}
 
-#app{position:relative;display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--cream);overflow:hidden}
+#app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--cream);overflow:hidden;position:relative}
 @media(min-width:520px){#app{box-shadow:0 0 0 1px #000,0 20px 80px rgba(0,0,0,.5)}}
 
-.scr{display:none;flex:1;overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top) + 18px) 20px 24px}
+.scr{display:none;flex:1;position:relative;overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top) + 18px) 20px 26px}
 .scr.on{display:block}
-#v-gorev.on{display:flex;flex-direction:column}
-.grow{flex:1;min-height:24px}
 .scr::-webkit-scrollbar{display:none}
+.scr.full{padding:0;overflow:hidden}
 
-/* ---------- ortak tipografi ---------- */
+.map{position:absolute;inset:0;background:#EFE6D8;z-index:0}
+.map .leaflet-tile{filter:grayscale(.35) sepia(.12) contrast(.96)}
+.credit{position:absolute;right:8px;bottom:6px;z-index:400;font-size:9.5px;color:#6B655C;background:rgba(255,251,245,.8);padding:1px 5px;border-radius:4px}
+
 .disp{font-family:var(--display);font-weight:800;letter-spacing:-1.4px;line-height:1.02;font-size:34px}
 .lab{font-size:11.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--mute)}
 .mute{color:var(--mute)}
 .num{font-variant-numeric:tabular-nums}
 
-/* ---------- üst marka ---------- */
-.brand{display:flex;align-items:center;gap:9px;margin-bottom:22px}
-.brand svg{width:30px;height:9px;fill:var(--orange);flex:none}
-.brand span{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mute)}
-
-/* ---------- vardiya durumu ---------- */
-.state{margin-top:18px;padding:20px;border:1.5px solid var(--line);border-radius:18px;background:var(--paper);
-  transition:background .25s ease,color .25s ease,border-color .25s ease}
-.state .t{font-family:var(--display);font-weight:800;font-size:27px;letter-spacing:-1px;margin:8px 0 6px}
-.state p{font-size:14px;color:var(--mute);margin-bottom:18px}
-.state .lab{color:var(--mute)}
-.state.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
-.state.on .lab,.state.on p{color:#B9B2A8}
-.state.on .dot{background:var(--orange);animation:pulse 1.6s infinite}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--pad);display:inline-block;margin-right:8px;vertical-align:1px}
+.panel{position:absolute;left:0;right:0;bottom:0;z-index:500;background:var(--cream);
+  border-radius:24px 24px 0 0;padding:12px 20px calc(env(safe-area-inset-bottom) + 18px);
+  box-shadow:0 -10px 34px rgba(30,30,36,.16)}
+.grab{width:38px;height:4px;border-radius:2px;background:var(--pad);margin:0 auto 14px}
+.panel-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--pad);display:inline-block;margin-right:7px;vertical-align:1px}
+.dot.live{background:var(--orange);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.state-t{font-family:var(--display);font-weight:800;font-size:27px;letter-spacing:-1px;margin:6px 0 2px}
+.state-s{font-size:13.5px;color:var(--mute)}
 
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:14px;
-  background:var(--orange);color:#fff;font-weight:700;font-size:16px;letter-spacing:-.2px;transition:transform .12s ease}
+.mini{flex:none;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;font-size:13px;font-weight:600;background:var(--paper)}
+.mini.on{border-color:var(--ink);background:var(--ink);color:var(--cream)}
+
+.hedef{margin:16px 0;padding-top:16px;border-top:1.5px solid var(--line)}
+.hedef-top{display:flex;align-items:baseline;gap:7px}
+.hedef-top b{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-1.2px;font-variant-numeric:tabular-nums}
+.hedef-top .lab{margin-right:auto}
+.prog{height:6px;border-radius:3px;background:var(--pad);margin:10px 0 9px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--orange);border-radius:3px;transition:width .4s ease}
+.hedef-alt{display:flex;gap:16px;font-size:13px;color:var(--mute)}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border-radius:15px;
+  background:var(--orange);color:#fff;font-weight:700;font-size:16.5px;letter-spacing:-.2px;transition:transform .12s ease}
 .btn:active{transform:translateY(1px)}
-.btn.ghost{background:transparent;border:1.5px solid currentColor;color:inherit}
-.btn.ink{background:var(--ink);color:var(--cream)}
-.btn[disabled]{opacity:.45;pointer-events:none}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
 
-/* ---------- günün özeti ---------- */
-.day{margin-top:30px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;border-top:1.5px solid var(--line);border-bottom:1.5px solid var(--line)}
-.stats>div{padding:14px 0 15px}
-.stats>div+div{border-left:1.5px solid var(--line);padding-left:14px}
-.stats b{display:block;font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-1px;font-variant-numeric:tabular-nums}
-.stats span{font-size:12px;color:var(--mute)}
+.gorev-top{position:absolute;top:calc(env(safe-area-inset-top) + 14px);left:16px;right:16px;z-index:500;display:flex;gap:10px}
+.chip{background:var(--cream);border-radius:13px;padding:10px 14px;box-shadow:0 6px 18px rgba(30,30,36,.16)}
+.chip .lab{font-size:10.5px}
+.chip b{font-size:14.5px;display:block;line-height:1.25}
+.chip.eta{margin-left:auto;text-align:right;background:var(--ink);color:var(--cream)}
+.chip.eta .lab{color:#B9B2A8}
+.chip.eta b{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.6px}
 
-/* ---------- liste ---------- */
-.list-h{display:flex;align-items:baseline;justify-content:space-between;margin:30px 0 4px}
+.steps{display:flex;align-items:center;margin-bottom:16px}
+.steps i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.steps i.ok{background:var(--ink);border-color:var(--ink)}
+.steps i.now{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 4px rgba(232,67,28,.16)}
+.steps s{display:block;height:1.5px;background:var(--line);flex:1}
+.steps s.ok{background:var(--ink)}
+
+.step-t{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-1px;margin-bottom:14px}
+.durak{display:flex;gap:12px;padding:11px 0}
+.durak+.durak{border-top:1px solid var(--pad)}
+.pin{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--line);flex:none;margin-top:5px}
+.durak.on .pin{background:var(--orange);border-color:var(--orange)}
+.durak.done .pin{background:var(--ink);border-color:var(--ink)}
+.durak .who{font-size:11.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mute)}
+.durak b{display:block;font-size:15px;font-weight:600;line-height:1.3}
+.durak span{display:block;font-size:13px;color:var(--mute);line-height:1.35}
+.durak .acts{margin-left:auto;display:flex;gap:6px;align-items:center}
+.icbtn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;background:var(--paper)}
+.icbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+.note{margin:14px 0 16px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:13px;font-size:13.5px;color:var(--mute)}
+.note b{color:var(--ink)}
+.note .kod{font-variant-numeric:tabular-nums;letter-spacing:2px;font-size:15px}
+
+.sheet{position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(30,30,36,.55)}
+.sheet.on{display:flex}
+.sheet-card{width:100%;max-width:420px;background:var(--cream);border-radius:24px;padding:22px 20px calc(env(safe-area-inset-bottom) + 20px);
+  animation:pop .22s cubic-bezier(.22,.61,.36,1)}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.ring{position:relative;width:66px;height:66px;margin:0 auto 6px}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:4}
+.ring .trk{stroke:var(--pad)}
+.ring .bar{stroke:var(--orange);stroke-linecap:round;stroke-dasharray:163.4;stroke-dashoffset:0;animation:drain 15s linear forwards}
+@keyframes drain{from{stroke-dashoffset:0}to{stroke-dashoffset:163.4}}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}
+.teklif-lab{text-align:center;margin-bottom:14px}
+.fee{font-family:var(--display);font-weight:800;font-size:42px;letter-spacing:-2px;text-align:center;line-height:1;font-variant-numeric:tabular-nums}
+.fee-sub{text-align:center;font-size:13.5px;color:var(--mute);margin:6px 0 18px}
+.shop{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.8px;margin-bottom:10px}
+.acts2{display:grid;gap:9px;margin-top:18px}
+.acts2 .btn{height:52px}
+
+.list-h{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 4px}
 .rows li{display:flex;align-items:baseline;gap:12px;padding:13px 0;border-bottom:1px solid var(--pad)}
 .rows .t{font-size:13px;color:var(--mute);width:42px;flex:none;font-variant-numeric:tabular-nums}
 .rows .w{flex:1;min-width:0;font-size:14.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rows .f{font-weight:700;font-variant-numeric:tabular-nums}
+.big{font-family:var(--display);font-weight:800;font-size:46px;letter-spacing:-2.2px;line-height:1;margin:6px 0;font-variant-numeric:tabular-nums}
+.week{display:flex;align-items:flex-end;gap:8px;height:84px;margin:16px 0 6px}
+.week div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px;height:100%}
+.week i{width:100%;background:var(--pad);border-radius:5px 5px 2px 2px;min-height:4px}
+.week div.today i{background:var(--orange)}
+.week span{font-size:10.5px;color:var(--mute)}
+.prof-name{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-1px;margin-bottom:2px}
+.prow{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--pad);font-size:15px}
+.prow span:first-child{color:var(--mute)}
+.prow b{font-weight:600;text-align:right}
 
-/* ---------- alt sekme ---------- */
 .tabbar{flex:none;display:grid;grid-template-columns:repeat(3,1fr);background:var(--paper);border-top:1.5px solid var(--line);
-  padding:8px 8px calc(env(safe-area-inset-bottom) + 8px)}
+  padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);z-index:600}
 .tabbar.hide{display:none}
 .tab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0;color:var(--mute);font-size:11px;font-weight:600}
 .tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tab.on{color:var(--ink)}
 .tab.on svg{stroke:var(--orange)}
 
-/* ---------- teklif ---------- */
-.sheet{position:fixed;inset:0;z-index:40;display:none;align-items:flex-end;justify-content:center;background:rgba(30,30,36,.45)}
-.sheet.on{display:flex}
-.sheet-card{width:100%;max-width:480px;background:var(--cream);border-radius:22px 22px 0 0;padding:0 20px calc(env(safe-area-inset-bottom) + 22px);
-  animation:up .28s cubic-bezier(.22,.61,.36,1)}
-@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
-.bar{height:3px;background:var(--pad);margin:0 -20px 18px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--orange);transform-origin:left;animation:drain 15s linear forwards}
-@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-.sheet-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
-.shop{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-1px;margin-bottom:14px}
-.route{display:grid;gap:0}
-.route div{display:flex;gap:11px;padding:7px 0;font-size:14px}
-.route i{width:9px;height:9px;border-radius:50%;flex:none;margin-top:6px;background:var(--pad)}
-.route div:first-child i{background:var(--ink)}
-.route div:last-child i{border:2px solid var(--ink);background:transparent}
-.facts{display:flex;gap:18px;margin:16px 0 20px;font-size:14px}
-.facts b{font-weight:700}
-.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mk{display:grid;place-items:center;border-radius:50%;font-family:var(--display);font-weight:800;font-size:12px;color:#fff}
+.mk.pick{width:26px;height:26px;background:var(--ink);box-shadow:0 0 0 4px rgba(30,30,36,.16)}
+.mk.drop{width:26px;height:26px;background:var(--orange);box-shadow:0 0 0 4px rgba(232,67,28,.18)}
+.mk.me{width:20px;height:20px;background:var(--orange);border:3px solid var(--cream);box-shadow:0 0 0 3px rgba(232,67,28,.25)}
 
-/* ---------- görev ---------- */
-.gorev-top{display:flex;align-items:center;gap:12px;margin-bottom:26px}
-.back{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none}
-.back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pill{font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mute)}
-.steps{display:flex;align-items:center;gap:0;margin-bottom:26px}
-.steps i{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line);flex:none}
-.steps i.ok{background:var(--ink);border-color:var(--ink)}
-.steps i.now{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 4px rgba(232,67,28,.18)}
-.steps s{display:block;height:1.5px;background:var(--line);flex:1}
-.steps s.ok{background:var(--ink)}
-.step-t{font-family:var(--display);font-weight:800;font-size:27px;letter-spacing:-1.1px;margin-bottom:14px}
-.addr{font-size:16px;line-height:1.45;margin-bottom:6px}
-.meta{font-size:14px;color:var(--mute);margin-bottom:20px}
-.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:22px}
-.tool{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border:1.5px solid var(--line);border-radius:13px;
-  font-size:12px;font-weight:600;background:var(--paper)}
-.tool svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.rota{margin:0 0 22px}
-.rota .leg{display:flex;gap:12px;position:relative;padding-bottom:24px}
-.rota .leg:last-child{padding-bottom:0}
-.rota .leg:first-child::before{content:'';position:absolute;left:4.5px;top:17px;bottom:2px;width:1.5px;background:var(--line)}
-.rota .pin{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--line);background:var(--cream);flex:none;margin-top:5px;position:relative;z-index:1}
-.rota .leg.on .pin{background:var(--orange);border-color:var(--orange)}
-.rota .leg b{display:block;font-size:14.5px;font-weight:600;line-height:1.3}
-.rota .leg span{display:block;font-size:13px;color:var(--mute);line-height:1.35}
-.hintbox{padding:14px 16px;border:1.5px dashed var(--line);border-radius:14px;font-size:14px;color:var(--mute);margin-bottom:20px}
-.hintbox b{color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:1px}
-
-/* ---------- kazanç ---------- */
-.big{font-family:var(--display);font-weight:800;font-size:46px;letter-spacing:-2.2px;line-height:1;margin:6px 0 6px;font-variant-numeric:tabular-nums}
-.week{display:flex;align-items:flex-end;gap:8px;height:88px;margin:18px 0 6px}
-.week div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px;height:100%}
-.week i{width:100%;background:var(--pad);border-radius:5px 5px 2px 2px;min-height:4px}
-.week div.today i{background:var(--orange)}
-.week span{font-size:10.5px;color:var(--mute)}
-
-/* ---------- profil ---------- */
-.prof-name{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-1px;margin-bottom:2px}
-.prow{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--pad);font-size:15px}
-.prow span:first-child{color:var(--mute)}
-.prow b{font-weight:600;text-align:right}
-.ok-mark{color:var(--ink);font-weight:700}
-.prof-acts{display:grid;gap:10px;margin-top:26px}
-
-/* ---------- toast ---------- */
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 84px);transform:translate(-50%,14px);
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 96px);transform:translate(-50%,14px);
   background:var(--ink);color:var(--cream);padding:12px 18px;border-radius:999px;font-size:13.5px;font-weight:600;
-  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;white-space:nowrap}
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:950;white-space:nowrap}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
@@ -162,49 +158,98 @@ ul{list-style:none;padding:0}
 
 <main id="app">
 
-  <!-- VARDİYA -->
-  <section class="scr on" id="v-vardiya">
-    <div class="brand"><svg viewBox="0 0 320 90"><use href="#mustache"/></svg><span>Sezer Abi Kurye</span></div>
-    <h1 class="disp">Vardiya</h1>
+  <!-- 1 · VARDİYA -->
+  <section class="scr full on" id="v-vardiya">
+    <div class="map" id="mapHome"></div>
+    <div class="panel">
+      <div class="grab"></div>
+      <div class="panel-row">
+        <div>
+          <div class="lab" id="durumLab">Çevrimdışı</div>
+          <div class="state-t" id="durumT">Vardiya kapalı</div>
+          <div class="state-s" id="durumS">Hazır olduğunda başlat.</div>
+        </div>
+        <button class="mini" id="molaBtn" hidden>Mola ver</button>
+      </div>
 
-    <div class="state" id="stateBox">
-      <div class="lab" id="stateLab">Çevrimdışı</div>
-      <div class="t" id="stateT">Vardiya kapalı</div>
-      <p id="stateP">Hazır olduğunda başlat. Siparişler gelmeye başlar.</p>
+      <div class="hedef">
+        <div class="hedef-top">
+          <span class="lab">Bugün</span>
+          <b class="num" id="hMoney">₺412</b>
+          <span class="mute num" id="hGoal">/ ₺600</span>
+        </div>
+        <div class="prog"><i id="hBar" style="width:69%"></i></div>
+        <div class="hedef-alt">
+          <span class="num" id="hOrders">6 sipariş</span>
+          <span class="num" id="hKm">38 km</span>
+          <span class="num" id="hTime">4s 12dk yolda</span>
+        </div>
+      </div>
+
       <button class="btn" id="shiftBtn">Vardiyayı başlat</button>
     </div>
-
-    <div class="day">
-      <div class="lab">Bugün</div>
-      <div class="stats">
-        <div><b class="num" id="stOrders">6</b><span>sipariş</span></div>
-        <div><b class="num" id="stMoney">₺412</b><span>kazanç</span></div>
-        <div><b class="num" id="stKm">38</b><span>km</span></div>
-      </div>
-    </div>
-
-    <div class="list-h"><span class="lab">Son siparişler</span><span class="lab" id="listCount">6 kayıt</span></div>
-    <ul class="rows" id="sonList"></ul>
   </section>
 
-  <!-- KAZANÇ -->
-  <section class="scr" id="v-kazanc">
-    <div class="brand"><svg viewBox="0 0 320 90"><use href="#mustache"/></svg><span>Sezer Abi Kurye</span></div>
+  <!-- 2 · AKTİF SİPARİŞ -->
+  <section class="scr full" id="v-gorev">
+    <div class="map" id="mapGorev"></div>
+    <div class="gorev-top">
+      <div class="chip"><span class="lab">Sipariş</span><b class="num" id="gId">#1042</b></div>
+      <div class="chip eta"><span class="lab" id="gEtaLab">Dükkana</span><b id="gEta">4 dk</b></div>
+    </div>
+    <div class="panel">
+      <div class="grab"></div>
+      <div class="steps" id="gSteps"></div>
+      <div class="step-t" id="gTitle">Dükkana git</div>
+
+      <div class="durak on" id="durak1">
+        <span class="pin"></span>
+        <div style="min-width:0">
+          <span class="who">Alış</span>
+          <b id="d1Name">Köfteci Ali</b>
+          <span id="d1Addr">Alsancak, Kıbrıs Şehitleri Cd. No 12</span>
+        </div>
+        <div class="acts">
+          <button class="icbtn" id="d1Call" aria-label="Dükkanı ara"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg></button>
+          <button class="icbtn" id="d1Nav" aria-label="Yol tarifi"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg></button>
+        </div>
+      </div>
+
+      <div class="durak" id="durak2">
+        <span class="pin"></span>
+        <div style="min-width:0">
+          <span class="who">Teslim</span>
+          <b id="d2Name">Merve K.</b>
+          <span id="d2Addr">Buca, Menderes Cd. No 45 D:7</span>
+        </div>
+        <div class="acts">
+          <button class="icbtn" id="d2Call" aria-label="Müşteriyi ara"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg></button>
+          <button class="icbtn" id="d2Nav" aria-label="Yol tarifi"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg></button>
+        </div>
+      </div>
+
+      <div class="note" id="gNote">Online ödendi · 1 çanta · <b>Kapıyı çalma, zili çal.</b></div>
+
+      <button class="btn" id="gNext">Vardım</button>
+    </div>
+  </section>
+
+  <!-- 3 · KAZANÇ -->
+  <section class="scr" id="v-kazanc" style="padding-bottom:92px">
     <h1 class="disp">Kazanç</h1>
     <div class="lab" style="margin-top:22px">Bugün</div>
     <div class="big num" id="kToday">₺412</div>
-    <p class="meta" id="kMeta">6 sipariş · 38 km · 4 sa 12 dk yolda</p>
+    <p class="mute" style="font-size:14px" id="kMeta">6 sipariş · 38 km · 4 sa 12 dk yolda</p>
 
-    <div class="lab" style="margin-top:22px">Bu hafta</div>
+    <div class="lab" style="margin-top:24px">Bu hafta</div>
     <div class="week" id="week"></div>
 
-    <div class="list-h"><span class="lab">Bugünün siparişleri</span></div>
+    <div class="list-h"><span class="lab">Bugünün siparişleri</span><span class="lab" id="kCount">6 kayıt</span></div>
     <ul class="rows" id="kazancList"></ul>
   </section>
 
-  <!-- PROFİL -->
-  <section class="scr" id="v-profil">
-    <div class="brand"><svg viewBox="0 0 320 90"><use href="#mustache"/></svg><span>Sezer Abi Kurye</span></div>
+  <!-- 4 · PROFİL -->
+  <section class="scr" id="v-profil" style="padding-bottom:92px">
     <h1 class="disp">Profil</h1>
     <div style="margin-top:22px">
       <div class="prof-name">Ahmet Yılmaz</div>
@@ -214,74 +259,15 @@ ul{list-style:none;padding:0}
       <div class="prow"><span>Puan</span><b>4,9 · 128 sipariş</b></div>
       <div class="prow"><span>Araç</span><b>Motor</b></div>
       <div class="prow"><span>Bölge</span><b>Bornova</b></div>
-      <div class="prow"><span>Ehliyet</span><b class="ok-mark">✓ Onaylı</b></div>
-      <div class="prow"><span>Ruhsat</span><b class="ok-mark">✓ Onaylı</b></div>
+      <div class="prow"><span>Ehliyet</span><b>✓ Onaylı</b></div>
+      <div class="prow"><span>Ruhsat</span><b>✓ Onaylı</b></div>
       <div class="prow"><span>Vergi levhası</span><b style="color:var(--orange)">Bekliyor</b></div>
     </div>
-    <div class="prof-acts">
+    <div style="display:grid;gap:10px;margin-top:26px">
       <button class="btn ghost" id="profShift">Vardiyayı bitir</button>
       <button class="btn ghost" onclick="location.href='giris.html'">Çıkış yap</button>
     </div>
   </section>
-
-  <!-- AKTİF GÖREV -->
-  <section class="scr" id="v-gorev">
-    <div class="gorev-top">
-      <button class="back" id="gorevBack" aria-label="Geri"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div style="flex:1">
-        <div class="pill">Aktif sipariş</div>
-        <div style="font-weight:700" class="num" id="gId">#1042</div>
-      </div>
-      <div style="text-align:right">
-        <div class="pill">Kazanç</div>
-        <div style="font-weight:700" class="num" id="gFee">₺78</div>
-      </div>
-    </div>
-
-    <div class="steps" id="gSteps"></div>
-    <div class="step-t" id="gTitle">Dükkana git</div>
-    <div class="meta" id="gMeta">850 m · 4 dk</div>
-    <div class="rota" id="gRota">
-      <div class="leg"><span class="pin"></span><div><b>Köfteci Ali</b><span>Alsancak, Kıbrıs Şehitleri Cd. No 12</span></div></div>
-      <div class="leg"><span class="pin"></span><div><b>Merve K.</b><span>Buca, Menderes Cd. No 45 D:7</span></div></div>
-    </div>
-
-    <div class="hintbox" id="gHint" hidden></div>
-
-    <div class="tools">
-      <button class="tool" id="tNav"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Navigasyon</button>
-      <button class="tool" id="tCall"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg>Ara</button>
-      <button class="tool" id="tWa"><svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1112 20a8 8 0 01-4-1z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>WhatsApp</button>
-    </div>
-
-    <div class="grow"></div>
-    <button class="btn" id="gNext">Vardım</button>
-  </section>
-
-  <!-- TEKLİF -->
-  <div class="sheet" id="teklif" role="dialog" aria-modal="true" aria-label="Yeni sipariş">
-    <div class="sheet-card">
-      <div class="bar"><i></i></div>
-      <div class="sheet-top">
-        <span class="lab">Yeni sipariş</span>
-        <span class="lab" id="teklifSure">15 sn</span>
-      </div>
-      <div class="shop" id="tShop">Köfteci Ali</div>
-      <div class="route">
-        <div><i></i><span id="tFrom">Alsancak, Kıbrıs Şehitleri Cd. No 12</span></div>
-        <div><i></i><span id="tTo">Buca, Menderes Cd. No 45 D:7</span></div>
-      </div>
-      <div class="facts">
-        <span><b>2,4</b> km</span>
-        <span><b>18</b> dk</span>
-        <span><b>₺78</b> kazanç</span>
-      </div>
-      <div class="acts">
-        <button class="btn" id="tKabul">Kabul et</button>
-        <button class="btn ghost" id="tGec">Geç</button>
-      </div>
-    </div>
-  </div>
 
   <nav class="tabbar" id="tabbar">
     <button class="tab on" data-v="vardiya">
@@ -296,15 +282,89 @@ ul{list-style:none;padding:0}
   </nav>
 </main>
 
+<div class="sheet" id="teklif" role="dialog" aria-modal="true" aria-label="Yeni sipariş">
+  <div class="sheet-card">
+    <div class="ring">
+      <svg width="66" height="66"><circle class="trk" cx="33" cy="33" r="26"/><circle class="bar" id="ringBar" cx="33" cy="33" r="26"/></svg>
+      <b id="ringTxt">15</b>
+    </div>
+    <div class="teklif-lab lab">Yeni sipariş</div>
+    <div class="fee num" id="tFee">₺78</div>
+    <div class="fee-sub"><span id="tKm">2,4</span> km · <span id="tDk">18</span> dk · 1 çanta</div>
+    <div class="shop" id="tShop">Köfteci Ali</div>
+    <div class="durak on" style="border:0;padding:0 0 10px">
+      <span class="pin"></span>
+      <div style="min-width:0"><span class="who">Alış</span><b id="tFrom">Alsancak, Kıbrıs Şehitleri Cd. No 12</b></div>
+    </div>
+    <div class="durak" style="border:0;padding:0">
+      <span class="pin"></span>
+      <div style="min-width:0"><span class="who">Teslim</span><b id="tTo">Buca, Menderes Cd. No 45 D:7</b></div>
+    </div>
+    <div class="acts2">
+      <button class="btn" id="tKabul">Kabul et</button>
+      <button class="btn ghost" id="tGec" style="height:46px;font-size:14.5px">Geç</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
-  var S={on:false,since:0,orders:6,money:412,km:38,step:0,timer:null,offerTimer:null,left:15,leftTimer:null,active:false};
+  var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
 
-  var ORD={id:'#1042',shop:'Köfteci Ali',from:'Alsancak, Kıbrıs Şehitleri Cd. No 12',
-    to:'Buca, Menderes Cd. No 45 D:7',cust:'Merve K.',tel:'+905551234567',code:'4471',fee:78,km:2.4};
+  var ORD={id:'#1042',shop:'Köfteci Ali',from:'Alsancak, Kıbrıs Şehitleri Cd. No 12',to:'Buca, Menderes Cd. No 45 D:7',
+    cust:'Merve K.',custTel:'+905551234567',shopTel:'+905553334455',code:'4471',fee:78,km:2.4,dk:18,
+    note:'Kapıyı çalma, zili çal.',pay:'Online ödendi'};
+
+  var KONUM={ben:[38.4237,27.1428],alis:[38.4374,27.1428],teslim:[38.3867,27.1740]};
+
+  var S={on:false,mola:false,since:0,orders:6,money:412,km:38,dakika:252,goal:600,
+         step:0,active:false,timer:null,offerTimer:null,leftTimer:null,left:15};
+
+  function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2200)}
+
+  /* harita */
+  var mapHome=null,mapGorev=null;
+  function mkMap(el,center,zoom,interactive){
+    if(!window.L) return null;
+    var m=L.map(el,{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:interactive!==false,tap:true}).setView(center,zoom);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(m);
+    var c=document.createElement('div');c.className='credit';c.textContent='© OpenStreetMap';
+    el.parentNode.appendChild(c);
+    return m;
+  }
+  function pin(cls,txt){return L.divIcon({className:'',html:'<div class="mk '+cls+'">'+(txt||'')+'</div>',iconSize:[26,26],iconAnchor:[13,13]})}
+  function kurHarita(){
+    mapHome=mkMap($('#mapHome'),KONUM.ben,14);
+    if(mapHome) L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapHome);
+    mapGorev=mkMap($('#mapGorev'),KONUM.alis,13,false);
+    if(mapGorev){
+      L.polyline([KONUM.ben,KONUM.alis,KONUM.teslim],{color:'#1E1E24',weight:3,dashArray:'7 7',opacity:.75}).addTo(mapGorev);
+      L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapGorev);
+      L.marker(KONUM.alis,{icon:pin('pick','A')}).addTo(mapGorev);
+      L.marker(KONUM.teslim,{icon:pin('drop','B')}).addTo(mapGorev);
+      haritaOdak(0);
+    }
+  }
+  function haritaOdak(i){
+    if(!mapGorev) return;
+    var pts=i<2?[KONUM.ben,KONUM.alis]:[KONUM.alis,KONUM.teslim];
+    mapGorev.fitBounds(pts,{paddingTopLeft:[46,120],paddingBottomRight:[46,330],maxZoom:15});
+  }
+  setTimeout(kurHarita,60);
+
+  function go(v){
+    $$('.scr').forEach(function(s){s.classList.remove('on')});
+    $('#v-'+v).classList.add('on');$('#v-'+v).scrollTop=0;
+    $$('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});
+    $('#tabbar').classList.toggle('hide',v==='gorev');
+    if(v==='gorev'&&mapGorev) setTimeout(function(){mapGorev.invalidateSize()},80);
+    if(v==='vardiya'&&mapHome) setTimeout(function(){mapHome.invalidateSize()},80);
+  }
+  $$('.tab').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.v)})});
 
   var gecmis=[
     {t:'14:20',w:'Köfteci Ali → Buca',f:'₺78'},
@@ -314,139 +374,138 @@ ul{list-style:none;padding:0}
     {t:'11:52',w:'Tavukçu Nuri → Buca',f:'₺86'},
     {t:'11:10',w:'Manav Hasan → Bornova',f:'₺64'}
   ];
-
-  function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2200)}
-
-  /* ---- gezinme ---- */
-  function go(v){
-    document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on')});
-    $('#v-'+v).classList.add('on');
-    $('#v-'+v).scrollTop=0;
-    document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});
-    $('#tabbar').classList.toggle('hide', v==='gorev');
-  }
-  document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.v)})});
-
-  /* ---- liste ---- */
   function rows(el,arr){
     el.innerHTML=arr.map(function(o){
       return '<li><span class="t num">'+o.t+'</span><span class="w">'+o.w+'</span><span class="f num">'+o.f+'</span></li>';
     }).join('');
   }
-  rows($('#sonList'),gecmis);
-  rows($('#kazancList'),gecmis.slice(0,4));
-  $('#listCount').textContent=gecmis.length+' kayıt';
+  rows($('#kazancList'),gecmis);
+  $('#kCount').textContent=gecmis.length+' kayıt';
 
-  /* ---- hafta çubukları ---- */
-  var hafta=[310,268,0,412,0,0,0], gunler=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'], en=Math.max.apply(null,hafta)||1;
+  var hafta=[310,268,0,412,0,0,0],gunler=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],en=Math.max.apply(null,hafta)||1;
   $('#week').innerHTML=hafta.map(function(v,i){
     return '<div class="'+(i===3?'today':'')+'"><i style="height:'+Math.max(4,Math.round(v/en*100))+'%"></i><span>'+gunler[i]+'</span></div>';
   }).join('');
 
-  /* ---- vardiya ---- */
   function sure(ms){
-    var s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60;
+    var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
     return (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(x<10?'0':'')+x;
   }
+  function ozet(){
+    $('#hMoney').textContent='₺'+S.money;
+    $('#hGoal').textContent='/ ₺'+S.goal;
+    $('#hBar').style.width=Math.min(100,Math.round(S.money/S.goal*100))+'%';
+    $('#hOrders').textContent=S.orders+' sipariş';
+    $('#hKm').textContent=S.km+' km';
+    $('#hTime').textContent=Math.floor(S.dakika/60)+'s '+(S.dakika%60)+'dk yolda';
+    $('#kToday').textContent='₺'+S.money;
+    $('#kMeta').textContent=S.orders+' sipariş · '+S.km+' km · '+Math.floor(S.dakika/60)+' sa '+(S.dakika%60)+' dk yolda';
+  }
   function vardiyaCiz(){
-    var on=S.on;
-    $('#stateBox').classList.toggle('on',on);
-    $('#stateLab').innerHTML=on?'<span class="dot"></span>Çevrimiçi · <span class="num" id="sureTxt">'+sure(Date.now()-S.since)+'</span>':'Çevrimdışı';
-    $('#stateT').textContent=on?'Sipariş bekleniyor':'Vardiya kapalı';
-    $('#stateP').textContent=on?'Telefonu elinden bırakma. İlk teklif birazdan gelir.':'Hazır olduğunda başlat. Siparişler gelmeye başlar.';
+    var on=S.on,mola=S.mola;
+    $('#molaBtn').hidden=!on;
+    $('#molaBtn').textContent=mola?'Molayı bitir':'Mola ver';
+    $('#molaBtn').classList.toggle('on',mola);
+    $('#durumLab').innerHTML=(on&&!mola?'<span class="dot live"></span>Çevrimiçi · <span class="num" id="sureTxt">'+sure(Date.now()-S.since)+'</span>'
+      :(mola?'<span class="dot"></span>Molada':'Çevrimdışı'));
+    $('#durumT').textContent=mola?'Moladasın':(on?'Sipariş bekleniyor':'Vardiya kapalı');
+    $('#durumS').textContent=mola?'Mola bitince sipariş gelmeye devam eder.'
+      :(on?'Telefonu elinden bırakma, ilk teklif birazdan.':'Hazır olduğunda başlat.');
     var b=$('#shiftBtn');
-    b.textContent=on?'Vardiyayı bitir':'Vardiyayı başlat';
-    b.className='btn'+(on?' ghost':'');
+    b.textContent=mola?'Molayı bitir':(on?'Vardiyayı bitir':'Vardiyayı başlat');
+    b.className='btn'+(on&&!mola?' ghost':'');
   }
-  function tik(){
-    var el=$('#sureTxt'); if(el&&S.on) el.textContent=sure(Date.now()-S.since);
-  }
-  function vardiyaBaslat(){
-    S.on=true; S.since=Date.now(); vardiyaCiz();
-    clearInterval(S.timer); S.timer=setInterval(tik,1000);
+  function tik(){var el=$('#sureTxt');if(el&&S.on&&!S.mola) el.textContent=sure(Date.now()-S.since)}
+
+  function baslat(){
+    S.on=true;S.mola=false;S.since=Date.now();vardiyaCiz();
+    clearInterval(S.timer);S.timer=setInterval(tik,1000);
     toast('Vardiya açıldı · iyi işler');
     teklifPlanla(4200);
   }
-  function vardiyaBitir(){
-    S.on=false; vardiyaCiz(); clearInterval(S.timer);
-    clearTimeout(S.offerTimer); teklifiKapat();
+  function bitir(){
+    S.on=false;S.mola=false;vardiyaCiz();clearInterval(S.timer);
+    clearTimeout(S.offerTimer);teklifiKapat();
     toast('Vardiya kapandı');
   }
-  $('#shiftBtn').addEventListener('click',function(){ S.on?vardiyaBitir():vardiyaBaslat() });
-  $('#profShift').addEventListener('click',function(){ if(S.on)vardiyaBitir(); go('vardiya'); });
+  function molaDegistir(){
+    if(!S.on) return;
+    S.mola=!S.mola;vardiyaCiz();
+    if(S.mola){clearTimeout(S.offerTimer);teklifiKapat();toast('Molaya çıktın')}
+    else{toast('Vardiyaya döndün');teklifPlanla(6000)}
+  }
+  $('#shiftBtn').addEventListener('click',function(){
+    if(S.mola) return molaDegistir();
+    S.on?bitir():baslat();
+  });
+  $('#molaBtn').addEventListener('click',molaDegistir);
+  $('#profShift').addEventListener('click',function(){if(S.on)bitir();go('vardiya')});
 
-  /* ---- teklif ---- */
   function teklifPlanla(ms){
     clearTimeout(S.offerTimer);
-    S.offerTimer=setTimeout(function(){
-      if(!S.on||S.active) return;
-      teklifGoster();
-    },ms);
+    S.offerTimer=setTimeout(function(){if(S.on&&!S.mola&&!S.active) teklifGoster()},ms);
   }
   function teklifGoster(){
     $('#tShop').textContent=ORD.shop;
     $('#tFrom').textContent=ORD.from;
     $('#tTo').textContent=ORD.to;
+    $('#tFee').textContent='₺'+ORD.fee;
+    $('#tKm').textContent=String(ORD.km).replace('.',',');
+    $('#tDk').textContent=ORD.dk;
     $('#teklif').classList.add('on');
-    S.left=15; $('#teklifSure').textContent='15 sn';
-    var bar=$('#teklif .bar i'); bar.style.animation='none'; void bar.offsetWidth; bar.style.animation='';
+    var bar=$('#ringBar');bar.style.animation='none';void bar.getBoundingClientRect();bar.style.animation='';
+    S.left=15;$('#ringTxt').textContent='15';
+    if(navigator.vibrate) navigator.vibrate([220,120,220]);
     clearInterval(S.leftTimer);
     S.leftTimer=setInterval(function(){
-      S.left--; if(S.left<=0){ teklifiKapat(); toast('Teklif kaçtı'); teklifPlanla(20000); return }
-      $('#teklifSure').textContent=S.left+' sn';
+      S.left--;$('#ringTxt').textContent=Math.max(0,S.left);
+      if(S.left<=0){teklifiKapat();toast('Teklif kaçtı');teklifPlanla(20000)}
     },1000);
   }
-  function teklifiKapat(){ $('#teklif').classList.remove('on'); clearInterval(S.leftTimer) }
-  $('#tGec').addEventListener('click',function(){ teklifiKapat(); toast('Geçildi · yeni teklif bekleniyor'); teklifPlanla(15000) });
-  $('#tKabul').addEventListener('click',function(){ teklifiKapat(); gorevBaslat() });
+  function teklifiKapat(){$('#teklif').classList.remove('on');clearInterval(S.leftTimer)}
+  $('#tGec').addEventListener('click',function(){teklifiKapat();toast('Geçildi');teklifPlanla(14000)});
+  $('#tKabul').addEventListener('click',function(){teklifiKapat();gorevBaslat()});
 
-  /* ---- görev ---- */
   var ADIMLAR=[
-    {t:'Dükkana git',a:function(){return ORD.from},m:'850 m · 4 dk',b:'Vardım',hint:''},
-    {t:'Paketi al',a:function(){return ORD.shop+' · '+ORD.from},m:'Tezgahında hazır olacak',b:'Paketi aldım',
-     hint:'<b>'+ORD.code+'</b> numaralı sipariş. Paketi say, eksik olmasın.'},
-    {t:'Müşteriye götür',a:function(){return ORD.to},m:'2,4 km · 18 dk',b:'Vardım',hint:'Müşteri: '+ORD.cust+' · '+ORD.tel},
-    {t:'Teslim et',a:function(){return ORD.cust+' · '+ORD.to},m:'Teslim kodu: '+ORD.code,b:'Teslim ettim',
-     hint:'Kapıda kodu sor. Kod tutmuyorsa paketi verme, bizi ara.'}
+    {t:'Dükkana git',eta:'4 dk',b:'Vardım'},
+    {t:'Paketi al',eta:'—',b:'Paketi aldım'},
+    {t:'Müşteriye götür',eta:'18 dk',b:'Vardım'},
+    {t:'Teslim et',eta:'—',b:'Teslim ettim'}
   ];
-  function gorevBaslat(){
-    S.active=true; S.step=0; go('gorev'); adimCiz();
-  }
+  function gorevBaslat(){S.active=true;S.step=0;go('gorev');adimCiz()}
   function adimCiz(){
-    var i=S.step, a=ADIMLAR[i];
-    $('#gId').textContent=ORD.id; $('#gFee').textContent='₺'+ORD.fee;
+    var i=S.step;
+    $('#gId').textContent=ORD.id;
     $('#gSteps').innerHTML=ADIMLAR.map(function(_,k){
-      var cls=k<i?'ok':(k===i?'now':'');
-      return '<i class="'+cls+'"></i>'+(k<ADIMLAR.length-1?'<s class="'+(k<i?'ok':'')+'"></s>':'');
+      var c=k<i?'ok':(k===i?'now':'');
+      return '<i class="'+c+'"></i>'+(k<ADIMLAR.length-1?'<s class="'+(k<i?'ok':'')+'"></s>':'');
     }).join('');
-    $('#gTitle').textContent=a.t;
-    $('#gMeta').textContent=a.m;
-    var leg=i<2?0:1;
-    document.querySelectorAll('#gRota .leg').forEach(function(el,k){ el.classList.toggle('on',k===leg) });
-    $('#gNext').textContent=a.b;
-    var h=$('#gHint'); h.hidden=!a.hint; h.innerHTML=a.hint;
+    $('#gTitle').textContent=ADIMLAR[i].t;
+    $('#gEtaLab').textContent=i<2?'Dükkana':'Müşteriye';
+    $('#gEta').textContent=ADIMLAR[i].eta;
+    $('#durak1').className='durak '+(i<2?'on':'done');
+    $('#durak2').className='durak '+(i>=2?'on':'');
+    $('#gNote').innerHTML=(i>=2?ORD.pay+' · 1 çanta · <b>'+ORD.note+'</b>'
+      :'<b class="kod">'+ORD.code+'</b> numaralı sipariş · 1 çanta');
+    $('#gNext').textContent=ADIMLAR[i].b;
+    haritaOdak(i);
   }
   $('#gNext').addEventListener('click',function(){
-    if(S.step<ADIMLAR.length-1){ S.step++; adimCiz(); if(S.step===2) toast('Paket sende · müşteriye git'); return }
-    /* teslim */
-    S.active=false;
-    S.orders++; S.money+=ORD.fee; S.km=Math.round((S.km+ORD.km)*10)/10;
-    $('#stOrders').textContent=S.orders; $('#stMoney').textContent='₺'+S.money; $('#stKm').textContent=S.km;
-    $('#kToday').textContent='₺'+S.money;
+    if(S.step<ADIMLAR.length-1){S.step++;adimCiz();if(S.step===2)toast('Paket sende · müşteriye git');return}
+    S.active=false;S.orders++;S.money+=ORD.fee;S.km=Math.round((S.km+ORD.km)*10)/10;S.dakika+=ORD.dk;
     gecmis.unshift({t:'şimdi',w:ORD.shop+' → Buca',f:'₺'+ORD.fee});
-    rows($('#sonList'),gecmis); $('#listCount').textContent=gecmis.length+' kayıt';
-    go('vardiya'); toast('Teslim edildi · ₺'+ORD.fee+' hesabına geçti');
+    rows($('#kazancList'),gecmis);$('#kCount').textContent=gecmis.length+' kayıt';
+    ozet();go('vardiya');toast('Teslim edildi · ₺'+ORD.fee+' hesabına geçti');
     teklifPlanla(25000);
   });
-  $('#gorevBack').addEventListener('click',function(){ go('vardiya') });
 
-  /* ---- araçlar ---- */
-  function mapsUrl(addr){ return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(addr)+'&travelmode=driving' }
-  $('#tNav').addEventListener('click',function(){ window.open(mapsUrl(ADIMLAR[S.step].a()),'_blank') });
-  $('#tCall').addEventListener('click',function(){ location.href='tel:'+ORD.tel });
-  $('#tWa').addEventListener('click',function(){ window.open('https://wa.me/'+ORD.tel.replace('+','')+'?text='+encodeURIComponent('Sezer Abi Kurye: yoldayım, 5 dakika içinde kapınızdayım.'),'_blank') });
+  function mapsUrl(a){return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(a)+'&travelmode=driving'}
+  $('#d1Nav').addEventListener('click',function(){window.open(mapsUrl(ORD.from),'_blank')});
+  $('#d2Nav').addEventListener('click',function(){window.open(mapsUrl(ORD.to),'_blank')});
+  $('#d1Call').addEventListener('click',function(){location.href='tel:'+ORD.shopTel});
+  $('#d2Call').addEventListener('click',function(){location.href='tel:'+ORD.custTel});
 
-  vardiyaCiz();
+  ozet();vardiyaCiz();
 })();
 </script>
 </body>
