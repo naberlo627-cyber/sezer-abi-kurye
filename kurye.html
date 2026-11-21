@@ -102,7 +102,7 @@ input{font:inherit}
 .durak b{display:block;font-size:15px;font-weight:600;line-height:1.3}
 .durak span{display:block;font-size:13px;color:var(--mute);line-height:1.35}
 .durak .acts{margin-left:auto;display:flex;gap:6px;align-items:center}
-.icbtn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;background:var(--paper)}
+.icbtn{position:relative;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;background:var(--paper)}
 .icbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
 .note{margin:12px 0;padding:11px 13px;border:1.5px dashed var(--line);border-radius:13px;font-size:13px;color:var(--mute)}
@@ -117,6 +117,20 @@ input{font:inherit}
 .shake{animation:shake .32s}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 
+.lock{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mute)}
+.lock svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.canli{display:none;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--mute)}
+.canli .dot{margin:0}
+.hareketsiz{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 64px);z-index:520;background:var(--ink);color:var(--cream);
+  border-radius:14px;padding:12px 14px;font-size:12.5px;line-height:1.4;display:none;box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.hareketsiz.on{display:block}
+.hareketsiz b{display:block;font-size:14px;margin-bottom:2px}
+.badge{position:absolute;top:-2px;right:-2px;width:11px;height:11px;border-radius:50%;background:var(--orange);border:2px solid var(--cream);display:none}
+.badge.on{display:block}
+.thread{display:flex;flex-direction:column;max-height:170px;overflow-y:auto;margin-bottom:14px}
+.thread:empty{display:none}
+.msg-in{align-self:flex-start;max-width:86%;background:var(--pad);padding:9px 13px;border-radius:14px 14px 14px 4px;font-size:14px;margin-bottom:8px}
+.msg-out{align-self:flex-end;max-width:86%;background:var(--ink);color:var(--cream);padding:9px 13px;border-radius:14px 14px 4px 14px;font-size:14px;margin-bottom:8px}
 .sorun-link{display:block;width:100%;text-align:center;font-size:13px;font-weight:600;color:var(--mute);padding:8px 0 10px;text-decoration:underline;text-underline-offset:3px}
 
 .sheet{position:fixed;inset:0;z-index:880;display:none;align-items:flex-end;justify-content:center;background:rgba(30,30,36,.55)}
@@ -228,6 +242,12 @@ input{font:inherit}
         <button class="mini" id="molaBtn" hidden>Mola ver</button>
       </div>
 
+      <div class="canli" id="canli">
+        <span class="dot live"></span>
+        <span id="canliTxt">Konum alınıyor…</span>
+        <span class="lock" style="margin-left:auto"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Canlı</span>
+      </div>
+
       <div class="oranim">
         <span>Kabul oranı <b id="oRate">%92</b></span>
         <span>Bugün <b id="oOffer">24</b> teklif</span>
@@ -264,6 +284,7 @@ input{font:inherit}
       <div class="chip"><span class="lab">Sipariş</span><b class="num" id="gId">#1042</b></div>
       <div class="chip eta"><span class="lab" id="gEtaLab">Dükkana</span><b id="gEta">4 dk</b></div>
     </div>
+    <div class="hareketsiz" id="hareketsiz"><b>Hareketsiz görünüyorsun</b>2 dakikadır aynı yerdesin. Sorun mu var?</div>
     <div class="panel">
       <div class="grab"></div>
       <div class="steps" id="gSteps"></div>
@@ -291,7 +312,7 @@ input{font:inherit}
         </div>
         <div class="acts">
           <button class="icbtn" id="d2Call" aria-label="Müşteriyi ara"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg></button>
-          <button class="icbtn" id="d2Msg" aria-label="Mesaj gönder"><svg viewBox="0 0 24 24"><path d="M20 15a2 2 0 01-2 2H8l-4 3V6a2 2 0 012-2h12a2 2 0 012 2z"/></svg></button>
+          <button class="icbtn" id="d2Msg" aria-label="Mesaj gönder"><span class="badge" id="msgBadge"></span><svg viewBox="0 0 24 24"><path d="M20 15a2 2 0 01-2 2H8l-4 3V6a2 2 0 012-2h12a2 2 0 012 2z"/></svg></button>
           <button class="icbtn" id="d2Nav" aria-label="Yol tarifi"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg></button>
         </div>
       </div>
@@ -403,6 +424,7 @@ input{font:inherit}
 <div class="sheet" id="shMesaj">
   <div class="sheet-card">
     <div class="sheet-h"><b>Müşteriye mesaj</b><button class="x" data-kapat="shMesaj">✕</button></div>
+    <div class="thread" id="mesajThread"></div>
     <div class="chips" id="hizliMesaj"></div>
     <input class="inp" id="mesajMetin" placeholder="Mesaj yaz…">
     <button class="btn" id="mesajGonder" style="margin-top:10px;height:50px">Gönder</button>
@@ -424,6 +446,10 @@ input{font:inherit}
     <div class="tg"><span>Teklif sesi</span><button class="sw on" data-ayar="ses"><i></i></button></div>
     <div class="tg"><span>Titreşim</span><button class="sw on" data-ayar="titresim"><i></i></button></div>
     <div class="tg"><span>Ekran açık kalsın</span><button class="sw on" data-ayar="ekranAcik"><i></i></button></div>
+    <div class="lab" style="margin:18px 0 2px">Zorunlu · kapatılamaz</div>
+    <button class="opt" data-kilit="1"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Canlı durum<span class="r">Açık</span></button>
+    <button class="opt" data-kilit="1"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Aramalar<span class="r">Açık</span></button>
+    <button class="opt" data-kilit="1"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Mesajlar<span class="r">Açık</span></button>
   </div>
 </div>
 
@@ -434,6 +460,19 @@ input{font:inherit}
     <a class="opt" href="tel:+905550000000"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg>Sezer Abi'yi ara<span class="r">7/24</span></a>
     <a class="opt" href="tel:112"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 9v4"/><circle cx="12" cy="16" r=".9" fill="currentColor" stroke="none"/></svg>Acil durum · 112<span class="r">kaza, sağlık</span></a>
     <button class="opt" id="yardimSorun"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".9" fill="currentColor" stroke="none"/></svg>Sipariş sorunu bildir<span class="r">→</span></button>
+  </div>
+</div>
+
+<!-- KONUM İZNİ -->
+<div class="sheet center" id="shKonum">
+  <div class="sheet-card">
+    <div class="lab">Zorunlu</div>
+    <div class="sheet-h" style="margin-top:6px"><b>Canlı durum kapalı</b></div>
+    <p class="mute" style="font-size:14px;margin:0 0 16px">Vardiya sırasında konum paylaşımı zorunlu. İzin vermeden vardiya başlatılamaz.</p>
+    <div class="acts2">
+      <button class="btn" id="konumDene">Konum izni ver</button>
+      <button class="btn ghost" id="konumDemo" style="height:46px;font-size:14px">Demo konumla devam et</button>
+    </div>
   </div>
 </div>
 
@@ -487,7 +526,7 @@ input{font:inherit}
   function titret(p){ if(S.titresim&&navigator.vibrate) navigator.vibrate(p) }
 
   /* harita */
-  var mapHome=null,mapGorev=null;
+  var mapHome=null,mapGorev=null,meHome=null,meGorev=null;
   function mkMap(el,center,zoom,interactive){
     if(!window.L) return null;
     var m=L.map(el,{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:interactive!==false,tap:true}).setView(center,zoom);
@@ -504,17 +543,93 @@ input{font:inherit}
   }
   function kurHarita(){
     mapHome=mkMap($('#mapHome'),KONUM.ben,14);
-    if(mapHome) L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapHome);
+    if(mapHome) meHome=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapHome);
     mapGorev=mkMap($('#mapGorev'),KONUM.alis,13,false);
     if(mapGorev){
       L.polyline([KONUM.ben,KONUM.alis,KONUM.teslim],{color:'#1E1E24',weight:3,dashArray:'7 7',opacity:.75}).addTo(mapGorev);
-      L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapGorev);
+      meGorev=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapGorev);
       L.marker(KONUM.alis,{icon:pin('pick','A')}).addTo(mapGorev);
       L.marker(KONUM.teslim,{icon:pin('drop','B')}).addTo(mapGorev);
       haritaOdak(0);
     }
   }
   setTimeout(kurHarita,60);
+
+  /* canlı durum · hareket algılama */
+  var GEO={ready:false,sim:false,watch:null,simT:null,last:null,lastT:0,speed:0,still:0,uyari:false};
+  function mesafeM(a,b){
+    var R=6371000,rad=Math.PI/180;
+    var dLat=(b[0]-a[0])*rad,dLon=(b[1]-a[1])*rad;
+    var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[0]*rad)*Math.cos(b[0]*rad)*Math.sin(dLon/2)*Math.sin(dLon/2);
+    return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+  }
+  function konumAl(cb){
+    if(!navigator.geolocation){ cb(false); return }
+    var bitti=false;
+    var to=setTimeout(function(){ if(!bitti){ bitti=true; cb(false) } },6000);
+    navigator.geolocation.getCurrentPosition(function(p){
+      if(bitti) return; bitti=true; clearTimeout(to);
+      konumIsle([p.coords.latitude,p.coords.longitude],p.coords.speed);
+      cb(true);
+    },function(){ if(bitti) return; bitti=true; clearTimeout(to); cb(false) },
+    {enableHighAccuracy:true,timeout:5000,maximumAge:2000});
+  }
+  function konumIzle(){
+    if(GEO.watch!=null||GEO.sim||!navigator.geolocation) return;
+    GEO.watch=navigator.geolocation.watchPosition(function(p){
+      konumIsle([p.coords.latitude,p.coords.longitude],p.coords.speed);
+    },function(){},{enableHighAccuracy:true,maximumAge:4000});
+  }
+  function konumIsle(ll,hiz){
+    var now=Date.now();
+    if(GEO.last&&now-GEO.lastT>600){
+      var dt=(now-GEO.lastT)/1000;
+      var v=(hiz!=null&&hiz>=0)?hiz*3.6:(mesafeM(GEO.last,ll)/dt)*3.6;
+      GEO.speed=v;
+      if(v<2) GEO.still+=dt; else GEO.still=0;
+    }
+    GEO.last=ll;GEO.lastT=now;GEO.ready=true;
+    haritaKonum(ll);hareketKontrol();canliCiz();
+  }
+  function konumSim(){
+    if(GEO.sim) return;
+    GEO.sim=true;GEO.ready=true;
+    var ll=KONUM.ben.slice(),dur=0;
+    clearInterval(GEO.simT);
+    GEO.simT=setInterval(function(){
+      if(!S.on) return;
+      if(dur>0){ dur--;GEO.speed=0;GEO.still+=2 }
+      else{
+        ll=[ll[0]+0.00026,ll[1]+0.00021];
+        GEO.speed=24+Math.round(Math.random()*7);GEO.still=0;
+        if(Math.random()<0.10) dur=70;
+        haritaKonum(ll);
+      }
+      hareketKontrol();canliCiz();
+    },2000);
+  }
+  function hareketKontrol(){
+    var uy=$('#hareketsiz'); if(!uy) return;
+    if(S.active&&GEO.still>120&&!GEO.uyari){
+      GEO.uyari=true;uy.classList.add('on');titret([250,120,250]);
+      toast('Hareketsizsin · 2 dakika');
+    }
+    if(GEO.still<20){ GEO.uyari=false;uy.classList.remove('on') }
+  }
+  function haritaKonum(ll){
+    if(meHome) meHome.setLatLng(ll);
+    if(meGorev) meGorev.setLatLng(ll);
+    if(mapHome&&S.on&&!S.active) mapHome.panTo(ll,{animate:true,duration:0.6});
+  }
+  function canliCiz(){
+    var box=$('#canli'); if(!box) return;
+    box.style.display=S.on?'flex':'none';
+    if(!S.on) return;
+    var t=$('#canliTxt');
+    if(!GEO.ready){ t.textContent='Konum alınıyor…'; return }
+    if(GEO.still>5){ t.textContent='Duruyorsun · '+kisaSure(GEO.still*1000) }
+    else { t.textContent='Hareket halinde · '+Math.round(GEO.speed)+' km/s' }
+  }
 
   function go(v){
     $$('.scr').forEach(function(s){s.classList.remove('on')});
@@ -598,16 +713,24 @@ input{font:inherit}
   function tik(){
     var e1=$('#sureTxt'); if(e1&&S.on&&!S.mola) e1.textContent=sure(Date.now()-S.since);
     var e2=$('#molaTxt'); if(e2&&S.mola) e2.textContent=kisaSure(Math.max(0,S.molaEnd-Date.now()));
+    canliCiz();
   }
 
   function wakeAc(){ if(!S.ekranAcik||!('wakeLock' in navigator)) return;
     try{ navigator.wakeLock.request('screen').catch(function(){}) }catch(e){} }
 
   function baslat(){
-    sesHazir(); S.on=true;S.mola=false;S.since=Date.now();vardiyaCiz();
+    sesHazir();
+    konumAl(function(ok){
+      if(ok){ konumIzle(); vardiyaAc() }
+      else ac('shKonum');
+    });
+  }
+  function vardiyaAc(){
+    S.on=true;S.mola=false;S.since=Date.now();vardiyaCiz();canliCiz();
     clearInterval(S.timer);S.timer=setInterval(tik,1000);
     wakeAc();
-    toast('Vardiya açıldı · iyi işler');
+    toast('Vardiya açıldı · canlı durum açık');
     teklifPlanla(4200);
   }
   function bitir(){
@@ -615,6 +738,9 @@ input{font:inherit}
     if(S.active){ toast('Önce aktif siparişi teslim et'); return }
     var gecen=Date.now()-S.since;
     S.on=false;S.mola=false;vardiyaCiz();clearInterval(S.timer);clearInterval(S.molaTimer);
+    if(GEO.watch!=null&&navigator.geolocation){ try{ navigator.geolocation.clearWatch(GEO.watch) }catch(e){} GEO.watch=null }
+    clearInterval(GEO.simT);GEO.sim=false;GEO.ready=false;GEO.still=0;GEO.uyari=false;
+    $('#hareketsiz').classList.remove('on');canliCiz();
     clearTimeout(S.offerTimer);teklifiKapat();
     $('#ozKazanc').textContent='₺'+S.money;
     $('#ozSure').textContent=sure(gecen);
@@ -675,7 +801,19 @@ input{font:inherit}
     {t:'Müşteriye götür',eta:'18 dk',b:'Vardım',not:'Müşteri notu: <b>Kapıyı çalma, zili çal.</b>'},
     {t:'Teslim et',eta:'—',b:'Teslim ettim',not:'Müşteriden kodu al · <b>₺120 nakit</b> tahsil et'}
   ];
-  function gorevBaslat(){S.active=true;S.step=0;$('#kodIn').value='';go('gorev');adimCiz()}
+  var gorevMesajT=null;
+  function gorevBaslat(){
+    S.active=true;S.step=0;$('#kodIn').value='';$('#msgBadge').classList.remove('on');
+    go('gorev');adimCiz();
+    clearTimeout(gorevMesajT);
+    gorevMesajT=setTimeout(function(){
+      if(!S.active) return;
+      mesajEkle('3. kat, asansör yok. Kapıyı çalmayın, arayın.',true);
+      $('#msgBadge').classList.add('on');
+      beep();titret([180,100,180]);
+      toast('Merve K. mesaj gönderdi');
+    },9000);
+  }
   function adimCiz(){
     var i=S.step;
     $('#gId').textContent=ORD.id;
@@ -731,8 +869,15 @@ input{font:inherit}
     var v=$('#mesajMetin').value.trim(); if(!v) return;
     $('#mesajMetin').value=''; gonderMesaj(v);
   });
-  function gonderMesaj(m){ kapat('shMesaj'); toast('Mesaj gönderildi'); }
-  $('#d2Msg').addEventListener('click',function(){ ac('shMesaj') });
+  var MESAJLAR=[];
+  function mesajCiz(){
+    var el=$('#mesajThread');
+    el.innerHTML=MESAJLAR.map(function(o){return '<div class="'+(o.dis?'msg-in':'msg-out')+'">'+o.m+'</div>'}).join('');
+    el.scrollTop=el.scrollHeight;
+  }
+  function mesajEkle(m,dis){ MESAJLAR.push({m:m,dis:!!dis}); mesajCiz() }
+  function gonderMesaj(m){ mesajEkle(m,false); kapat('shMesaj'); toast('Mesaj gönderildi · müşteriye iletildi'); }
+  $('#d2Msg').addEventListener('click',function(){ $('#msgBadge').classList.remove('on'); mesajCiz(); ac('shMesaj') });
 
   /* sorun */
   var SORUNLAR=['Adresi bulamıyorum','Müşteriye ulaşamıyorum','Dükkan siparişi hazırlamadı','Trafik / kaza','Aracım arızalandı'];
@@ -759,12 +904,27 @@ input{font:inherit}
     });
   });
 
+  /* zorunlu ayarlar */
+  $$('[data-kilit]').forEach(function(b){
+    b.addEventListener('click',function(){ toast('Bu ayar zorunlu · kapatılamaz'); titret(120) });
+  });
+
+  /* konum izni */
+  $('#konumDene').addEventListener('click',function(){
+    konumAl(function(ok){
+      if(ok){ kapat('shKonum'); konumIzle(); vardiyaAc() }
+      else toast('İzin verilmedi · demo konumla devam edebilirsin');
+    });
+  });
+  $('#konumDemo').addEventListener('click',function(){ kapat('shKonum'); konumSim(); vardiyaAc() });
+
   /* araçlar */
   function mapsUrl(a){return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(a)+'&travelmode=driving'}
   $('#d1Nav').addEventListener('click',function(){window.open(mapsUrl(ORD.from),'_blank')});
   $('#d2Nav').addEventListener('click',function(){window.open(mapsUrl(ORD.to),'_blank')});
-  $('#d1Call').addEventListener('click',function(){location.href='tel:'+ORD.shopTel});
-  $('#d2Call').addEventListener('click',function(){location.href='tel:'+ORD.custTel});
+  function aramaKaydet(kim){ toast(kim+' aranıyor · arama kayda geçti') }
+  $('#d1Call').addEventListener('click',function(){aramaKaydet('Dükkan');location.href='tel:'+ORD.shopTel});
+  $('#d2Call').addEventListener('click',function(){aramaKaydet('Müşteri');location.href='tel:'+ORD.custTel});
 
   /* çevrimdışı */
   function baglanti(){ $('#offbar').classList.toggle('on',!navigator.onLine) }
