@@ -192,12 +192,16 @@ input{font:inherit}
 .gline{display:flex;align-items:center;gap:10px;margin:12px 0 2px;font-size:13px;color:var(--mute)}
 .gline #gNote{flex:1;min-width:0}
 .gline .sorun-link{flex:none;width:auto;padding:0;font-size:12.5px}
-.rotabar{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 72px);z-index:515;display:none;align-items:center;gap:9px;
-  background:var(--ink);color:var(--cream);border-radius:14px;padding:11px 12px 11px 14px;font-size:13px;box-shadow:0 10px 28px rgba(0,0,0,.28)}
-.rotabar.on{display:flex}
-.rotabar .r{margin-left:auto;color:#B9B9BF;font-variant-numeric:tabular-nums}
-.rotabar .dot{margin:0}
-.rb-x{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.14);color:var(--cream);font-size:12px;display:grid;place-items:center;flex:none}
+.nav{position:absolute;left:14px;right:14px;top:calc(env(safe-area-inset-top) + 70px);z-index:516;display:none;align-items:center;gap:12px;
+  background:var(--cream);border-radius:18px;padding:12px 13px;box-shadow:0 12px 30px rgba(30,30,36,.22)}
+.nav.on{display:flex}
+.nav-i{width:38px;height:38px;border-radius:12px;background:var(--ink);display:grid;place-items:center;flex:none}
+.nav-i svg{width:20px;height:20px;stroke:var(--cream);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
+.nav-t{flex:1;min-width:0}
+.nav-t b{display:block;font-family:var(--display);font-weight:800;font-size:15.5px;letter-spacing:-.3px;line-height:1.25}
+.nav-t b em{font-style:normal;color:var(--orange)}
+.nav-t span{display:block;font-size:12px;color:var(--mute);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-x{width:26px;height:26px;border-radius:50%;background:var(--pad);color:var(--ink);font-size:12px;display:grid;place-items:center;flex:none}
 .acts2{display:grid;gap:9px;margin-top:16px}
 .acts2 .btn{height:52px}
 
@@ -311,11 +315,13 @@ input{font:inherit}
       <div class="chip"><span class="lab">Sipariş</span><b class="num" id="gId">#1042</b></div>
       <div class="chip eta"><span class="lab">Teslim</span><b id="gEta">32 dk</b></div>
     </div>
-    <div class="rotabar" id="rotaBar">
-      <span class="dot live"></span>
-      <b id="rotaAd">Yol tarifi</b>
-      <span class="r"><span id="rotaKm">2,4 km</span> · <span id="rotaDk">8 dk</span></span>
-      <button class="rb-x" id="rotaKapat" aria-label="Yol tarifini kapat">✕</button>
+    <div class="nav" id="navBox">
+      <div class="nav-i"><svg id="navArrow" viewBox="0 0 24 24"><path d="M12 20V5"/><path d="M6 11l6-6 6 6"/></svg></div>
+      <div class="nav-t">
+        <b id="navAct">Yol tarifi</b>
+        <span id="navSub">hesaplanıyor…</span>
+      </div>
+      <button class="nav-x" id="navX" aria-label="Yol tarifini kapat">✕</button>
     </div>
     <div class="hareketsiz" id="hareketsiz"><b>Hareketsiz görünüyorsun</b>2 dakikadır aynı yerdesin. Sorun mu var?</div>
     <div class="panel">
@@ -634,7 +640,7 @@ input{font:inherit}
       if(v<2) GEO.still+=dt; else GEO.still=0;
     }
     GEO.last=ll;GEO.lastT=now;GEO.ready=true;
-    haritaKonum(ll);hareketKontrol();canliCiz();
+    haritaKonum(ll);navGuncelle(ll);hareketKontrol();canliCiz();
   }
   function konumSim(){
     if(GEO.sim) return;
@@ -643,7 +649,7 @@ input{font:inherit}
     clearInterval(GEO.simT);
     GEO.simT=setInterval(function(){
       if(!S.on) return;
-      if(dur>0){ dur--;GEO.speed=0;GEO.still+=2 }
+      if(dur>0){ dur--;GEO.speed=0;GEO.still+=2;navGuncelle(ll) }
       else{
         ll=[ll[0]+0.00026,ll[1]+0.00021];
         GEO.speed=24+Math.round(Math.random()*7);GEO.still=0;
@@ -869,7 +875,7 @@ input{font:inherit}
       return '<i class="'+c+'"></i>'+(k<ADIMLAR.length-1?'<s class="'+(k<i?'ok':'')+'"></s>':'');
     }).join('');
     $('#gTitle').innerHTML=ADIMLAR[i].t+(ADIMLAR[i].eta!=='—'?'<span class="eta-s">'+ADIMLAR[i].eta+'</span>':'');
-    sureCiz();rotaTemizle();
+    sureCiz();rotaKapat();
     $('#durak1').className='durak '+(i<2?'on':'done');
     $('#durak2').className='durak '+(i>=2?'on':'');
     $('#gNote').innerHTML=ADIMLAR[i].not;
@@ -909,26 +915,92 @@ input{font:inherit}
     else { el.textContent='+'+Math.abs(kalan)+' dk'; el.className='late' }
   }
 
-  /* uygulama içi yol tarifi */
-  var rotaCizgi=null;
-  function rotaTemizle(){
-    $('#rotaBar').classList.remove('on');
-    if(rotaCizgi&&mapGorev){ mapGorev.removeLayer(rotaCizgi);rotaCizgi=null }
+  /* adım adım navigasyon */
+  var NAV={on:false,steps:null,idx:0,line:null,hedef:null,ad:''};
+  function fmtM(m){
+    if(m>=1000) return (Math.round(m/100)/10).toFixed(1).replace('.',',')+' km';
+    return Math.max(10,Math.round(m/10)*10)+' m';
+  }
+  function cevir(s){
+    var t=s.maneuver.type,m=s.maneuver.modifier||'';
+    if(t==='depart') return 'yola çık';
+    if(t==='arrive') return 'hedefe var';
+    if(t==='roundabout'||t==='rotary') return 'adadan dön';
+    if(t==='merge') return 'yola katıl';
+    if(t==='fork') return m.indexOf('left')>=0?'soldan devam et':'sağdan devam et';
+    if(t==='end of road') return m.indexOf('left')>=0?'sola dön':'sağa dön';
+    if(m.indexOf('sharp left')>=0) return 'keskin sola dön';
+    if(m.indexOf('sharp right')>=0) return 'keskin sağa dön';
+    if(m.indexOf('slight left')>=0) return 'hafif sola dön';
+    if(m.indexOf('slight right')>=0) return 'hafif sağa dön';
+    if(m.indexOf('uturn')>=0) return 'geri dön';
+    if(m.indexOf('left')>=0) return 'sola dön';
+    if(m.indexOf('right')>=0) return 'sağa dön';
+    return 'düz devam et';
+  }
+  function yon(s){
+    var m=s.maneuver.modifier||'';
+    if(s.maneuver.type==='arrive') return 'arrive';
+    if(m.indexOf('left')>=0) return 'left';
+    if(m.indexOf('right')>=0) return 'right';
+    if(m.indexOf('uturn')>=0) return 'left';
+    return 'straight';
+  }
+  function navYaz(ana,alt,don){
+    $('#navAct').innerHTML=ana;
+    $('#navSub').textContent=alt||'';
+    var a=$('#navArrow');
+    a.style.transform=don==='left'?'rotate(-90deg)':don==='right'?'rotate(90deg)':don==='arrive'?'rotate(180deg)':'rotate(0deg)';
+  }
+  function rotaKapat(){
+    NAV.on=false;
+    $('#navBox').classList.remove('on');
+    if(NAV.line&&mapGorev){ mapGorev.removeLayer(NAV.line);NAV.line=null }
+    NAV.steps=null;NAV.idx=0;
   }
   function rotaGoster(kim){
     if(!mapGorev||!window.L) return;
     var hedef=kim==='alis'?KONUM.alis:KONUM.teslim;
     var bas=GEO.last||KONUM.ben;
-    if(rotaCizgi){ mapGorev.removeLayer(rotaCizgi) }
-    rotaCizgi=L.polyline([bas,hedef],{color:'#FF4B1F',weight:5,opacity:.9,lineCap:'round'}).addTo(mapGorev);
-    mapGorev.fitBounds([bas,hedef],{paddingTopLeft:[40,130],paddingBottomRight:[40,340],maxZoom:16});
-    var km=Math.max(0.1,Math.round(mesafeM(bas,hedef)/100)/10);
-    $('#rotaAd').textContent=kim==='alis'?'Dükkana yol tarifi':'Müşteriye yol tarifi';
-    $('#rotaKm').textContent=String(km).replace('.',',')+' km';
-    $('#rotaDk').textContent=Math.max(1,Math.round(km*3.1))+' dk';
-    $('#rotaBar').classList.add('on');
+    NAV.on=true;NAV.hedef=hedef;NAV.steps=null;NAV.idx=0;
+    NAV.ad=kim==='alis'?'Dükkan':'Müşteri';
+    $('#navBox').classList.add('on');
+    navYaz('Yol tarifi alınıyor…','','straight');
+    if(NAV.line){ mapGorev.removeLayer(NAV.line);NAV.line=null }
+    var url='https://router.project-osrm.org/route/v1/driving/'+bas[1]+','+bas[0]+';'+hedef[1]+','+hedef[0]+'?overview=full&geometries=geojson&steps=true';
+    fetch(url).then(function(r){return r.json()}).then(function(j){
+      var rt=j.routes&&j.routes[0];
+      if(!rt||!rt.legs||!rt.legs[0].steps) throw new Error('rota yok');
+      var geo=rt.geometry.coordinates.map(function(c){return [c[1],c[0]]});
+      NAV.line=L.polyline(geo,{color:'#FF4B1F',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      mapGorev.fitBounds(NAV.line.getBounds(),{paddingTopLeft:[40,150],paddingBottomRight:[40,330],maxZoom:16});
+      NAV.steps=rt.legs[0].steps;
+      navGuncelle(GEO.last||bas);
+    }).catch(function(){
+      NAV.steps=null;
+      NAV.line=L.polyline([bas,hedef],{color:'#FF4B1F',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      mapGorev.fitBounds([bas,hedef],{paddingTopLeft:[40,150],paddingBottomRight:[40,330],maxZoom:16});
+      navYaz('<em>'+fmtM(mesafeM(bas,hedef))+'</em> düz git','Hedef: '+NAV.ad+' · yol verisi yok','straight');
+    });
   }
-  $('#rotaKapat').addEventListener('click',function(){ adimCiz() });
+  function navGuncelle(ll){
+    if(!NAV.on||!NAV.steps||!NAV.steps.length) return;
+    var st=NAV.steps,son=st.length-1,i=0,s=null,d=0;
+    for(i=0;i<=son;i++){
+      if(st[i].maneuver.type==='depart') continue;
+      s=st[i];
+      d=mesafeM(ll,[s.maneuver.location[1],s.maneuver.location[0]]);
+      if(d>25) break;
+    }
+    NAV.idx=i;
+    if(!s) return;
+    if(s.maneuver.type==='arrive'&&d<35){ navYaz('Hedefe vardın','Teslim noktasındasın','arrive'); return }
+    var kalan=0,k;
+    for(k=i;k<st.length;k++) kalan+=st[k].distance;
+    var sok=s.name&&s.name.length?(s.name+' · '):'';
+    navYaz('<em>'+fmtM(d)+'</em> sonra '+cevir(s),sok+'kalan '+fmtM(kalan),yon(s));
+  }
+  $('#navX').addEventListener('click',function(){ rotaKapat();adimCiz() });
 
   /* sheet yardımcıları */
   function ac(id){$('#'+id).classList.add('on')}
