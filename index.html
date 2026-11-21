@@ -1,1251 +1,621 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
-<title>Sezar Abi Kurye</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png">
+<title>Sezer Abi Kurye</title>
+<link rel="stylesheet" href="assets/fonts.css">
 <style>
+
+
+
+
+
 :root{
-  /* Tek renk dili: siyah–beyaz. Hiyerarşi renkle değil, ağırlık ve
-     boşlukla kurulur. Eski değişken adları korunur; hepsi tek renge bağlı. */
-  --bg:#FFFFFF;
-  --surface:#FFFFFF;
-  --sunken:#F6F6F7;
-  --ink:#0A0A0B;
-  --ink2:#5C5C64;
-  --ink3:#63636B;
-  --line:#ECECEF;
-  --line2:#DCDCE0;
-  --r:18px;
-  --hair:1px solid var(--line);
-  --ease:cubic-bezier(.22,.61,.36,1);
-  /* eski adlar */
-  --card:#FFFFFF;--brand:#0A0A0B;--brand2:#0A0A0B;
-  --green:#0A0A0B;--green2:#0A0A0B;--greenbg:#F6F6F7;--danger:#0A0A0B;
+  --accent:#1B6FA8; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55; --line:#E4DCD1; --pad:#EDE7DF;
+  --display:'Bricolage Grotesque','DM Sans',system-ui,sans-serif;
+  --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%}
-body{
-  background:var(--bg);color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  font-size:15px;line-height:1.5;
-  overscroll-behavior-y:none;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
+html,body{margin:0;height:100%;background:#1E1E24;overscroll-behavior:none}
+body{font-family:var(--body);color:var(--ink)}
+button,input,select{font-family:inherit;color:inherit}
+button{cursor:pointer}
+h1,p{margin:0}
+
+#app{position:relative;height:100vh;height:100dvh;width:100%;max-width:480px;margin:0 auto;overflow:hidden;background:var(--cream)}
+@media (min-width:520px){#app{box-shadow:0 0 0 1px #000,0 20px 80px rgba(0,0,0,.5)}}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+  background:var(--cream);
+  padding:calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 28px);gap:clamp(14px,2.6dvh,24px)}
+.screen.on{display:flex;animation:in .28s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes inBack{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.screen.on{animation:none}}
+.spacer{flex:1;min-height:8px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.back{width:44px;height:44px;border-radius:12px;border:2px solid var(--ink);background:transparent;display:flex;align-items:center;justify-content:center;padding:0}
+.back:active{background:var(--pad)}
+.chip{padding:8px 14px;border-radius:20px;background:var(--accent);border:2px solid var(--ink);font-size:14px;font-weight:700}
+.chip.dark{background:var(--ink);color:var(--cream)}
+
+/* type */
+.h{font-family:var(--display);font-weight:800;letter-spacing:-1.4px;line-height:1}
+.h1{font-size:clamp(34px,10.4vw,44px)}
+.h2{font-size:clamp(32px,9.4vw,40px)}
+.h3{font-size:clamp(30px,9.2vw,36px);letter-spacing:-1.2px}
+.sub{font-size:16px;line-height:1.45;color:var(--mute)}
+.sub b,.sub a{color:var(--ink);font-weight:700}
+.sub a{text-decoration:underline;cursor:pointer}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;min-height:60px;width:100%;border-radius:14px;border:2px solid var(--ink);
+  background:var(--ink);color:#fff;font-size:19px;font-weight:700;text-decoration:none;box-shadow:0 4px 0 rgba(30,30,36,.35);transition:transform .06s,box-shadow .06s}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.cream{background:var(--cream);color:var(--ink)}
+.btn.dark{background:var(--ink);color:var(--cream);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:0 4px 0 var(--ink)}
+.linkbtn{background:none;border:0;font-size:16px;font-weight:500;padding:10px;min-height:44px;text-align:center}
+.linkbtn strong{text-decoration:underline}
+
+/* fields */
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.field .lab{font-size:14px;font-weight:700}
+.in{min-height:52px;width:100%;padding:0 16px;border:2px solid var(--ink);border-radius:12px;background:var(--paper);font-size:17px;outline:none;appearance:none;-webkit-appearance:none}
+.in::placeholder{color:#9b948b}
+input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{
+  -webkit-text-fill-color:var(--ink);
+  -webkit-box-shadow:0 0 0 1000px var(--paper) inset;
+  box-shadow:0 0 0 1000px var(--paper) inset;
+  caret-color:var(--ink);
+  transition:background-color 99999s ease-out 0s}
+.in:focus,.pin:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,67,28,.25)}
+.in.bad{border-color:var(--accent)}
+select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231E1E24' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:44px}
+.hint{font-size:13px;color:var(--mute);overflow-wrap:anywhere}
+
+/* welcome */
+#s-welcome{background:var(--accent);padding-bottom:calc(env(safe-area-inset-bottom) + 32px)}
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3.4dvh,28px);padding-top:clamp(20px,6dvh,60px);min-height:340px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(52px,16vw,68px);line-height:.95;letter-spacing:-2px;color:var(--cream);text-align:center}
+.tag{padding:6px 18px;border-radius:8px;background:var(--ink);color:var(--cream);font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:4px;transform:rotate(-2deg)}
+.hero p{font-size:18px;line-height:1.4;text-align:center;font-weight:500;max-width:260px}
+.hero svg{width:min(300px,74vw);height:auto}
+#s-welcome .btns{display:flex;flex-direction:column;gap:14px}
+
+/* role cards */
+.role{display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:18px;border:2px solid var(--ink);background:var(--paper);box-shadow:0 4px 0 var(--ink);text-align:left;width:100%;transition:transform .06s,box-shadow .06s}
+.role:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.role.o{background:var(--accent)}
+.role b{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.5px}
+.role span{font-size:15px;line-height:1.4;color:var(--mute)}
+.role.o span{color:var(--ink);font-weight:500}
+.cards{display:flex;flex-direction:column;gap:16px}
+.foot{font-size:15px;line-height:1.5;color:var(--mute);text-align:center}
+.foot b{color:var(--ink)}
+
+/* phone */
+.phone{display:flex;gap:8px}
+.cc{min-height:58px;padding:0 14px;border:2px solid var(--ink);border-radius:12px;background:var(--paper);display:flex;align-items:center;font-size:18px;font-weight:700}
+.phone .in{min-height:58px;font-size:20px;font-weight:500;letter-spacing:.5px;flex:1;min-width:0}
+.legal{font-size:13px;line-height:1.5;color:var(--mute);text-align:center;max-width:320px;margin:0 auto}
+
+/* otp */
+.otp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cell{aspect-ratio:1/1.1;border:2px solid var(--ink);border-radius:14px;background:var(--paper);display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:38px;font-weight:800}
+.cell.cur{border:3px solid var(--accent)}
+.cell.cur::after{content:"";width:2px;height:34px;background:var(--accent);animation:blink 1s steps(1) infinite}
+.cell.cur.full::after{display:none}
+@keyframes blink{50%{opacity:0}}
+.cell.err{border-color:var(--accent);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.resend{display:flex;justify-content:space-between;align-items:center;font-size:15px}
+.resend span{color:var(--mute)}
+.resend button{background:none;border:0;font-size:15px;font-weight:700;padding:10px 0;min-height:44px}
+.resend button:disabled{cursor:default}
+.keys{margin:0 -24px;padding:12px 12px calc(env(safe-area-inset-bottom) + 20px);background:var(--pad);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.keys button{min-height:clamp(48px,7.4dvh,58px);border:0;border-radius:10px;background:var(--paper);font-size:24px;font-weight:500}
+.keys button:active{background:#fff;transform:scale(.97)}
+.keys .ghost{background:transparent}
+#s-otp{padding-bottom:0}
+
+/* register */
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.seg button{min-height:56px;border:2px solid var(--ink);border-radius:12px;background:var(--paper);font-size:16px;font-weight:500}
+.seg button[aria-pressed=true]{background:var(--accent);font-weight:700}
+.seg2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg2 button{min-height:46px;font-size:14.5px}
+.photo{min-height:72px;border:2px dashed var(--ink);border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:700;width:100%;overflow:hidden;padding:0 12px}
+.photo.done{border-style:solid;background:var(--paper)}
+.photo img{height:48px;width:48px;object-fit:cover;border-radius:8px;border:2px solid var(--ink)}
+.check{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.4;color:var(--mute);cursor:pointer}
+.check input{width:24px;height:24px;flex:none;accent-color:var(--accent);margin:0}
+.maplink{align-self:flex-start;min-height:44px;padding:0 4px;border:0;background:transparent;font-size:15px;font-weight:700;text-decoration:underline;text-align:left}
+.maplink.ok{text-decoration:none;color:#1d7a4d}
+.in.code{border-color:var(--accent);font-weight:700;letter-spacing:1px;text-transform:uppercase}
+
+/* done */
+#s-done{padding:0 0 calc(env(safe-area-inset-bottom) + 28px);gap:0}
+.band{height:clamp(190px,36dvh,300px);flex:none;background:var(--accent);display:flex;align-items:center;justify-content:center;padding-top:calc(env(safe-area-inset-top) + 20px)}
+.band svg{width:240px;max-width:60vw;height:auto}
+.done-body{padding:28px 24px 0;display:flex;flex-direction:column;gap:12px}
+.done-body p{font-size:17px;line-height:1.45;color:var(--mute)}
+.steps{padding:28px 24px 0;display:flex;flex-direction:column}
+.step{display:flex;gap:14px;align-items:flex-start}
+.rail{display:flex;flex-direction:column;align-items:center}
+.dot{width:28px;height:28px;border-radius:14px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center}
+.dot.ok{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.dot.now{border:3px solid var(--accent)}
+.bar{width:2px;height:28px;background:var(--line)}
+.bar.ok{background:var(--ink)}
+.step span.t{font-size:17px;font-weight:700;padding-top:3px}
+.step span.t.off{font-weight:500;color:var(--mute)}
+#s-done .bottom{padding:24px 24px 0}
+
+/* login ok */
+#s-ok{background:var(--accent);align-items:center;justify-content:center;text-align:center;gap:20px}
+#s-ok h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,13vw,56px);letter-spacing:-1.6px;line-height:1;color:var(--cream)}
+#s-ok p{font-size:18px;font-weight:500;max-width:280px;line-height:1.4}
+#s-ok svg{width:min(240px,60vw);height:auto}
+#s-ok .btn{max-width:340px;margin-top:12px}
+
+
+/* ================= v3 · inceltme katmanı ================= */
+/* tipografi: bir kademe küçük, aynı karakter */
+.h{letter-spacing:-1px;overflow-wrap:break-word}
+.h1{font-size:clamp(28px,8.2vw,34px)}
+.h2{font-size:clamp(26px,7.6vw,31px)}
+.h3{font-size:clamp(24px,7vw,28px);letter-spacing:-.9px}
+.sub{font-size:15px;line-height:1.5;overflow-wrap:break-word}
+.hero h1{font-size:clamp(44px,12.6vw,56px);letter-spacing:-1.6px}
+.hero p{font-size:15.5px;max-width:250px}
+.hero{gap:clamp(14px,2.6dvh,22px)}
+.hero svg{width:min(240px,60vw)}
+.tag{transform:none;font-size:22px;letter-spacing:3.2px;padding:5px 14px;border-radius:7px}
+
+/* iskelet: kenar boşluğu ve ritim */
+.screen{padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 22px);gap:clamp(12px,2.2dvh,18px)}
+.top{min-height:40px}
+
+/* çizgiler: 2px → 1.5px, sert gölge sadece ana butonda */
+.back{width:40px;height:40px;border-width:1.5px;border-radius:11px}
+.chip{font-size:12.5px;padding:6px 12px;border-width:1.5px;border-radius:16px}
+.btn{min-height:54px;font-size:16.5px;border-width:1.5px;box-shadow:0 3px 0 var(--ink)}
+.btn:disabled{box-shadow:0 3px 0 var(--ink)}
+.btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.btn.dark,.btn.cream{box-shadow:none}
+.linkbtn{font-size:14.5px;min-height:40px;padding:8px}
+
+/* alanlar */
+.field label,.field .lab{font-size:12.5px;font-weight:600;color:var(--mute);letter-spacing:.01em}
+.in{min-height:50px;font-size:16px;border-width:1.5px;border-radius:11px}
+.cc{min-height:50px;font-size:15.5px;border-width:1.5px;border-radius:11px}
+.phone .in{min-height:50px;font-size:18px;letter-spacing:.4px}
+.phone{gap:7px}
+.hint{font-size:12px}
+.legal{font-size:11.5px;line-height:1.5}
+
+/* rol kartları: gölge gitti, çerçeve inceldi */
+.cards{gap:10px}
+.role{padding:15px 16px;border-width:1.5px;border-radius:15px;box-shadow:none;gap:5px}
+.role:active{transform:translateY(1px);box-shadow:none;background:var(--pad)}
+.role.o:active{background:var(--accent)}
+.role b{font-size:20px;letter-spacing:-.3px}
+.role span{font-size:13px;line-height:1.45}
+.role svg{width:22px;height:22px}
+
+/* kod ekranı */
+.otp{gap:10px}
+.cell{font-size:30px;border-width:1.5px;border-radius:12px;aspect-ratio:1/1.15}
+.cell.cur{border-width:2px}
+.cell.cur::after{height:28px;width:1.5px}
+.resend{font-size:13.5px}
+.resend button{font-size:13.5px;min-height:40px;padding:8px 0}
+.keys{padding:10px 10px calc(env(safe-area-inset-bottom) + 16px);gap:7px;margin:0 -20px}
+.keys button{min-height:clamp(44px,6.6dvh,52px);font-size:21px;border-radius:9px}
+
+/* kayıt */
+.seg{gap:7px}
+.seg button{min-height:48px;font-size:14px;border-width:1.5px;border-radius:11px}
+.photo{min-height:60px;font-size:14px;border-width:1.5px;border-radius:11px;gap:8px}
+.photo img{height:40px;width:40px;border-width:1.5px;border-radius:7px}
+.check{font-size:12.5px;line-height:1.45;gap:10px}
+.check input{width:20px;height:20px}
+.maplink{font-size:13.5px;min-height:40px}
+
+/* bitiş */
+#s-ok h1{font-size:clamp(36px,10.6vw,44px);letter-spacing:-1.3px}
+#s-ok p{font-size:15.5px;max-width:260px}
+#s-ok svg{width:min(200px,52vw)}
+.band{height:clamp(160px,30dvh,240px)}
+.band svg{width:190px;max-width:48vw}
+.done-body{padding:24px 20px 0;gap:10px}
+.done-body p{font-size:15px}
+.steps{padding:24px 20px 0}
+.step span.t{font-size:15px}
+.dot{width:24px;height:24px}
+.bar{height:24px}
+#s-done .bottom{padding:20px 20px 0}
+.foot{font-size:13.5px}
+
+.btn:disabled{background:rgba(30,30,36,.07);color:rgba(30,30,36,.40);border-color:rgba(30,30,36,.10);box-shadow:none}
+.chip{font-size:12px;padding:5px 11px}
+.cell{background:var(--paper)}
+.otp{grid-template-columns:repeat(4,minmax(0,56px));gap:12px;justify-content:flex-start}
+.cell{aspect-ratio:1/1.16}
+.sub a{white-space:nowrap}
+#s-courier .spacer,#s-shop .spacer{flex:0 0 0;min-height:0}
+#s-courier .check,#s-shop .check{margin-top:4px}
+#s-courier .btn,#s-shop .btn{margin-top:4px}
+
+/* geçiş: transform yok, sade fade — geri tuşunda ekran boş kalmasın */
+.screen.on{animation:none}
+@media (prefers-reduced-motion:no-preference){
+  .screen.on{animation:fadein .16s ease both}
 }
-button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
-.ic{width:22px;height:22px;display:block;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-
-/* ---------- iskelet ---------- */
-#app{display:flex;flex-direction:column;height:100vh;max-width:520px;margin:0 auto;position:relative;background:var(--bg)}
-@supports (height:100dvh){#app{height:100dvh}}
-#top{flex:none;padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 12px}
-#view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 20px 20px}
-#view::-webkit-scrollbar{display:none}
-
-/* ---------- üst çubuk ---------- */
-.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brandline{display:flex;align-items:center;gap:11px;min-width:0}
-.logo{width:32px;height:32px;flex:none;border-radius:10px;background:var(--ink);display:grid;place-items:center}
-.logo svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-h1{font-size:17px;font-weight:650;margin:0;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pill{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;
-  font-size:12.5px;font-weight:600;letter-spacing:-.1px;flex:none;
-  border:1px solid var(--line2);background:var(--surface);color:var(--ink2);
-  transition:background .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease)}
-.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
-.dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
-.pill.on .dot{background:#fff}
-
-/* ---------- bölüm başlığı ---------- */
-.sechead{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 10px}
-.seclabel{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink3)}
-.seclink{font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:-.1px}
-
-/* ---------- kartlar ---------- */
-.card{background:var(--surface);border-radius:var(--r);border:var(--hair);overflow:hidden}
-.card + .card{margin-top:12px}
-
-/* harita */
-/* rota şeridi — sahte harita yerine gerçek durak akışı */
-.rota{padding:18px 16px 4px;background:var(--sunken);border-bottom:var(--hair)}
-.rdura{display:flex;align-items:flex-start;gap:13px;position:relative}
-.rdura + .rdura{margin-top:2px}
-.rray{width:14px;flex:none;display:flex;flex-direction:column;align-items:center;padding-top:5px}
-.rnokta{width:11px;height:11px;border-radius:50%;border:2.5px solid var(--ink);background:var(--surface);flex:none;box-sizing:border-box}
-.rnokta.dolu{background:var(--ink)}
-.rnokta.halka{background:var(--surface)}
-.rcizgi{width:2px;flex:1;min-height:22px;background:repeating-linear-gradient(to bottom,var(--line2) 0 4px,transparent 4px 8px);margin:3px 0}
-.rgovde{flex:1;min-width:0;padding-bottom:14px}
-.rdura:last-child .rgovde{padding-bottom:0}
-.rrol{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink3)}
-.rad{font-size:14px;font-weight:600;letter-spacing:-.2px;margin-top:2px;overflow-wrap:anywhere;line-height:1.35}
-.ralt{font-size:12px;color:var(--ink2);margin-top:2px;font-weight:500}
-.rgit{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding:11px;width:100%;
-  border-radius:12px;background:var(--surface);border:1px solid var(--line2);
-  font-size:12.5px;font-weight:600;color:var(--ink);letter-spacing:-.1px}
-.rgit .ic{width:14px;height:14px;stroke-width:1.8}
-
-/* detay */
-.det{padding:16px 16px 6px}
-.det h2{display:none}
-.row{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-top:var(--hair)}
-.row:first-of-type{border-top:0}
-.rowic{width:34px;height:34px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;flex:none;color:var(--ink)}
-.rowic .ic{width:16px;height:16px;stroke-width:1.7}
-.rowbody{min-width:0;flex:1;padding-top:2px}
-.rowk{font-size:11px;font-weight:650;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3)}
-.rowv{font-size:14.5px;font-weight:550;margin-top:2px;overflow-wrap:anywhere;letter-spacing:-.1px}
-.rowv small{font-weight:500;color:var(--ink2)}
-.eta{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;font-weight:600;font-size:12.5px;padding:5px 11px;border-radius:999px;margin-top:2px}
-.eta .ic{width:13px;height:13px;stroke-width:1.8}
-
-/* satır içi küçük işlem düğmeleri */
-.rowbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);display:grid;place-items:center;flex:none;
-  color:var(--ink);border:1px solid var(--line2);transition:transform .12s var(--ease),background .15s}
-.rowbtn:active{transform:scale(.94);background:var(--sunken)}
-.rowbtn .ic{width:16px;height:16px;stroke-width:1.7}
-
-/* hızlı işlem şeridi */
-.quickrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px 16px}
-.qbtn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:13px;
-  background:var(--sunken);color:var(--ink2);transition:transform .12s var(--ease),background .15s}
-.qbtn:active{transform:scale(.95);background:#EFEFF1}
-.qbtn .ic{width:18px;height:18px;color:var(--ink);stroke-width:1.7}
-.qbtn span{font-size:11px;font-weight:600;letter-spacing:.1px;text-align:center;line-height:1.25}
-
-/* ağ durumu şeridi */
-.agserit{display:none;flex:none;text-align:center;font-size:12px;font-weight:600;padding:8px 14px;
-  background:var(--ink);color:#fff;letter-spacing:-.1px}
-.agserit.on{display:block}
-
-/* sohbet */
-.sohbet{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;padding:14px 0 6px}
-@supports (height:46dvh){.sohbet{max-height:46dvh}}
-.balon{max-width:82%;padding:11px 14px;border-radius:16px;font-size:13.5px;font-weight:500;line-height:1.45;
-  position:relative;overflow-wrap:anywhere;letter-spacing:-.1px}
-.balon.onlar{background:var(--sunken);color:var(--ink);align-self:flex-start;border-bottom-left-radius:6px}
-.balon.ben{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
-.bsaat{display:block;font-size:11px;font-weight:550;opacity:.5;margin-top:5px;text-align:right}
-.yazalim{display:flex;align-items:center;gap:9px;padding:10px 0 4px;border-top:var(--hair);margin-top:8px}
-.yazalim input{flex:1;height:46px;border-radius:23px;border:1px solid var(--line2);background:var(--surface);padding:0 17px;
-  font:inherit;font-size:14px;color:var(--ink);min-width:0}
-.yazalim input::placeholder{color:var(--ink3)}
-.yazalim input:focus{outline:2px solid var(--ink);outline-offset:-2px}
-.gonder{width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;flex:none}
-.gonder .ic{width:18px;height:18px;transform:rotate(45deg);stroke-width:1.8}
-
-/* butonlar */
-.ozet{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 16px 0}
-.ozetU{min-width:0}
-.ozetK{font-size:11px;font-weight:650;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3)}
-.ozetV{font-size:24px;font-weight:680;letter-spacing:-1px;margin-top:3px;font-variant-numeric:tabular-nums}
-.ozetS{display:flex;gap:7px;flex:none;flex-wrap:wrap;justify-content:flex-end}
-.cip{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:999px;
-  background:var(--sunken);font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap;letter-spacing:-.1px}
-.cip .ic{width:13px;height:13px;stroke-width:1.8;color:var(--ink2)}
-.acts{display:grid;grid-template-columns:1fr;gap:10px;padding:16px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:14px;
-  font-size:14px;font-weight:600;letter-spacing:-.1px;transition:transform .12s var(--ease),opacity .15s}
-.btn:active{transform:scale(.978)}
-.btn .ic{width:17px;height:17px;stroke-width:1.8}
-.btn.pri,.btn.done{background:var(--ink);color:#fff}
-.btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line2)}
-.btn[disabled]{opacity:.4}
-
-/* bekleyen siparişler */
-.orders{background:var(--surface);border-radius:15px;border:var(--hair);overflow:hidden}
-.order{display:flex;align-items:center;gap:13px;background:var(--surface);
-  padding:15px;text-align:left;width:100%;transition:background .15s}
-.order + .order{border-top:var(--hair)}
-.order:active{background:var(--sunken)}
-.oav{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;
-  font-weight:650;font-size:15px;color:#fff;background:var(--ink);letter-spacing:-.2px}
-.obody{flex:1;min-width:0}
-.oname{font-size:14.5px;font-weight:600;letter-spacing:-.2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ometa{font-size:12.5px;color:var(--ink2);margin-top:2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.ometa b{color:var(--ink);font-weight:650}
-.chev{color:var(--ink3);flex:none}
-.chev .ic{width:17px;height:17px;stroke-width:1.7}
-
-/* durum şeridi: kaldırıldı — üst çubuktaki rozet tek gösterge */
-.statusbar{display:none}
-.sleft,.sright{display:none}
-
-/* alt menü */
-#nav{flex:none;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
-  background:rgba(255,255,255,.94);backdrop-filter:blur(16px) saturate(180%);
-  border-top:var(--hair);
-  padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 8px)}
-.navb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;border-radius:12px;
-  color:var(--ink3);transition:color .15s var(--ease)}
-.navb .ic{width:21px;height:21px;stroke-width:1.6}
-.navb span{font-size:11px;font-weight:600;letter-spacing:.1px}
-.navb.on{color:var(--ink)}
-.navb.on .ic{stroke-width:2}
-
-/* ---------- ikincil ekranlar ---------- */
-.phead{margin:10px 0 2px}
-.phead h2{font-size:26px;font-weight:680;margin:0;letter-spacing:-.9px}
-.phead p{margin:5px 0 0;font-size:13px;color:var(--ink2);letter-spacing:-.1px}
-
-.stat2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.stat{background:var(--surface);border-radius:15px;border:var(--hair);padding:15px}
-.statk{font-size:11px;font-weight:650;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3)}
-.statv{font-size:23px;font-weight:680;margin-top:5px;letter-spacing:-.9px;font-variant-numeric:tabular-nums}
-.statv small{font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:0}
-.delta{font-size:12px;font-weight:600;margin-top:3px;color:var(--ink2)}
-.up{color:var(--ink)}
-
-.bars{display:flex;align-items:flex-end;gap:9px;height:124px;margin-top:18px;padding:0 2px}
-.barcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
-.bar{width:100%;border-radius:6px 6px 3px 3px;background:#E9E9EC;min-height:4px;transition:height .45s var(--ease)}
-.bar.top{background:var(--ink)}
-.barlab{font-size:11px;color:var(--ink3);font-weight:600}
-.barval{font-size:11px;font-weight:650;color:var(--ink2);font-variant-numeric:tabular-nums}
-
-.list{background:var(--surface);border-radius:15px;border:var(--hair);overflow:hidden;margin-top:16px}
-.li{display:flex;align-items:center;gap:13px;background:var(--surface);padding:15px;width:100%;text-align:left;transition:background .15s}
-.li + .li{border-top:var(--hair)}
-.li:active{background:var(--sunken)}
-.liav{width:40px;height:40px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;flex:none;font-weight:650;color:var(--ink);font-size:14px}
-.liav .ic{width:17px;height:17px;stroke-width:1.8}
-.lib{flex:1;min-width:0}
-.lit{font-size:14.5px;font-weight:600;letter-spacing:-.2px}
-.lis{font-size:12.5px;color:var(--ink2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.litime{font-size:12px;color:var(--ink3);font-weight:600;flex:none;align-self:flex-start;margin-top:3px;font-variant-numeric:tabular-nums}
-.unread{width:7px;height:7px;border-radius:50%;background:var(--ink);flex:none}
-
-.kv{background:var(--surface);border-radius:15px;border:var(--hair);overflow:hidden;margin-top:16px}
-.kvrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;border-top:var(--hair);width:100%;text-align:left;transition:background .15s}
-.kvrow:active{background:var(--sunken)}
-.kvrow:first-child{border-top:0}
-.kvk{font-size:14px;font-weight:550;display:flex;align-items:center;gap:12px;letter-spacing:-.1px}
-.kvk .ic{width:18px;height:18px;color:var(--ink2);stroke-width:1.7}
-.kvv{font-size:13px;color:var(--ink3);font-weight:550;text-align:right}
-.kvrow .chev .ic{width:16px;height:16px}
-
-.hero{background:var(--ink);color:#fff;border-radius:18px;padding:20px;margin-top:16px;display:flex;align-items:center;gap:15px}
-.heroav{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center;font-size:19px;font-weight:650;flex:none;letter-spacing:-.5px}
-.herobody{min-width:0;flex:1}
-.heron{font-size:17px;font-weight:650;letter-spacing:-.4px}
-.herom{font-size:12.5px;opacity:.6;margin-top:2px}
-.herostat{display:flex;gap:18px;margin-top:11px}
-.herostat div{font-size:11px;opacity:.6;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
-.herostat b{display:block;font-size:15px;opacity:1;font-weight:680;margin-top:2px;letter-spacing:-.3px;text-transform:none}
-
-.faqs{margin-top:16px;border:var(--hair);border-radius:15px;overflow:hidden;background:var(--surface)}
-.faq{background:var(--surface);border-radius:0;border:0;border-top:var(--hair);margin-top:0;overflow:hidden}
-.faq:first-of-type{border-top:0;border-radius:15px 15px 0 0}
-.faq:last-of-type{border-radius:0 0 15px 15px}
-.faqq{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;width:100%;text-align:left;font-size:14px;font-weight:600;letter-spacing:-.15px}
-.faqq .ic{width:16px;height:16px;color:var(--ink3);transition:transform .22s var(--ease)}
-.faq.open .faqq .ic{transform:rotate(180deg)}
-.faqa{display:none;padding:0 16px 15px;font-size:13.5px;color:var(--ink2);line-height:1.6}
-.faq.open .faqa{display:block}
-
-/* ---------- katman (sheet) ---------- */
-#sheet{position:fixed;inset:0;z-index:50;display:none}
-#sheet.on{display:block}
-#sheet .scrim{position:absolute;inset:0;background:rgba(10,10,11,.38);opacity:0;transition:opacity .24s var(--ease)}
-#sheet.in .scrim{opacity:1}
-#sheet .panel{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--surface);
-  border-radius:24px 24px 0 0;padding:8px 20px calc(env(safe-area-inset-bottom,0px) + 20px);
-  transform:translateY(100%);transition:transform .3s var(--ease);max-height:88vh;overflow-y:auto;
-  border-top:var(--hair)}
-@supports (height:88dvh){#sheet .panel{max-height:88dvh}}
-#sheet.in .panel{transform:translateY(0)}
-.grab{width:36px;height:4px;border-radius:99px;background:var(--line2);margin:8px auto 16px}
-.shhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
-.shhead h3{font-size:19px;font-weight:680;margin:0;letter-spacing:-.5px}
-.shclose{width:32px;height:32px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;flex:none;color:var(--ink2)}
-.shclose .ic{width:15px;height:15px;stroke-width:1.8}
-.shsub{font-size:13px;color:var(--ink2);margin:3px 0 0}
-
-/* toast */
-#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);transform:translate(-50%,14px);
-  background:var(--ink);color:#fff;font-size:13px;font-weight:550;padding:12px 20px;border-radius:999px;
-  opacity:0;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease);z-index:80;max-width:88vw;text-align:center;letter-spacing:-.1px}
-#toast.on{opacity:1;transform:translate(-50%,0)}
-
-.empty{text-align:center;padding:38px 22px;color:var(--ink3);font-size:13px;line-height:1.6}
-.empty .ic{width:34px;height:34px;margin:0 auto 12px;color:var(--line2);stroke-width:1.5}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style>
 </head>
 <body>
-
-<svg style="display:none" aria-hidden="true">
-  <symbol id="i-bike" viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 17.5h-4l-2.5-6H6"/><path d="M12 11.5 9 6h3"/><path d="m15 17.5-2-8h4"/></symbol>
-  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
-  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3.5 10.5 8.5-7 8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
-  <symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.2" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-5.5A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8Z"/></symbol>
-  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></symbol>
-  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5A2.5 2.5 0 0 1 14 10c0 1.5-2 1.8-2 3.2"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="i-nav" viewBox="0 0 24 24"><path d="m3.5 11 17-7-7 17-2.5-7.5Z"/></symbol>
-  <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 8.5 4.7v8.6L12 21l-8.5-4.7V7.7Z"/><path d="M3.5 7.7 12 12.4l8.5-4.7"/><path d="M12 12.4V21"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.5 12.5 5 5 10-11"/></symbol>
-  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
-  <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="m5 9 7 7 7-7"/></symbol>
-  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5Z"/><path d="M9 4v13M15 6.5v13"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></symbol>
-  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2Z"/></symbol>
-  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h7l5 5v13H6Z"/><path d="M13 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
-  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 15.5V10a6 6 0 1 0-12 0v5.5L4.5 18h15Z"/><path d="M10 21h4"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6Z"/><path d="m9 12 2 2 4-4"/></symbol>
-  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5.5" r="2.8"/><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="18.5" r="2.8"/><path d="m8.5 10.6 7-3.6M8.5 13.4l7 3.6"/></symbol>
-  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></symbol>
-  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></symbol>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mustache" viewBox="0 0 320 90"><path d="M160 28C140 6 100-2 70 8 45 16 20 30 0 24 6 52 30 76 70 78 105 80 135 66 160 54 185 66 215 80 250 78 290 76 314 52 320 24 300 30 275 16 250 8 220-2 180 6 160 28Z"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
-<div id="app">
-  <header id="top"></header>
-  <div class="agserit" id="agSerit"></div>
-  <main id="view"></main>
-  <div class="statusbar" id="statusbar"></div>
-  <nav id="nav"></nav>
-</div>
+<main id="app">
 
-<div id="sheet"><div class="scrim" data-close></div><div class="panel" id="sheetPanel"></div></div>
-<div id="toast"></div>
+<!-- 1 · Karşılama -->
+<section class="screen" id="s-welcome" aria-label="Karşılama">
+  <div class="hero">
+    <svg viewBox="0 0 320 90" aria-hidden="true" fill="#FFF3E4"><use href="#mustache"/></svg>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+      <h1>Sezer Abi</h1>
+      <span class="tag">KURYE</span>
+    </div>
+    <p>Dükkandan kapıya, abinin garantisiyle.</p>
+  </div>
+  <div class="btns">
+    <button class="btn cream" data-go="role" data-mode="register">Başlayalım</button>
+    <button class="linkbtn" data-go="phone" data-mode="login">Hesabım var, <strong>giriş yap</strong></button>
+  </div>
+</section>
+
+<!-- 2 · Rol seçimi -->
+<section class="screen" id="s-role" aria-label="Rol seçimi">
+  <div class="top">
+    <button class="back" data-back aria-label="Geri"><svg width="22" height="22"><use href="#chev"/></svg></button>
+    <svg width="64" viewBox="0 0 320 90" aria-hidden="true" fill="#1B6FA8"><use href="#mustache"/></svg>
+  </div>
+  <h1 class="h h1">Sen kimsin<br>abi?</h1>
+  <div class="cards">
+    <button class="role" data-role="shop" data-go="phone">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1E1E24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0A2.7 2.7 0 0 0 20 9"/><path d="M5 12v8h14v-8"/><path d="M10 20v-5h4v5"/></svg>
+      <b>Dükkan sahibiyim</b><span>Siparişleri sen yönetirsin, kurye çağırırsın.</span>
+    </button>
+    <button class="role o" data-role="courier" data-go="phone">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1E1E24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h4l3-8h-4"/><path d="M13 9l-2-3H8"/></svg>
+      <b>Kuryeyim</b><span>Siparişi alırsın, kapıya götürürsün, kazanırsın.</span>
+    </button>
+  </div>
+  <div class="spacer"></div>
+  <p class="foot">Müşteri misin? Sipariş vermek için <b>Sezer Abi</b> müşteri uygulamasını kullan.</p>
+</section>
+
+<!-- 3 · Telefon -->
+<section class="screen" id="s-phone" aria-label="Telefon girişi">
+  <div class="top">
+    <button class="back" data-back aria-label="Geri"><svg width="22" height="22"><use href="#chev"/></svg></button>
+    <span class="chip" id="roleChip">Kurye girişi</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <h1 class="h h2">Numaranı yaz,<br>kodu yollayalım.</h1>
+    <p class="sub">Şifre yok, uğraş yok. Telefonuna gelen kodla girersin.</p>
+  </div>
+  <div class="field">
+    <label for="tel">Telefon numaran</label>
+    <div class="phone">
+      <div class="cc">+90</div>
+      <input id="tel" class="in" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="5XX XXX XX XX" maxlength="13">
+    </div>
+    <span class="hint" id="telErr" role="alert" style="color:var(--accent);display:none">Numara 5 ile başlayan 10 haneli olmalı.</span>
+  </div>
+  <button class="btn" id="sendCode" disabled>Kodu gönder</button>
+  <div class="spacer"></div>
+  <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+    <button class="linkbtn" id="toRegister">Hesabın yok mu? <strong>Kaydol</strong></button>
+    <p class="legal">Devam ederek kullanım koşullarını ve kişisel verilerin korunması metnini kabul etmiş olursun.</p>
+  </div>
+</section>
+
+<!-- 4 · SMS kodu -->
+<section class="screen" id="s-otp" aria-label="SMS kodu">
+  <div class="top">
+    <button class="back" data-back aria-label="Geri"><svg width="22" height="22"><use href="#chev"/></svg></button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <h1 class="h h2">Gelen kodu yaz.</h1>
+    <p class="sub">+90 <span id="shownTel"></span> numarasına 4 haneli kod yolladık. <a id="changeNum">Numarayı değiştir</a></p>
+  </div>
+  <div class="otp" id="otp" role="group" aria-label="4 haneli kod">
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+  </div>
+  <div class="resend">
+    <span>Kod gelmedi mi?</span>
+    <button id="resend" disabled>Tekrar yolla · 00:45</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="keys" id="keys">
+    <button>1</button><button>2</button><button>3</button>
+    <button>4</button><button>5</button><button>6</button>
+    <button>7</button><button>8</button><button>9</button>
+    <span></span><button>0</button>
+    <button class="ghost" data-del aria-label="Sil"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M13 9l4 6M17 9l-4 6"/></svg></button>
+  </div>
+</section>
+
+<!-- 5a · Kurye kaydı -->
+<section class="screen" id="s-courier" aria-label="Kurye kaydı">
+  <div class="top">
+    <button class="back" data-back aria-label="Geri"><svg width="22" height="22"><use href="#chev"/></svg></button>
+    <span class="chip">Kurye kaydı</span>
+  </div>
+  <h1 class="h h3">Aramıza katıl.</h1>
+  <div class="field"><label for="ad">Adın soyadın</label><input id="ad" class="in" type="text" autocomplete="name" placeholder="Ad Soyad"></div>
+  <div class="field"><label for="ilce">Hangi ilçede çalışacaksın?</label>
+    <select id="ilce" class="in"><option value="">İlçe seç</option><option>Karşıyaka</option><option>Bornova</option><option>Konak</option><option>Buca</option></select></div>
+  <div class="field"><span class="lab" id="aracL">Aracın ne?</span>
+    <div class="seg" role="group" aria-labelledby="aracL" id="arac">
+      <button type="button" aria-pressed="false">Motor</button><button type="button" aria-pressed="false">Bisiklet</button><button type="button" aria-pressed="false">Araba</button>
+    </div></div>
+  <input type="file" id="ehliyet" accept="image/*" capture="environment" hidden>
+  <button type="button" class="photo" id="photoBtn">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="photoTxt">Ehliyetinin fotoğrafını çek</span>
+  </button>
+  <div class="field"><span class="lab" id="kodCL">Sezer abi'den gelen kod</span>
+    <div class="seg seg2" role="group" aria-labelledby="kodCL" id="kodSegC">
+      <button type="button" aria-pressed="true" data-kod="var">Kodum var</button>
+      <button type="button" aria-pressed="false" data-kod="yok">Kodum yok</button>
+    </div>
+    <input id="kodC" class="in code" type="text" placeholder="SEZER-00" autocapitalize="characters" autocomplete="off">
+    <span class="hint" id="kodHint">Kodla girersen hemen içeridesin.</span></div>
+  <div class="spacer"></div>
+  <label class="check"><input type="checkbox" id="kvkkC"><span>Kullanım koşullarını ve kişisel verilerimin işlenmesini kabul ediyorum.</span></label>
+  <button class="btn" id="submitC" disabled>Başvuruyu gönder</button>
+</section>
+
+<!-- 5b · Dükkan kaydı -->
+<section class="screen" id="s-shop" aria-label="Dükkan kaydı">
+  <div class="top">
+    <button class="back" data-back aria-label="Geri"><svg width="22" height="22"><use href="#chev"/></svg></button>
+    <span class="chip dark">Dükkan kaydı</span>
+  </div>
+  <h1 class="h h3">Dükkanını ekleyelim.</h1>
+  <div class="field"><label for="dukkan">Dükkanın adı</label><input id="dukkan" class="in" type="text" placeholder="Dükkan adı"></div>
+  <div class="field"><label for="yetkili">Yetkili adı soyadı</label><input id="yetkili" class="in" type="text" autocomplete="name" placeholder="Ad Soyad"></div>
+  <div class="field"><label for="adres">Dükkanın açık adresi</label>
+    <input id="adres" class="in" type="text" autocomplete="street-address" placeholder="Mahalle, cadde, no, ilçe">
+    <span class="hint" id="adresHint">Kurye kapıyı bulabilsin diye açık yaz. Konum işaretlemek zorunlu değil.</span>
+    <button type="button" class="maplink" id="mapBtn">Haritada konumu işaretle (isteğe bağlı)</button></div>
+  <div class="field"><span class="lab" id="kodSL">Sezer abiden aldığın davet kodu</span>
+    <div class="seg seg2" role="group" aria-labelledby="kodSL" id="kodSegS">
+      <button type="button" aria-pressed="true" data-kod="var">Kodum var</button>
+      <button type="button" aria-pressed="false" data-kod="yok">Kodum yok</button>
+    </div>
+    <input id="kod" class="in code" type="text" placeholder="SEZER-00" autocapitalize="characters" autocomplete="off">
+    <span class="hint" id="kodHintS">Kodla girersen hemen içeridesin.</span></div>
+  <div class="spacer"></div>
+  <label class="check"><input type="checkbox" id="kvkkS"><span>Kullanım koşullarını ve kişisel verilerimin işlenmesini kabul ediyorum.</span></label>
+  <button class="btn" id="submitS" disabled>Başvuruyu gönder</button>
+</section>
+
+<!-- 6 · Başvuru alındı -->
+<section class="screen" id="s-done" aria-label="Başvuru alındı">
+  <div class="band"><svg viewBox="0 0 320 90" fill="#FFF3E4" aria-hidden="true"><use href="#mustache"/></svg></div>
+  <div class="done-body">
+    <h1 class="h" id="doneTitle" style="font-size:clamp(32px,9.6vw,38px);letter-spacing:-1.3px">Başvurun bize ulaştı.</h1>
+    <p id="doneText">Ekibimiz seni en geç yarın arayacak. Telefonun yakınında olsun.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="rail"><span class="dot ok" id="d1dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="bar ok" id="d1bar"></span></div><span class="t" id="d1t">Başvuru alındı</span></div>
+    <div class="step"><div class="rail"><span class="dot now" id="d2dot"></span><span class="bar" id="d2bar"></span></div><span class="t" id="d2t">Telefonla görüşme</span></div>
+    <div class="step"><div class="rail"><span class="dot" id="d3dot"></span></div><span class="t off" id="d3t">Hesabın açılır, işe başlarsın</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="bottom"><button class="btn dark" id="doneBtn">Tamam</button></div>
+</section>
+
+<!-- Giriş tamam -->
+<section class="screen" id="s-ok" aria-label="Giriş yapıldı">
+  <svg viewBox="0 0 320 90" fill="#FFF3E4" aria-hidden="true"><use href="#mustache"/></svg>
+  <h1>Hoş geldin abi!</h1>
+  <p>Giriş yaptın.</p>
+  <button class="btn cream" onclick="location.href='kurye.html'">Vardiyaya geç</button>
+</section>
+
+</main>
 
 <script>
 (function(){
-'use strict';
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var state={mode:'register',role:'courier',tel:''};
+  var stack=[];
+  var themes={welcome:'#1B6FA8',done:'#1B6FA8',ok:'#1B6FA8'};
 
-var SURUM='1.4';   /* Sürüm tek kaynağı: build-apk.sh bunu okur. */
+  function show(name,isBack){
+    $$('.screen').forEach(function(s){s.classList.remove('on','navback')});
+    var el=$('#s-'+name); el.classList.add('on'); if(isBack) el.classList.add('navback');
+    el.scrollTop=0;
+    var tc=document.querySelector('meta[name=theme-color]'); if(tc) tc.content=themes[name]||'#FFF3E4';
+    if(name==='phone') onPhoneShow();
+    if(name==='otp') onOtpShow(); else stopTimer();
+    var f=el.querySelector('[data-autofocus]'); if(f) f.focus();
+  }
+  function go(name){ stack.push(current); current=name; history.pushState({n:name},'',''); show(name,false) }
+  var current='welcome';
+  function back(){ if(history.length>1 && stack.length){ history.back() } else { show('welcome',true); current='welcome' } }
+  window.addEventListener('popstate',function(){
+    var prev=stack.pop(); if(!prev){ prev='welcome'; }
+    current=prev; show(prev,true);
+  });
+  function home(){ stack=[]; current='welcome'; history.replaceState({n:'welcome'},''); show('welcome',true) }
 
-/* ============ durum ============ */
-var KEY='sezar.v1';
-var VARSAYILAN={
-  online:true,
-  ad:'Sezer Yılmaz',
-  arac:'Motosiklet · 34 ABC 123',
-  puan:4.9,
-  teslimat:1284,
-  /* Açılışta tasarımdaki ekran birebir görünsün diye devam eden bir görev var. */
-  aktifGorev:{id:'a0', isletme:'Evrensel Kebab Evi', adres:'Caferağa Mahallesi, Moda Cd. No:15',
-    musteri:'Zeynep A.', musteriAdres:'Caferağa Mah. Şair Nefi Sk. No:7 D:4',
-    sure:12, km:2.4, ucret:35, asama:'paket',
-    alis:[40.9878,29.0258], varis:[40.9822,29.0212], tel:'+902163456789', musteriTel:'+905321112233'},
-  siparisler:[
-    {id:'s1', isletme:'Espresso Lab', adres:'Caferağa Mah. Bahariye Cd. No:22', musteri:'Ayşe K.', km:3.5, sure:18, ucret:42,
-      alis:[40.9890,29.0270], varis:[40.9760,29.0402], tel:'+902163456790', musteriTel:'+905321112234'},
-    {id:'s2', isletme:'Midyeci Ahmet', adres:'Osmanağa Mah. Söğütlü Çeşme Cd. No:8', musteri:'Mehmet T.', km:1.8, sure:11, ucret:28,
-      alis:[40.9905,29.0300], varis:[40.9952,29.0344], tel:'+902163456791', musteriTel:'+905321112235'},
-    {id:'s3', isletme:'Simit Sarayı', adres:'Caferağa Mah. Moda Cd. No:41', musteri:'Deniz Y.', km:2.6, sure:15, ucret:31,
-      alis:[40.9871,29.0249], varis:[40.9835,29.0203], tel:'+902163456789', musteriTel:'+905321112233'},
-    {id:'s4', isletme:'Kahve Durağı', adres:'Bahariye Cd. No:47', musteri:'Can B.', km:4.2, sure:22, ucret:51,
-      alis:[40.9885,29.0280], varis:[40.9702,29.0501], tel:'+902163456792', musteriTel:'+905321112236'},
-    {id:'s5', isletme:'Pide Sarayı', adres:'Moda Cd. No:91', musteri:'Elif D.', km:2.9, sure:16, ucret:38,
-      alis:[40.9840,29.0250], varis:[40.9800,29.0180], tel:'+902163456793', musteriTel:'+905321112237'},
-    {id:'s6', isletme:'Tatlı Dünyası', adres:'Kadıköy Çarşı İçi No:12', musteri:'Burak S.', km:1.2, sure:9, ucret:22,
-      alis:[40.9900,29.0265], varis:[40.9925,29.0245], tel:'+902163456794', musteriTel:'+905321112238'}
-  ],
-  kazanc:{bugun:486, hafta:3120, ay:12480, hedef:600,
-    gunler:[{g:'Pzt',v:420},{g:'Sal',v:380},{g:'Çar',v:510},{g:'Per',v:295},{g:'Cum',v:640},{g:'Cmt',v:720},{g:'Paz',v:486}],
-    son:[{t:'Espresso Lab → Ayşe K.',u:42,s:'14:32'},{t:'Midyeci Ahmet → Mehmet T.',u:28,s:'13:58'},
-         {t:'Evrensel Kebab → Zeynep A.',u:35,s:'13:20'},{t:'Kahve Durağı → Can B.',u:51,s:'12:44'}]},
-  mesajlar:[
-    {id:'m1', kim:'Espresso Lab', son:'Sipariş hazır, bekliyoruz 👍', saat:'14:28', okunmadi:true},
-    {id:'m2', kim:'Ayşe K.', son:'Kapıda zili çalmayın, bebek uyuyor', saat:'14:12', okunmadi:true},
-    {id:'m3', kim:'Sezar Abi Destek', son:'Bugünkü hakedişin hesabına geçti.', saat:'11:05', okunmadi:false},
-    {id:'m4', kim:'Midyeci Ahmet', son:'Ekstra sos koyduk, dikkat et 😄', saat:'Dün', okunmadi:false}
-  ],
-  sekme:'home'
-};
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('[data-go],[data-back],[data-home],[data-role]'); if(!t) return;
+    if(t.dataset.role) state.role=t.dataset.role;
+    if(t.dataset.mode) state.mode=t.dataset.mode;
+    if('back' in t.dataset){ back(); return }
+    if('home' in t.dataset){ home(); return }
+    if(t.dataset.go) go(t.dataset.go);
+  });
 
-var S=yukle();
-function yukle(){
-  try{
-    var ham=localStorage.getItem(KEY);
-    if(!ham) return JSON.parse(JSON.stringify(VARSAYILAN));
-    var d=JSON.parse(ham);
-    var birles=Object.assign(JSON.parse(JSON.stringify(VARSAYILAN)),d);
-    gocEttir(birles);
-    return birles;
-  }catch(e){ return JSON.parse(JSON.stringify(VARSAYILAN)); }
-}
-/* Eski kayıtlarda koordinat ve telefon yoktu; v1.0 kullanıcıları
-   navigasyon/paylaşım özelliklerini kaybetmesin diye eşleşen
-   siparişten tamamlanır. */
-function gocEttir(s){
-  function tamamla(g, kaynak){
-    if(!g) return;
-    ['alis','varis','tel','musteriTel'].forEach(function(k){
-      if(g[k]==null && kaynak && kaynak[k]!=null) g[k]=kaynak[k];
+  /* Telefon */
+  var tel=$('#tel'), sendBtn=$('#sendCode'), telErr=$('#telErr');
+  function fmt(d){ var o=d.slice(0,3); if(d.length>3)o+=' '+d.slice(3,6); if(d.length>6)o+=' '+d.slice(6,8); if(d.length>8)o+=' '+d.slice(8,10); return o }
+  function digits(){ return tel.value.replace(/\D/g,'').replace(/^0+/,'').slice(0,10) }
+  tel.addEventListener('input',function(){
+    var d=digits(); tel.value=fmt(d);
+    var ok=/^5\d{9}$/.test(d); sendBtn.disabled=!ok;
+    telErr.style.display=(d.length===10&&!ok)?'block':'none';
+    tel.classList.toggle('bad',d.length===10&&!ok);
+  });
+  tel.addEventListener('keydown',function(e){ if(e.key==='Enter'&&!sendBtn.disabled) sendBtn.click() });
+  function onPhoneShow(){
+    var login=state.mode==='login';
+    $('#roleChip').textContent= login ? 'Giriş' : (state.role==='shop'?'Dükkan girişi':'Kurye girişi');
+    $('#roleChip').classList.toggle('dark',state.role==='shop'&&!login);
+    $('#toRegister').style.display= login ? 'none':'';
+  }
+  sendBtn.addEventListener('click',function(){ state.tel=fmt(digits()); go('otp') });
+  $('#toRegister').addEventListener('click',function(){ go(state.role==='shop'?'shop':'courier') });
+
+  /* OTP */
+  var code='', timer=null, left=45;
+  var cells=$$('#otp .cell');
+  function paint(){
+    cells.forEach(function(c,i){
+      c.textContent=code[i]||''; c.classList.toggle('cur',i===code.length&&code.length<4); c.classList.remove('err');
     });
   }
-  if(s.aktifGorev){
-    var esle=VARSAYILAN.siparisler.filter(function(x){
-      return x.isletme===s.aktifGorev.isletme; })[0];
-    if(!esle && VARSAYILAN.aktifGorev.isletme===s.aktifGorev.isletme) esle=VARSAYILAN.aktifGorev;
-    tamamla(s.aktifGorev, esle);
+  function press(d){
+    if(current!=='otp'||code.length>=4) return;
+    code+=d; paint();
+    if(code.length===4) setTimeout(function(){ if(current!=='otp') return; go(state.mode==='login'?'ok':(state.role==='shop'?'shop':'courier')) },350);
   }
-  (s.siparisler||[]).forEach(function(o){
-    var esle=VARSAYILAN.siparisler.filter(function(x){ return x.id===o.id; })[0];
-    tamamla(o, esle);
+  function del(){ if(current!=='otp') return; code=code.slice(0,-1); paint() }
+  $('#keys').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    if('del' in b.dataset) del(); else press(b.textContent.trim());
   });
-}
-function kaydet(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
-
-/* ============ yardımcılar ============ */
-function $(s,r){ return (r||document).querySelector(s); }
-function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
-  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function ic(ad,sinif){ return '<svg class="ic'+(sinif?' '+sinif:'')+'"><use href="#i-'+ad+'"/></svg>'; }
-function para(n){ return n.toLocaleString('tr-TR')+' ₺'; }
-function bas(n){ return String(n).trim().charAt(0).toUpperCase(); }
-
-var toastZ=null;
-function toast(mesaj){
-  var t=$('#toast'); t.textContent=mesaj; t.classList.add('on');
-  clearTimeout(toastZ); toastZ=setTimeout(function(){ t.classList.remove('on'); },2100);
-}
-
-/* ============ üst çubuk ============ */
-function ustCiz(){
-  var on=S.online;
-  $('#top').innerHTML=
-    '<div class="toprow">'+
-      '<div class="brandline">'+
-        '<div class="logo">'+ic('bike')+'</div>'+
-        '<div style="min-width:0">'+
-          '<h1>Sezar Abi Kurye</h1>'+
-          
-        '</div>'+
-      '</div>'+
-      '<button class="pill '+(on?'on':'off')+'" id="onlineBtn" type="button" aria-pressed="'+on+'">'+
-        '<span class="dot"></span>'+(on?'Açık':'Kapalı')+
-      '</button>'+
-    '</div>';
-  $('#onlineBtn').addEventListener('click',function(){
-    S.online=!S.online; kaydet();
-    if(!S.online) toast('Çevrimdışısın — yeni sipariş gelmez');
-    else toast('Çevrimiçi oldun');
-    ustCiz(); durumCiz(); if(S.sekme==='home') gorunumCiz();
+  document.addEventListener('keydown',function(e){
+    if(current!=='otp') return;
+    if(/^\d$/.test(e.key)) press(e.key); else if(e.key==='Backspace') del();
   });
-}
-
-/* ============ durum şeridi ============ */
-function durumCiz(){
-  /* Durum şeridi kaldırıldı: aynı bilgi üst çubuktaki rozette ve
-     bölüm başlığındaki sayıda var. Tekrar eden yazı kalabalık yapar. */
-  var el=$('#statusbar'); if(el) el.innerHTML='';
-}
-
-/* ============ alt menü ============ */
-var SEKMELER=[
-  {k:'home', ad:'Anasayfa', ik:'home'},
-  {k:'kazanc', ad:'Kazanç', ik:'wallet'},
-  {k:'mesaj', ad:'Mesajlar', ik:'msg'},
-  {k:'profil', ad:'Profil', ik:'user'},
-  {k:'yardim', ad:'Yardım', ik:'help'}
-];
-function navCiz(){
-  $('#nav').innerHTML=SEKMELER.map(function(s){
-    return '<button class="navb'+(S.sekme===s.k?' on':'')+'" data-sekme="'+s.k+'" type="button">'+
-      ic(s.ik)+'<span>'+s.ad+'</span></button>';
-  }).join('');
-  Array.prototype.forEach.call($('#nav').querySelectorAll('[data-sekme]'),function(b){
-    b.addEventListener('click',function(){ git(b.dataset.sekme); });
-  });
-}
-function git(k){
-  if(S.sekme===k && k!=='home'){ $('#view').scrollTop=0; return; }
-  S.sekme=k; kaydet(); navCiz(); gorunumCiz(); $('#view').scrollTop=0;
-}
-
-/* ============ gerçek cihaz işlevleri ============ */
-
-/* Titreşim: dokunma geri bildirimi. Desteklenmiyorsa sessizce geçer. */
-function titres(desen){ try{ if(navigator.vibrate) navigator.vibrate(desen||12); }catch(e){} }
-
-/* Uygulama APK içinde mi çalışıyor? Android köprüsü bunu işaretler. */
-function apkMi(){ return !!(window.SEZAR_APP_MODE && window.SEZAR_APP); }
-
-/* Dış adresi aç: APK'da native köprü, tarayıcıda yeni sekme.
-   window.open popup engeline takılabildiği için gerçek bağlantı öğesi
-   kullanılır; bu yol kullanıcı dokunuşuyla her zaman çalışır. */
-function disariAc(url){
-  if(apkMi()){ try{ window.SEZAR_APP.open(url); return; }catch(e){} }
-  var a=document.createElement('a');
-  a.href=url; a.target='_blank'; a.rel='noopener noreferrer';
-  document.body.appendChild(a); a.click();
-  setTimeout(function(){ document.body.removeChild(a); },0);
-}
-
-/* Google Maps navigasyonu — gerçek yol tarifi. */
-function navigasyonBaslat(hedef, ad){
-  if(!hedef || hedef.length<2){ toast('Adres koordinatı yok'); return; }
-  var lat=hedef[0], lng=hedef[1];
-  var url='https://www.google.com/maps/dir/?api=1&destination='+lat+','+lng+
-          '&travelmode=driving&dir_action=navigate';
-  titres([14,40,14]);
-  disariAc(url);
-  toast('Navigasyon açılıyor: '+(ad||'varış'));
-}
-
-/* Haritada göster (yol tarifi değil, sadece konum). */
-function haritadaGoster(konum, ad){
-  if(!konum || konum.length<2){ toast('Koordinat yok'); return; }
-  var url='https://www.google.com/maps/search/?api=1&query='+konum[0]+','+konum[1];
-  titres(12); disariAc(url);
-}
-
-/* Telefon: gerçek arama ekranı. */
-function ara(tel){
-  if(!tel){ toast('Telefon numarası yok'); return; }
-  var temiz=String(tel).replace(/[^\d+]/g,'');
-  titres([10,30,10]);
-  location.href='tel:'+temiz;
-  toast('Aranıyor: '+temiz);
-}
-
-/* WhatsApp: müşteriye yaz. */
-function whatsapp(tel, metin){
-  if(!tel){ toast('Numara yok'); return; }
-  var temiz=String(tel).replace(/[^\d]/g,'');
-  var url='https://wa.me/'+temiz+(metin?'?text='+encodeURIComponent(metin):'');
-  titres(12); disariAc(url);
-}
-
-/* Paylaş: native paylaşım sayfası (Android/Chrome), yoksa kopyala. */
-function paylas(baslik, metin, url){
-  var veri={title:baslik||'Sezar Abi Kurye', text:metin||'', url:url||location.href};
-  if(navigator.share){
-    navigator.share(veri).catch(function(){});
-    return;
+  function tick(){
+    var b=$('#resend');
+    if(left>0){ b.disabled=true; b.textContent='Tekrar yolla · 00:'+(left<10?'0':'')+left }
+    else { b.disabled=false; b.textContent='Tekrar yolla'; stopTimer() }
   }
-  kopyala((metin?metin+'\n':'')+veri.url,'Bağlantı kopyalandı');
-}
-
-/* Panoya kopyala: eski tarayıcılar için yedek yol var. */
-function kopyala(metin, mesaj){
-  function tamam(){ toast(mesaj||'Kopyalandı'); titres(12); }
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(metin).then(tamam).catch(function(){ eskiKopyala(metin,tamam); });
-  } else eskiKopyala(metin,tamam);
-}
-function eskiKopyala(metin,tamam){
-  var t=document.createElement('textarea');
-  t.value=metin; t.style.position='fixed'; t.style.opacity='0';
-  document.body.appendChild(t); t.select();
-  try{ document.execCommand('copy'); tamam(); }
-  catch(e){ toast('Kopyalanamadı'); }
-  document.body.removeChild(t);
-}
-
-/* Sipariş özetini paylaşılabilir metne çevir. */
-function siparisMetni(o){
-  return 'Sezar Abi Kurye · Görev\n'+
-    o.isletme+'\n'+o.adres+'\nMüşteri: '+o.musteri+'\n'+
-    String(o.km).replace('.',',')+' km · '+o.sure+' dk · '+o.ucret+' ₺';
-}
-
-/* ---------- bildirim ---------- */
-function bildirimIzni(){
-  if(!('Notification' in window)) return 'yok';
-  return Notification.permission;
-}
-function bildirimIste(){
-  if(!('Notification' in window)){ toast('Bu cihaz bildirimi desteklemiyor'); return; }
-  if(Notification.permission==='granted'){ toast('Bildirimler zaten açık'); return; }
-  Notification.requestPermission().then(function(p){
-    S.bildirim=p==='granted'; kaydet();
-    toast(p==='granted'?'Bildirimler açıldı':'Bildirim izni verilmedi');
-    gorunumCiz();
-  });
-}
-function bildir(baslik, govde){
-  if(!('Notification' in window) || Notification.permission!=='granted') return;
-  try{ new Notification(baslik,{body:govde, icon:'icons/icon-192.png', tag:'sezar-gorev'}); }catch(e){}
-}
-
-/* ---------- kurulum (ana ekrana ekle) ---------- */
-var kurulumOlayi=null;
-window.addEventListener('beforeinstallprompt',function(e){
-  e.preventDefault(); kurulumOlayi=e;
-  var b=$('#kurBtn'); if(b) b.style.display='flex';
-});
-window.addEventListener('appinstalled',function(){
-  kurulumOlayi=null; toast('Uygulama yüklendi'); titres([16,50,16]);
-});
-function kur(){
-  if(apkMi()){ toast('Uygulama zaten kurulu'); return; }
-  if(!kurulumOlayi){
-    toast('Tarayıcı menüsünden "Ana ekrana ekle" seç');
-    return;
+  function stopTimer(){ if(timer){clearInterval(timer);timer=null} }
+  function onOtpShow(){
+    code=''; paint(); $('#shownTel').textContent=state.tel; left=45; tick(); stopTimer();
+    timer=setInterval(function(){left--;tick()},1000);
   }
-  kurulumOlayi.prompt();
-  kurulumOlayi.userChoice.then(function(c){
-    if(c.outcome==='accepted'){ toast('Yükleniyor…'); titres([16,50,16]); }
-    kurulumOlayi=null;
-  });
-}
+  $('#resend').addEventListener('click',function(){ code=''; paint(); left=45; tick(); timer=setInterval(function(){left--;tick()},1000) });
+  $('#changeNum').addEventListener('click',function(){ back() });
 
-/* ---------- sürüm / güncelleme ---------- */
-/* "1.10" ile "1.9" metin olarak yanlış sıralanır; parça parça sayı
-   karşılaştır. a>b ise 1, a<b ise -1, eşitse 0. */
-function surumKarsilastir(a,b){
-  var pa=String(a||'').split('.'), pb=String(b||'').split('.');
-  for(var i=0;i<Math.max(pa.length,pb.length);i++){
-    var x=parseInt(pa[i],10)||0, y=parseInt(pb[i],10)||0;
-    if(x>y) return 1;
-    if(x<y) return -1;
+  /* Kurye kaydı */
+  var ad=$('#ad'), ilce=$('#ilce'), arac=$$('#arac button'), kodC=$('#kodC'), kvC=$('#kvkkC'), subC=$('#submitC');
+  var kodModeC='var';
+  function kodVarC(){ return kodModeC==='var' && kodC.value.trim().length>=4 }
+  function chkC(){
+    var okArac=arac.some(function(b){return b.getAttribute('aria-pressed')==='true'});
+    var kod=kodC.value.trim();
+    subC.disabled=!(ad.value.trim().length>=3 && ilce.value && okArac && (kodModeC==='yok' || kod.length>=4) && kvC.checked);
+    kodC.classList.toggle('bad', kodModeC==='var' && kod.length>0 && kod.length<4);
   }
-  return 0;
-}
-/* APK adresi: site kendi sunucusunda APK barındırıyorsa (apkWeb) onu
-   kullan — GitHub indirme sunucusu bazı ağlarda engelli. */
-function apkAdresi(v){
-  var y=(v&&v.apkWeb)||'';
-  if(y){ try{ return new URL(y,location.href).href; }catch(e){ return y; } }
-  return (v&&v.apk)||'';
-}
-function surumDenetle(sessiz){
-  fetch('version.json?t='+Date.now(),{cache:'no-store'})
-    .then(function(r){ return r.ok? r.json():null; })
-    .then(function(v){
-      if(!v) { if(!sessiz) toast('Sürüm bilgisi alınamadı'); return; }
-      /* Web sürümü service worker ile kendini günceller; burada
-         "güncelleme var" demek anlamsız. APK'da ise karşılaştırma
-         yayındaki APK'nın sürümüne göre yapılır — web sürümü ileri
-         olabilir ama indirilecek APK henüz derlenmemiş olabilir. */
-      if(!apkMi()){ if(!sessiz) toast('Uygulama güncel · v'+SURUM); return; }
-      var hedef=v.apkVersion||v.version;
-      var yeni=surumKarsilastir(hedef,SURUM)>0;
-      if(!yeni){ if(!sessiz) toast('Uygulama güncel · v'+SURUM); return; }
-      /* Aynı sürüme daha önce güncelleme denendi ve sürüm değişmediyse
-         indirilen APK eskidir. Tekrar önermek kullanıcıyı döngüye sokar. */
-      var denenen=null;
-      try{ denenen=localStorage.getItem('sezar.denenenSurum'); }catch(e){}
-      if(denenen===String(hedef)){
-        if(!sessiz){
-          katmanAc(
-            '<div class="shhead"><div><h3>Güncelleme tamamlanmadı</h3>'+
-            '<p class="shsub">v'+esc(SURUM)+' → v'+esc(hedef)+'</p></div>'+
-            '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-            '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+
-            'v'+esc(hedef)+' indirildi ama uygulama hâlâ v'+esc(SURUM)+' görünüyor. '+
-            'Kurulumu tamamladıktan sonra uygulamayı kapatıp yeniden aç.</p>'+
-            '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
-            '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(apkAdresi(v))+'">'+
-            ic('box')+'Yeniden indir</button></div>'
-          );
-        }
-        return;
-      }
-      katmanAc(
-        '<div class="shhead"><div><h3>Güncelleme var</h3>'+
-        '<p class="shsub">v'+esc(SURUM)+' → v'+esc(hedef)+'</p></div>'+
-        '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-        '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+esc(v.notes||'Yeni sürüm hazır.')+'</p>'+
-        '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
-        '<button class="btn pri" type="button" data-act="guncelle" data-url="'+esc(apkAdresi(v))+'">'+
-        ic('box')+'Güncelle</button></div>'
-      );
-    })
-    .catch(function(){ if(!sessiz) toast('Bağlantı yok'); });
-}
-function guncelle(url){
-  if(!url){ toast('İndirme adresi yok'); return; }
-  katmanKapat();
-  /* Denemeyi kaydet: indirilen APK eskiyse bir sonraki denetimde
-     kullanıcıya "tamamlanmadı" denir, sonsuz döngü olmaz. */
-  try{
-    fetch('version.json?t='+Date.now(),{cache:'no-store'})
-      .then(function(r){ return r.ok? r.json():null; })
-      .then(function(v){ if(v&&v.version) localStorage.setItem('sezar.denenenSurum',String(v.version)); })
-      .catch(function(){});
-  }catch(e){}
-  if(apkMi() && window.SEZAR_APP.install){
-    try{ window.SEZAR_APP.install(url); toast('Güncelleme indiriliyor…'); return; }catch(e){}
-  }
-  disariAc(url);
-  toast('İndirme başladı');
-}
-
-/* ---------- ağ durumu ---------- */
-function agDurumu(){
-  var cevrimdisi=!navigator.onLine;
-  var el=$('#agSerit');
-  if(!el) return;
-  el.className='agserit'+(cevrimdisi?' on':'');
-  el.textContent=cevrimdisi?'Çevrimdışısın — kayıtlı görevler görünüyor':'';
-}
-window.addEventListener('online',function(){ agDurumu(); toast('Bağlantı geri geldi'); });
-window.addEventListener('offline',function(){ agDurumu(); toast('Bağlantı kesildi'); });
-
-/* ---------- aşağı çekip yenile ---------- */
-function yenileKur(){
-  var v=$('#view'), bas=0, cekik=false, esik=64;
-  v.addEventListener('touchstart',function(e){
-    if(v.scrollTop<=0){ bas=e.touches[0].clientY; cekik=true; }
-  },{passive:true});
-  v.addEventListener('touchmove',function(e){
-    if(!cekik) return;
-    var d=e.touches[0].clientY-bas;
-    if(d>0 && v.scrollTop<=0) v.style.transform='translateY('+Math.min(d*0.45,esik)+'px)';
-  },{passive:true});
-  v.addEventListener('touchend',function(e){
-    if(!cekik) return;
-    cekik=false;
-    var d=(e.changedTouches[0].clientY-bas)*0.45;
-    v.style.transform='';
-    if(d>=esik){
-      titres(14); toast('Yenileniyor…');
-      setTimeout(function(){ gorunumCiz(); durumCiz(); toast('Güncel'); },420);
-    }
-  },{passive:true});
-}
-
-/* ============ rota şeridi ============ */
-/* Sahte harita çizmiyoruz: kurye uygulamasında asıl bilgi sıralı
-   duraklardır (işletme -> müşteri). Harita düğmesi gerçek uygulamayı açar. */
-function rotaSeridi(a){
-  var alis = a.asama==='paket';
-  var adim = a.asama==='paket'? 0 : (a.asama==='yolda'? 1 : 2);
-  function dura(rol, ad, alt, dolu, son){
-    return '<div class="rdura">'+
-      '<div class="rray"><span class="rnokta '+(dolu?'dolu':'halka')+'"></span>'+
-        (son?'':'<span class="rcizgi"></span>')+'</div>'+
-      '<div class="rgovde"><div class="rrol">'+esc(rol)+'</div>'+
-        '<div class="rad">'+esc(ad)+'</div>'+
-        (alt?'<div class="ralt">'+esc(alt)+'</div>':'')+
-      '</div></div>';
-  }
-  return '<div class="rota">'+
-      dura('Alış', a.isletme, a.adres, adim>=0, false)+
-      dura('Teslim', a.musteri, a.musteriAdres, adim>=1, true)+
-      '<button class="rgit" type="button" data-act="harita">'+ic('nav')+'Yol tarifi al</button>'+
-    '</div>';
-}
-
-/* ============ ANA SAYFA ============ */
-function gorevKarti(a){
-  var asamaEtiket={paket:'Paketi Aldım', yolda:'Teslim Ettim', teslim:'Tamamlandı'};
-  var asamaIkon={paket:'box', yolda:'check', teslim:'check'};
-  var bsinif=asamaEtiket[a.asama]==='Teslim Ettim'?'done':'pri';
-  return '<div class="card">'+
-      rotaSeridi(a)+
-      '<div class="ozet">'+
-        '<div class="ozetU"><div class="ozetK">Kazanç</div>'+
-          '<div class="ozetV">'+para(a.ucret)+'</div></div>'+
-        '<div class="ozetS">'+
-          '<span class="cip">'+ic('clock')+esc(a.sure)+' dk</span>'+
-          '<span class="cip">'+ic('nav')+esc(String(a.km).replace('.',','))+' km</span>'+
-        '</div>'+
-      '</div>'+
-      '<div class="acts">'+
-        '<button class="btn '+bsinif+'" type="button" data-act="asama">'+ic(asamaIkon[a.asama]||'box')+asamaEtiket[a.asama]+'</button>'+
-      '</div>'+
-      '<div class="quickrow">'+
-        '<button class="qbtn" type="button" data-act="musteriAra">'+ic('phone')+'<span>Müşteri</span></button>'+
-        '<button class="qbtn" type="button" data-act="gorevAra">'+ic('bike')+'<span>İşletme</span></button>'+
-        '<button class="qbtn" type="button" data-act="kopyalaAdres">'+ic('doc')+'<span>Adres</span></button>'+
-        '<button class="qbtn" type="button" data-act="bildir">'+ic('bell')+'<span>Hatırlat</span></button>'+
-      '</div>'+
-    '</div>';
-}
-function bosKart(){
-  return '<div class="card"><div class="empty">'+ic('bike')+
-    '<div style="font-weight:700;color:var(--ink);font-size:14.5px;margin-bottom:4px">Aktif görev yok</div>'+
-    'Aşağıdaki bekleyen siparişlerden birini alarak başla.</div></div>';
-}
-function siparisSatiri(o){
-  return '<button class="order" type="button" data-siparis="'+esc(o.id)+'">'+
-      '<div class="oav">'+esc(bas(o.isletme))+'</div>'+
-      '<div class="obody">'+
-        '<div class="oname">'+esc(o.isletme)+'</div>'+
-        '<div class="ometa"><b>'+esc(String(o.km).replace('.',','))+' km</b><span>·</span><span>'+esc(o.sure)+' dk</span><span>·</span><span>'+para(o.ucret)+'</span></div>'+
-      '</div>'+
-      '<span class="chev">'+ic('chev')+'</span>'+
-    '</button>';
-}
-function anaSayfa(){
-  var a=S.aktifGorev;
-  var html='<div class="sechead"><div class="seclabel">Görevler</div>'+
-    (a?'<button class="seclink" type="button" data-act="bitir">Görevi bitir</button>':'')+'</div>';
-  html+= a? gorevKarti(a) : bosKart();
-  html+='<div class="sechead" style="margin-top:20px"><div class="seclabel">Bekleyen Siparişler</div>'+
-    '<span class="seclink" style="color:var(--ink3)">'+S.siparisler.length+'</span></div>';
-  if(!S.online){
-    html+='<div class="card"><div class="empty">'+ic('shield')+
-      '<div style="font-weight:700;color:var(--ink);font-size:14.5px;margin-bottom:4px">Sipariş alımı kapalı</div>'+
-      'Sipariş almak için yukarıdaki düğmeyi aç.</div></div>';
-  }else if(!S.siparisler.length){
-    html+='<div class="card"><div class="empty">'+ic('check')+'Şu an bekleyen sipariş yok.</div></div>';
-  }else{
-    html+='<div class="orders">'+S.siparisler.map(siparisSatiri).join('')+'</div>';
-  }
-  return html;
-}
-
-/* ============ KAZANÇ ============ */
-function kazancSayfasi(){
-  var k=S.kazanc;
-  var max=Math.max.apply(null,k.gunler.map(function(x){return x.v;}));
-  var oran=Math.min(100,Math.round(k.bugun/k.hedef*100));
-  return '<div class="phead"><h2>Kazanç</h2><p>Bugünkü ve haftalık hakedişin</p></div>'+
-    '<div class="stat2">'+
-      '<div class="stat"><div class="statk">Bugün</div><div class="statv">'+para(k.bugun)+'</div>'+
-        '<div class="delta up">Hedefin %'+oran+'</div></div>'+
-      '<div class="stat"><div class="statk">Bu hafta</div><div class="statv">'+para(k.hafta)+'</div>'+
-        '<div class="delta up">Geçen haftaya göre +%12</div></div>'+
-    '</div>'+
-    '<div class="stat2" style="margin-top:10px">'+
-      '<div class="stat"><div class="statk">Bu ay</div><div class="statv">'+para(k.ay)+'</div></div>'+
-      '<div class="stat"><div class="statk">Teslimat</div><div class="statv">'+S.teslimat+'</div>'+
-        '<div class="delta up">Puan '+String(S.puan).replace('.',',')+'</div></div>'+
-    '</div>'+
-    '<div class="sechead" style="margin-top:22px"><div class="seclabel">Son 7 gün</div></div>'+
-    '<div class="card" style="padding:16px 14px 12px">'+
-      '<div class="bars">'+k.gunler.map(function(g,i){
-        var h=Math.round(g.v/max*100);
-        return '<div class="barcol"><div class="barval">'+(g.v>=100?Math.round(g.v/100*10)/10+'k':g.v)+'</div>'+
-          '<div class="bar'+(i===k.gunler.length-1?' top':'')+'" style="height:'+h+'%"></div>'+
-          '<div class="barlab">'+esc(g.g)+'</div></div>';
-      }).join('')+'</div>'+
-    '</div>'+
-    '<div class="sechead" style="margin-top:22px"><div class="seclabel">Son işlemler</div></div>'+
-    '<div class="list">'+k.son.map(function(x){
-      return '<div class="li"><div class="liav">'+ic('check')+'</div>'+
-        '<div class="lib"><div class="lit">'+esc(x.t)+'</div><div class="lis">Teslimat tamamlandı · '+esc(x.s)+'</div></div>'+
-        '<div class="litime" style="color:var(--ink);font-weight:650">+'+para(x.u)+'</div></div>';
-    }).join('')+'</div>';
-}
-
-/* ============ MESAJLAR ============ */
-function mesajSayfasi(){
-  return '<div class="phead"><h2>Mesajlar</h2><p>İşletmeler ve müşterilerle iletişim</p></div>'+
-    '<div class="list">'+S.mesajlar.map(function(m){
-      return '<button class="li" type="button" data-mesaj="'+esc(m.id)+'">'+
-        '<div class="liav">'+esc(bas(m.kim))+'</div>'+
-        '<div class="lib"><div class="lit">'+esc(m.kim)+'</div><div class="lis">'+esc(m.son)+'</div></div>'+
-        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">'+
-          '<span class="litime">'+esc(m.saat)+'</span>'+
-          (m.okunmadi?'<span class="unread"></span>':'')+
-        '</div></button>';
-    }).join('')+'</div>';
-}
-
-/* ============ PROFİL ============ */
-function profilSayfasi(){
-  var bz=bildirimIzni();
-  var bzMetin=bz==='granted'?'Açık':(bz==='denied'?'Kapalı':(bz==='yok'?'Desteklenmiyor':'Kapalı'));
-  return '<div class="phead"><h2>Profil</h2><p>Kurye hesabın ve belgelerin</p></div>'+
-    '<div class="hero">'+
-      '<div class="heroav">'+esc(bas(S.ad))+'</div>'+
-      '<div class="herobody"><div class="heron">'+esc(S.ad)+'</div>'+
-        '<div class="herom">'+esc(S.arac)+'</div>'+
-        '<div class="herostat"><div>Puan<b>'+String(S.puan).replace('.',',')+'</b></div>'+
-          '<div>Teslimat<b>'+S.teslimat+'</b></div></div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="sechead" style="margin-top:20px"><div class="seclabel">Hesap</div></div>'+
-    '<div class="kv">'+
-      '<button class="kvrow" type="button" data-act="bilgi"><span class="kvk">'+ic('doc')+'Kişisel bilgiler</span><span class="chev">'+ic('chev')+'</span></button>'+
-      '<button class="kvrow" type="button" data-act="belge"><span class="kvk">'+ic('shield')+'Belgelerim</span><span class="kvv">Onaylı</span></button>'+
-      '<button class="kvrow" type="button" data-act="bildirim"><span class="kvk">'+ic('bell')+'Bildirimler</span><span class="kvv">'+bzMetin+'</span></button>'+
-      '<button class="kvrow" type="button" data-act="hesap"><span class="kvk">'+ic('wallet')+'Ödeme bilgileri</span><span class="chev">'+ic('chev')+'</span></button>'+
-    '</div>'+
-    '<div class="sechead" style="margin-top:20px"><div class="seclabel">Kısayollar</div></div>'+
-    '<div class="kv" style="margin-top:0">'+
-      '<button class="kvrow" type="button" data-act="kur"><span class="kvk">'+ic('box')+'Ana ekrana ekle</span><span class="chev">'+ic('chev')+'</span></button>'+
-      '<button class="kvrow" type="button" data-act="paylas"><span class="kvk">'+ic('share')+'Uygulamayı paylaş</span><span class="chev">'+ic('chev')+'</span></button>'+
-      '<button class="kvrow" type="button" data-act="surum"><span class="kvk">'+ic('refresh')+'Sürümü denetle</span><span class="kvv">v'+esc(SURUM)+'</span></button>'+
-    '</div>'+
-    '<div class="kv" style="margin-top:12px">'+
-      '<button class="kvrow" type="button" data-act="cikis"><span class="kvk" style="color:var(--danger)">'+ic('logout')+'Çıkış yap</span></button>'+
-    '</div>';
-}
-
-/* ============ YARDIM ============ */
-var SSS=[
-  {s:'Sipariş nasıl alırım?', c:'Anasayfada "Bekleyen Siparişler" listesinden bir siparişe dokun, açılan karttan <b>Görevi Al</b> de. Görev "Görevler" alanına taşınır.'},
-  {s:'Çevrimdışı olursam ne olur?', c:'Üstteki <b>Aktif</b> rozetine dokunarak durumunu değiştirebilirsin. Çevrimdışıyken yeni sipariş gösterilmez, devam eden görevin etkilenmez.'},
-  {s:'Kazancım ne zaman hesabıma geçer?', c:'Günlük hakediş, ertesi iş günü sabah 09:00\u201912:00 arasında banka hesabına aktarılır. Haftalık toplam Kazanç sekmesinde görünür.'},
-  {s:'Teslimatı tamamlayamazsam?', c:'Görev kartındaki <b>Yardım</b> üzerinden destek ekibine ulaş. Müşteriye ulaşılamıyorsa 10 dakika bekledikten sonra "Teslim edilemedi" olarak işaretleyebilirsin.'},
-  {s:'Belgelerim nerede?', c:'Profil \u2192 Belgelerim. Ehliyet, ruhsat ve kimlik onaylı görünüyorsa teslimat almaya yetkin var.'}
-];
-function yardimSayfasi(){
-  return '<div class="phead"><h2>Yardım</h2><p>Sık sorulan sorular ve destek</p></div>'+
-    '<div class="faqs">'+SSS.map(function(x,i){
-      return '<div class="faq" data-faq="'+i+'"><button class="faqq" type="button" data-faqbtn="'+i+'">'+
-        esc(x.s)+ic('chev-d')+'</button><div class="faqa">'+x.c+'</div></div>';
-    }).join('')+'</div>'+
-    '<div class="kv" style="margin-top:14px">'+
-      '<button class="kvrow" type="button" data-act="destek"><span class="kvk">'+ic('msg')+'Destek ekibine yaz</span><span class="chev">'+ic('chev')+'</span></button>'+
-      '<button class="kvrow" type="button" data-act="ara"><span class="kvk">'+ic('phone')+'7/24 çağrı merkezi</span><span class="kvv">0850 000 00 00</span></button>'+
-      '<button class="kvrow" type="button" data-act="paylas"><span class="kvk">'+ic('share')+'Uygulamayı paylaş</span><span class="chev">'+ic('chev')+'</span></button>'+
-      '<button class="kvrow" type="button" data-act="surum"><span class="kvk">'+ic('refresh')+'Sürümü denetle</span><span class="kvv">v'+esc(SURUM)+'</span></button>'+
-    '</div>'+
-    '<p style="text-align:center;color:var(--ink3);font-size:12px;margin-top:22px">'+
-      'Sezar Abi Kurye · Sürüm '+esc(SURUM)+'</p>';
-}
-
-/* ============ görünüm yönlendirme ============ */
-function gorunumCiz(){
-  var v=$('#view');
-  var html='';
-  if(S.sekme==='home') html=anaSayfa();
-  else if(S.sekme==='kazanc') html=kazancSayfasi();
-  else if(S.sekme==='mesaj') html=mesajSayfasi();
-  else if(S.sekme==='profil') html=profilSayfasi();
-  else html=yardimSayfasi();
-  v.innerHTML=html;
-  bagla(v);
-}
-
-/* ============ olay bağlama ============ */
-function bagla(kok){
-  Array.prototype.forEach.call(kok.querySelectorAll('[data-siparis]'),function(b){
-    b.addEventListener('click',function(){ siparisKatman(b.dataset.siparis); });
-  });
-  Array.prototype.forEach.call(kok.querySelectorAll('[data-faqbtn]'),function(b){
+  $$('#kodSegC button').forEach(function(b){
     b.addEventListener('click',function(){
-      var f=b.closest('.faq'); f.classList.toggle('open');
+      kodModeC=b.dataset.kod;
+      $$('#kodSegC button').forEach(function(x){ x.setAttribute('aria-pressed', x===b) });
+      kodC.hidden = kodModeC==='yok';
+      if(kodModeC==='yok') kodC.value='';
+      $('#kodHint').textContent = kodModeC==='yok'
+        ? 'Kodsuz başvurular sıraya alınır. Sıran gelince seni ararız.'
+        : 'Kodla girersen hemen içeridesin.';
+      chkC();
     });
   });
-  Array.prototype.forEach.call(kok.querySelectorAll('[data-mesaj]'),function(b){
+  arac.forEach(function(b){ b.addEventListener('click',function(){ arac.forEach(function(x){x.setAttribute('aria-pressed',x===b)}); chkC() }) });
+  [ad,ilce,kodC,kvC].forEach(function(el){ el.addEventListener('input',chkC); el.addEventListener('change',chkC) });
+  kodC.addEventListener('input',function(){ var i=this.selectionStart; this.value=this.value.toUpperCase(); this.setSelectionRange(i,i) });
+  $('#photoBtn').addEventListener('click',function(){ $('#ehliyet').click() });
+  $('#ehliyet').addEventListener('change',function(){
+    var f=this.files&&this.files[0]; if(!f) return;
+    var btn=$('#photoBtn'); btn.classList.add('done');
+    var old=btn.querySelector('img'); if(old) old.remove();
+    var img=new Image(); img.alt=''; img.src=URL.createObjectURL(f); btn.insertBefore(img,btn.firstChild);
+    btn.querySelector('svg').style.display='none'; $('#photoTxt').textContent='Fotoğraf eklendi · değiştir';
+  });
+  subC.addEventListener('click',function(){ showDone(kodVarC()) });
+
+  /* Dükkan kaydı */
+  var dk=$('#dukkan'), yt=$('#yetkili'), ad2=$('#adres'), kvS=$('#kvkkS'), subS=$('#submitS'), kodS=$('#kod');
+  var kodModeS='var';
+  function kodVarS(){ return kodModeS==='var' && kodS.value.trim().length>=4 }
+  function chkS(){ subS.disabled=!(dk.value.trim().length>=2 && yt.value.trim().length>=3 && ad2.value.trim().length>=10 && (kodModeS==='yok' || kodS.value.trim().length>=4) && kvS.checked) }
+  $$('#kodSegS button').forEach(function(b){
     b.addEventListener('click',function(){
-      var m=S.mesajlar.filter(function(x){return x.id===b.dataset.mesaj;})[0];
-      if(m){ m.okunmadi=false; kaydet(); sohbetKatmani(m.id); gorunumCiz(); }
+      kodModeS=b.dataset.kod;
+      $$('#kodSegS button').forEach(function(x){ x.setAttribute('aria-pressed', x===b) });
+      kodS.hidden = kodModeS==='yok';
+      if(kodModeS==='yok') kodS.value='';
+      $('#kodHintS').textContent = kodModeS==='yok'
+        ? 'Kodsuz başvurular sıraya alınır. Sıran gelince seni ararız.'
+        : 'Kodla girersen hemen içeridesin.';
+      chkS();
     });
   });
-  Array.prototype.forEach.call(kok.querySelectorAll('[data-act]'),function(b){
-    b.addEventListener('click',function(){ eylem(b.dataset.act, b); });
+  [dk,yt,ad2,kvS].forEach(function(el){ el.addEventListener('input',chkS); el.addEventListener('change',chkS) });
+  $('#mapBtn').addEventListener('click',function(){
+    var b=this;
+    if(!navigator.geolocation){ b.textContent='Konum bu cihazda kullanılamıyor'; return }
+    b.textContent='Konum alınıyor…';
+    navigator.geolocation.getCurrentPosition(function(){ b.textContent='✓ Konum işaretlendi · değiştir'; b.classList.add('ok') },
+      function(){ b.textContent='Konum alınamadı, tekrar dene' },{timeout:8000});
   });
-}
-function eylem(ad, el){
-  var a=S.aktifGorev;
-  if(ad==='asama'){
-    if(!a) return;
-    titres([12,30,12]);
-    if(a.asama==='paket'){ a.asama='yolda'; toast('Paket alındı — müşteriye gidiyorsun');
-      bildir('Paket alındı', a.isletme+' · '+a.adres); }
-    else if(a.asama==='yolda'){ a.asama='teslim';
-      S.kazanc.bugun+=a.ucret; S.kazanc.hafta+=a.ucret; S.kazanc.ay+=a.ucret; S.teslimat+=1;
-      toast('Teslimat tamamlandı · +'+para(a.ucret));
-      bildir('Teslimat tamam', a.musteri+' · +'+para(a.ucret)); }
-    else { S.aktifGorev=null; toast('Görev tamamlandı, teşekkürler!'); }
-    kaydet(); gorunumCiz(); durumCiz();
-  }
-  else if(ad==='navigasyon'){
-    if(!a) return;
-    var hedef=a.asama==='paket'? a.alis : a.varis;
-    navigasyonBaslat(hedef, a.asama==='paket'? a.isletme : a.musteri);
-  }
-  else if(ad==='harita'){
-    if(!a) return;
-    haritadaGoster(a.asama==='paket'? a.alis : a.varis, a.isletme);
-  }
-  else if(ad==='kopyalaAdres'){
-    if(!a) return;
-    kopyala(a.adres, 'Adres kopyalandı');
-  }
-  else if(ad==='musteriAra'){
-    if(!a) return; ara(a.musteriTel);
-  }
-  else if(ad==='musteriYaz'){
-    if(!a) return;
-    whatsapp(a.musteriTel, 'Merhaba '+a.musteri+', Sezar Abi Kurye\'den geliyorum. Yoldayım.');
-  }
-  else if(ad==='gorevAra'){
-    if(!a) return; ara(a.tel);
-  }
-  else if(ad==='paylasGorev'){
-    if(!a) return;
-    paylas('Sezar Abi Kurye · Görev', siparisMetni(a));
-  }
-  else if(ad==='bildir'){
-    if(!a) return;
-    if(bildirimIzni()!=='granted'){ bildirimIste(); return; }
-    bildir('Görev hatırlatması', a.isletme+' · '+a.sure+' dakika kaldı');
-    toast('Hatırlatma gönderildi');
-  }
-  else if(ad==='guncelle'){ guncelle(el && el.dataset ? el.dataset.url : null); }
-  else if(ad==='kopyalaSiparis'){
-    var ks=siparisBul(el); if(!ks) return; kopyala(ks.adres,'Adres kopyalandı');
-  }
-  else if(ad==='siparisHarita'){
-    var kh=siparisBul(el); if(!kh) return; haritadaGoster(kh.alis, kh.isletme);
-  }
-  else if(ad==='isletmeAra'){
-    var ki=siparisBul(el); if(!ki) return; ara(ki.tel);
-  }
-  else if(ad==='paylasSiparis'){
-    var kp=siparisBul(el); if(!kp) return;
-    paylas('Sezar Abi Kurye · Sipariş', siparisMetni(kp));
-  }
-  else if(ad==='bitir'){
-    S.aktifGorev=null; kaydet(); toast('Görev bırakıldı'); gorunumCiz(); durumCiz();
-  }
-  else if(ad==='kur'){ kur(); }
-  else if(ad==='surum'){ surumDenetle(false); }
-  else if(ad==='paylas'){ paylas('Sezar Abi Kurye','Kurye görev uygulaması'); }
-  else if(ad==='bilgi'){ kisiselBilgiKatmani(); }
-  else if(ad==='belge'){ belgeKatmani(); }
-  else if(ad==='bildirim'){ bildirimIste(); }
-  else if(ad==='hesap'){ odemeKatmani(); }
-  else if(ad==='destek'){
-    whatsapp('+905321112200','Merhaba, Sezar Abi Kurye destek.');
-  }
-  else if(ad==='ara'){ ara('08500000000'); }
-  else if(ad==='cikis'){ cikisKatmani(); }
-  else if(ad==='cikisOnay'){ cikisOnay(); }
-}
+  subS.addEventListener('click',function(){ showDone(kodVarS()) });
 
-/* Katman içindeki düğmenin siparişini bul. */
-function siparisBul(el){
-  var id=el && el.dataset ? el.dataset.id : null;
-  if(!id) return null;
-  return S.siparisler.filter(function(x){return x.id===id;})[0]||null;
-}
-
-/* ============ sohbet katmanı ============ */
-/* Mesajlaşma demo veriyle çalışır; gönderilen metin cihazda saklanır.
-   Gerçek sunucu bağlanınca yalnızca gonder() gövdesi değişir. */
-function sohbetKatmani(id){
-  var m=S.mesajlar.filter(function(x){return x.id===id;})[0];
-  if(!m) return;
-  m.gecmis=m.gecmis||[{kim:'onlar', metin:m.son, saat:m.saat}];
-  katmanAc(
-    '<div class="shhead"><div><h3>'+esc(m.kim)+'</h3>'+
-      '<p class="shsub">Görevle ilgili mesajlar</p></div>'+
-      '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-    '<div class="sohbet" id="sohbet">'+m.gecmis.map(function(x){
-      return '<div class="balon '+(x.kim==='ben'?'ben':'onlar')+'">'+esc(x.metin)+
-        '<span class="bsaat">'+esc(x.saat||'')+'</span></div>';
-    }).join('')+'</div>'+
-    '<div class="yazalim">'+
-      '<input id="yazMetin" type="text" placeholder="Mesaj yaz…" autocomplete="off">'+
-      '<button class="gonder" type="button" id="yazGonder" aria-label="Gönder">'+ic('nav')+'</button>'+
-    '</div>'
-  );
-  var girdi=$('#yazMetin'), dugme=$('#yazGonder');
-  function gonder(){
-    var t=(girdi.value||'').trim();
-    if(!t) return;
-    var saat=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-    m.gecmis.push({kim:'ben', metin:t, saat:saat});
-    m.son=t; m.saat=saat; m.okunmadi=false;
-    kaydet(); girdi.value='';
-    var k=$('#sohbet');
-    var b=document.createElement('div');
-    b.className='balon ben';
-    b.textContent=t;
-    var s=document.createElement('span'); s.className='bsaat'; s.textContent=saat;
-    b.appendChild(s); k.appendChild(b);
-    k.scrollTop=k.scrollHeight;
-    titres(10);
-    /* Sunucu bağlanana kadar karşı taraf otomatik yanıtlar. */
-    setTimeout(function(){
-      var y='Tamamdır, teşekkürler 👍';
-      m.gecmis.push({kim:'onlar', metin:y, saat:saat}); kaydet();
-      var yb=document.createElement('div');
-      yb.className='balon onlar'; yb.textContent=y;
-      var ys=document.createElement('span'); ys.className='bsaat'; ys.textContent=saat;
-      yb.appendChild(ys); k.appendChild(yb); k.scrollTop=k.scrollHeight;
-      titres(8);
-    },1400);
+  /* Sonuç: kodlu doğrudan içeri, kodsuz sıraya */
+  var okDot=$('#d1dot').innerHTML;
+  function setDot(el,on){ el.className='dot'+(on?' ok':''); el.innerHTML=on?okDot:'' }
+  function setBar(el,on){ el.className='bar'+(on?' ok':'') }
+  function showDone(kodlu){
+    $('#doneTitle').textContent = kodlu ? 'Kodun geçerli.' : 'Başvurun bize ulaştı.';
+    $('#doneText').textContent = kodlu
+      ? 'İçeridesin. Sipariş almaya hazırsın.'
+      : 'Ekibimiz seni en geç yarın arayacak. Telefonun yakınında olsun.';
+    setBar($('#d1bar'),true);
+    setDot($('#d2dot'),kodlu); setBar($('#d2bar'),kodlu);
+    setDot($('#d3dot'),kodlu);
+    $('#d2t').textContent = kodlu ? 'Kod onaylandı' : 'Telefonla görüşme';
+    $('#d3t').textContent = kodlu ? 'Hesabın açıldı' : 'Hesabın açılır, işe başlarsın';
+    $('#d3t').classList.toggle('off', !kodlu);
+    var b=$('#doneBtn');
+    b.textContent = kodlu ? 'Başla' : 'Tamam';
+    b.dataset.kodlu = kodlu ? '1' : '';
+    go('done');
   }
-  dugme.addEventListener('click',gonder);
-  girdi.addEventListener('keydown',function(e){ if(e.key==='Enter') gonder(); });
-  setTimeout(function(){ girdi.focus(); },260);
-}
+  $('#doneBtn').addEventListener('click',function(){ if(this.dataset.kodlu) location.href='kurye.html'; else home() });
 
-/* ============ profil katmanları ============ */
-function kisiselBilgiKatmani(){
-  katmanAc(
-    '<div class="shhead"><div><h3>Kişisel bilgiler</h3>'+
-    '<p class="shsub">Görev alırken kullanılır</p></div>'+
-    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-    '<div class="det" style="padding:10px 0 0">'+
-      '<div class="row"><div class="rowic">'+ic('user')+'</div><div class="rowbody">'+
-        '<div class="rowk">Ad soyad</div><div class="rowv">'+esc(S.ad)+'</div></div></div>'+
-      '<div class="row"><div class="rowic">'+ic('bike')+'</div><div class="rowbody">'+
-        '<div class="rowk">Araç</div><div class="rowv">'+esc(S.arac)+'</div></div></div>'+
-      '<div class="row"><div class="rowic">'+ic('shield')+'</div><div class="rowbody">'+
-        '<div class="rowk">Durum</div><div class="rowv">Kimlik doğrulandı</div></div></div>'+
-    '</div>'+
-    '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
-      '<button class="btn sec" type="button" data-close>Kapat</button></div>'
-  );
-}
-function belgeKatmani(){
-  var belgeler=[['Kimlik kartı','Onaylı'],['Ehliyet','Onaylı'],['SRC belgesi','Onaylı'],['Adli sicil kaydı','Onaylı']];
-  katmanAc(
-    '<div class="shhead"><div><h3>Belgelerim</h3>'+
-    '<p class="shsub">Hepsi onaylı · görev alabilirsin</p></div>'+
-    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-    '<div class="list" style="margin-top:8px">'+belgeler.map(function(b){
-      return '<div class="li"><div class="liav" style="color:var(--ink)">'+ic('check')+'</div>'+
-        '<div class="lib"><div class="lit">'+esc(b[0])+'</div>'+
-        '<div class="lis">Geçerlilik süresi dolmadı</div></div>'+
-        '<div class="litime" style="color:var(--ink);font-weight:650">'+esc(b[1])+'</div></div>';
-    }).join('')+'</div>'+
-    '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
-      '<button class="btn sec" type="button" data-close>Kapat</button></div>'
-  );
-}
-function odemeKatmani(){
-  katmanAc(
-    '<div class="shhead"><div><h3>Ödeme bilgileri</h3>'+
-    '<p class="shsub">Hakedişler her gün 18:00\'de yatar</p></div>'+
-    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-    '<div class="det" style="padding:10px 0 0">'+
-      '<div class="row"><div class="rowic">'+ic('wallet')+'</div><div class="rowbody">'+
-        '<div class="rowk">IBAN</div><div class="rowv">TR•• •••• •••• •••• •••• ••</div></div></div>'+
-      '<div class="row"><div class="rowic">'+ic('clock')+'</div><div class="rowbody">'+
-        '<div class="rowk">Ödeme dönemi</div><div class="rowv">Günlük</div></div></div>'+
-      '<div class="row"><div class="rowic">'+ic('check')+'</div><div class="rowbody">'+
-        '<div class="rowk">Bekleyen hakediş</div><div class="rowv" style="color:var(--ink)">'+
-        para(S.kazanc.bugun)+'</div></div></div>'+
-    '</div>'+
-    '<div class="acts" style="padding:16px 0 0;grid-template-columns:1fr">'+
-      '<button class="btn sec" type="button" data-close>Kapat</button></div>'
-  );
-}
-function cikisKatmani(){
-  katmanAc(
-    '<div class="shhead"><div><h3>Çıkış yap</h3>'+
-    '<p class="shsub">Bu cihazdaki görevler silinmez</p></div>'+
-    '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-    '<p style="font-size:13.5px;color:var(--ink2);margin:10px 0 0">'+
-    'Çıkış yaparsan yeni sipariş alamazsın. Tekrar giriş yaptığında kaldığın yerden devam edersin.</p>'+
-    '<div class="acts" style="padding:16px 0 0">'+
-      '<button class="btn sec" type="button" data-close>Vazgeç</button>'+
-      '<button class="btn pri" type="button" data-act="cikisOnay">Çıkış yap</button></div>'
-  );
-}
-function cikisOnay(){
-  katmanKapat();
-  S.online=false; kaydet(); ustCiz(); durumCiz();
-  toast('Çıkış yapıldı');
-}
-
-/* ============ sipariş katmanı ============ */
-function katmanAc(html){
-  var sh=$('#sheet');
-  $('#sheetPanel').innerHTML='<div class="grab"></div>'+html;
-  sh.classList.add('on');
-  requestAnimationFrame(function(){ sh.classList.add('in'); });
-  var kapat=$('#sheetPanel').querySelector('[data-close]');
-  if(kapat) kapat.addEventListener('click',katmanKapat);
-  var scrim=sh.querySelector('.scrim');
-  scrim.onclick=katmanKapat;
-  Array.prototype.forEach.call($('#sheetPanel').querySelectorAll('[data-al]'),function(b){
-    b.addEventListener('click',function(){ gorevAl(b.dataset.al); });
-  });
-  /* Katman içindeki eylem düğmeleri de bağlanmalı; yoksa ölü kalır. */
-  Array.prototype.forEach.call($('#sheetPanel').querySelectorAll('[data-close]:not([data-act])'),function(b){
-    b.addEventListener('click',katmanKapat);
-  });
-  Array.prototype.forEach.call($('#sheetPanel').querySelectorAll('[data-act]'),function(b){
-    b.addEventListener('click',function(){ eylem(b.dataset.act, b); });
-  });
-}
-function katmanKapat(){
-  var sh=$('#sheet');
-  sh.classList.remove('in');
-  setTimeout(function(){ sh.classList.remove('on'); },240);
-}
-function siparisKatman(id){
-  var o=S.siparisler.filter(function(x){return x.id===id;})[0];
-  if(!o) return;
-  katmanAc(
-    '<div class="shhead"><div><h3>'+esc(o.isletme)+'</h3>'+
-      '<p class="shsub">'+esc(String(o.km).replace('.',','))+' km · '+esc(o.sure)+' dakika · '+para(o.ucret)+'</p></div>'+
-      '<button class="shclose" type="button" data-close>'+ic('close')+'</button></div>'+
-    '<div class="det" style="padding:12px 0 0">'+
-      '<div class="row"><div class="rowic">'+ic('pin')+'</div><div class="rowbody">'+
-        '<div class="rowk">Alış adresi</div><div class="rowv">'+esc(o.adres)+'</div></div>'+
-        '<button class="rowbtn" type="button" data-act="kopyalaSiparis" data-id="'+esc(o.id)+'" title="Adresi kopyala">'+ic('doc')+'</button></div>'+
-      '<div class="row"><div class="rowic">'+ic('user')+'</div><div class="rowbody">'+
-        '<div class="rowk">Müşteri</div><div class="rowv">'+esc(o.musteri)+'</div></div>'+
-        '<button class="rowbtn" type="button" data-act="siparisHarita" data-id="'+esc(o.id)+'" title="Haritada gör">'+ic('map')+'</button></div>'+
-      '<div class="row"><div class="rowic">'+ic('clock')+'</div><div class="rowbody">'+
-        '<div class="rowk">Tahmini süre</div><div class="rowv"><span class="eta">'+ic('clock')+esc(o.sure)+' dakika</span></div></div></div>'+
-    '</div>'+
-    '<div class="acts" style="padding:16px 0 8px;grid-template-columns:1fr">'+
-      '<button class="btn pri" type="button" data-al="'+esc(o.id)+'">'+ic('box')+'Görevi Al</button>'+
-    '</div>'+
-    '<div class="quickrow" style="padding:0 0 4px">'+
-      '<button class="qbtn" type="button" data-act="paylasSiparis" data-id="'+esc(o.id)+'">'+ic('share')+'<span>Paylaş</span></button>'+
-      '<button class="qbtn" type="button" data-act="isletmeAra" data-id="'+esc(o.id)+'">'+ic('phone')+'<span>İşletme</span></button>'+
-      '<button class="qbtn" type="button" data-act="siparisHarita" data-id="'+esc(o.id)+'">'+ic('map')+'<span>Harita</span></button>'+
-      '<button class="qbtn" type="button" data-close>'+ic('close')+'<span>Kapat</span></button>'+
-    '</div>'
-  );
-}
-function gorevAl(id){
-  var o=S.siparisler.filter(function(x){return x.id===id;})[0];
-  if(!o) return;
-  S.siparisler=S.siparisler.filter(function(x){return x.id!==id;});
-  /* Sipariş nesnesi olduğu gibi kopyalanır: alan alan kurmak yeni
-     eklenen alanları (koordinat, telefon) düşürüyordu. */
-  S.aktifGorev=JSON.parse(JSON.stringify(o));
-  S.aktifGorev.asama='paket';
-  kaydet(); katmanKapat();
-  S.sekme='home'; navCiz(); gorunumCiz(); durumCiz();
-  toast('Görev alındı: '+o.isletme);
-}
-
-/* ============ başlat ============ */
-/* Kısayol derin bağlantısı: ?git=<sekme> */
-(function derinBaglanti(){
-  var m=/[?&]git=([a-z]+)/i.exec(location.search);
-  if(!m) return;
-  var k=m[1].toLowerCase();
-  var gecerli=SEKMELER.some(function(s){ return s.k===k; });
-  if(gecerli) S.sekme=k;
-})();
-
-ustCiz(); navCiz(); gorunumCiz(); durumCiz(); agDurumu(); yenileKur();
-
-/* Çevrimdışı destek: servis çalışanını kaydet. */
-if('serviceWorker' in navigator){
-  window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
-  });
-  /* Yeni sürüm devreye girince bir kez yenile; yoksa kullanıcı eski
-     sürümde takılı kalır. Sonsuz döngüyü bayrakla engelle. */
-  var yenilendi=false;
-  navigator.serviceWorker.addEventListener('controllerchange',function(){
-    if(yenilendi) return;
-    yenilendi=true;
-    location.reload();
-  });
-}
-
-/* Geri tuşu / Android geri: katman açıksa kapat. */
-window.addEventListener('keydown',function(e){
-  if(e.key==='Escape') katmanKapat();
-});
-history.pushState({katman:false},'');
-window.addEventListener('popstate',function(){
-  var sh=$('#sheet');
-  if(sh && sh.classList.contains('on')){
-    katmanKapat();
-    history.pushState({katman:false},'');
-  }
-});
-
-/* Sürüm denetimi: açılışta sessiz, günde bir kez. */
-try{
-  var sonDeneme=Number(localStorage.getItem('sezar.surumDeneme')||0);
-  if(Date.now()-sonDeneme > 86400000){
-    localStorage.setItem('sezar.surumDeneme',String(Date.now()));
-    setTimeout(function(){ surumDenetle(true); },2500);
-  }
-}catch(e){}
-
+  history.replaceState({n:'welcome'},'','');
+  show('welcome');
 })();
 </script>
 </body>

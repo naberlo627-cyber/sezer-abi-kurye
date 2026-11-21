@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FFF3E4">
+<meta name="theme-color" content="#FFFFFF">
 <title>Sezer Abi Kurye · Vardiya</title>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
-  --orange:#0F7A5A; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55;
+  --accent:#1B6FA8; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55;
   --line:#E4DCD1; --pad:#EDE7DF; --hair:#EFEAE3;
   --display:'Bricolage Grotesque',system-ui,sans-serif;
   --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -54,14 +54,14 @@ input{font:inherit}
 .panel.tight .step-t{font-size:19px;margin-bottom:8px}
 .panel .grab{cursor:pointer;position:relative;width:auto;height:14px;background:none;display:flex;align-items:flex-start;justify-content:center;margin:0 0 8px}
 .panel .grab::before{content:'';width:38px;height:4px;border-radius:2px;background:var(--pad)}
-.panel.tight .grab::before{background:var(--orange)}
+.panel.tight .grab::before{background:var(--accent)}
 .panel{position:absolute;left:0;right:0;bottom:0;z-index:500;background:#fff;
   border-radius:26px 26px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 14px);
   box-shadow:0 -12px 36px rgba(30,30,36,.13)}
 .grab{width:38px;height:4px;border-radius:2px;background:var(--pad);margin:0 auto 12px}
 .panel-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--pad);display:inline-block;margin-right:7px;vertical-align:1px}
-.dot.live{background:var(--orange);animation:pulse 1.6s infinite}
+.dot.live{background:var(--accent);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 .state-t{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-1px;margin:5px 0 1px}
 .state-s{font-size:13px;color:var(--mute)}
@@ -77,7 +77,7 @@ input{font:inherit}
 .hedef-top b{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-1.2px;font-variant-numeric:tabular-nums}
 .hedef-top .lab{margin-right:auto}
 .prog{height:6px;border-radius:3px;background:var(--pad);margin:9px 0 8px;overflow:hidden}
-.prog i{display:block;height:100%;background:var(--orange);border-radius:3px;transition:width .4s ease}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .4s ease}
 .hedef-alt{display:flex;gap:14px;font-size:12.5px;color:var(--mute)}
 
 .plan{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mute);margin-bottom:12px}
@@ -100,7 +100,7 @@ input{font:inherit}
 .steps{display:flex;align-items:center;margin-bottom:14px}
 .steps i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);flex:none}
 .steps i.ok{background:var(--ink);border-color:var(--ink)}
-.steps i.now{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 4px rgba(15,122,90,.14)}
+.steps i.now{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px rgba(27,111,168,.14)}
 .steps s{display:block;height:1.5px;background:var(--line);flex:1}
 .steps s.ok{background:var(--ink)}
 
@@ -108,7 +108,7 @@ input{font:inherit}
 .durak{display:flex;gap:12px;padding:10px 0}
 .durak+.durak{border-top:1px solid var(--pad)}
 .pin{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--line);flex:none;margin-top:5px}
-.durak.on .pin{background:var(--orange);border-color:var(--orange)}
+.durak.on .pin{background:var(--accent);border-color:var(--accent)}
 .durak.done .pin{background:var(--ink);border-color:var(--ink)}
 .durak .who{font-size:11.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mute)}
 .durak b{display:block;font-size:15px;font-weight:600;line-height:1.3}
@@ -189,14 +189,14 @@ input{font:inherit}
 .tg:last-child{border-bottom:0}
 .sw{width:48px;height:28px;border-radius:14px;background:var(--pad);position:relative;transition:background .2s;flex:none}
 .sw i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.sw.on{background:var(--orange)}
+.sw.on{background:var(--accent)}
 .sw.on i{transform:translateX(20px)}
 
 .ring{position:relative;width:64px;height:64px;margin:0 auto 4px}
 .ring svg{transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:4}
 .ring .trk{stroke:var(--pad)}
-.ring .bar{stroke:var(--orange);stroke-linecap:round;stroke-dasharray:163.4;stroke-dashoffset:0;animation:drain 15s linear forwards}
+.ring .bar{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:163.4;stroke-dashoffset:0;animation:drain 15s linear forwards}
 @keyframes drain{from{stroke-dashoffset:0}to{stroke-dashoffset:163.4}}
 .ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:19px;font-variant-numeric:tabular-nums}
 .fee{font-family:var(--display);font-weight:800;font-size:40px;letter-spacing:-2px;text-align:center;line-height:1;font-variant-numeric:tabular-nums}
@@ -235,7 +235,7 @@ input{font:inherit}
 .nav-i svg{width:20px;height:20px;stroke:var(--cream);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
 .nav-t{flex:1;min-width:0}
 .nav-t b{display:block;font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.3px;line-height:1.22}
-.nav-t b em{font-style:normal;color:var(--orange)}
+.nav-t b em{font-style:normal;color:var(--accent)}
 .nav-t span{display:block;font-size:12px;color:var(--mute);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nav-x{width:26px;height:26px;border-radius:50%;background:var(--pad);color:var(--ink);font-size:12px;display:grid;place-items:center;flex:none}
 .acts2{display:grid;gap:9px;margin-top:16px}
@@ -256,7 +256,7 @@ input{font:inherit}
 .week{display:flex;align-items:flex-end;gap:8px;height:78px;margin:14px 0 4px}
 .week div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
 .week i{width:100%;background:var(--pad);border-radius:5px 5px 2px 2px;min-height:4px}
-.week div.today i{background:var(--orange)}
+.week div.today i{background:var(--accent)}
 .week span{font-size:10.5px;color:var(--mute)}
 .prof-name{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-1px;margin-bottom:2px}
 .prow{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--pad);font-size:15px}
@@ -269,12 +269,12 @@ input{font:inherit}
 .tab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0;color:var(--mute);font-size:11px;font-weight:600}
 .tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tab.on{color:var(--ink)}
-.tab.on svg{stroke:var(--orange)}
+.tab.on svg{stroke:var(--accent)}
 
 .mk{display:grid;place-items:center;border-radius:50%;font-family:var(--display);font-weight:800;font-size:12px;color:#fff}
 .mk.pick{width:26px;height:26px;background:var(--ink);box-shadow:0 0 0 4px rgba(30,30,36,.16)}
-.mk.drop{width:26px;height:26px;background:var(--orange);box-shadow:0 0 0 4px rgba(15,122,90,.16)}
-.mk.me{width:20px;height:20px;background:var(--orange);border:3px solid #fff;box-shadow:0 0 0 3px rgba(15,122,90,.22)}
+.mk.drop{width:26px;height:26px;background:var(--accent);box-shadow:0 0 0 4px rgba(27,111,168,.16)}
+.mk.me{width:20px;height:20px;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 3px rgba(27,111,168,.22)}
 
 .offbar{position:fixed;top:0;left:0;right:0;z-index:850;background:var(--ink);color:var(--cream);text-align:center;
   font-size:12.5px;font-weight:600;padding:calc(env(safe-area-inset-top) + 6px) 12px 6px;display:none}
@@ -1007,7 +1007,7 @@ input{font:inherit}
     if(S.step<2){
       osrmRota(bas,KONUM.alis).then(function(rt){
         if(!mapGorev) return;
-        gLeg1=L.polyline(latlngs(rt),{color:'#0F7A5A',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+        gLeg1=L.polyline(latlngs(rt),{color:'#1B6FA8',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       }).catch(function(){});
       osrmRota(KONUM.alis,KONUM.teslim).then(function(rt){
         if(!mapGorev) return;
@@ -1016,7 +1016,7 @@ input{font:inherit}
     }else{
       osrmRota(bas,KONUM.teslim).then(function(rt){
         if(!mapGorev) return;
-        gLeg1=L.polyline(latlngs(rt),{color:'#0F7A5A',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+        gLeg1=L.polyline(latlngs(rt),{color:'#1B6FA8',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       }).catch(function(){});
     }
   }
@@ -1088,13 +1088,13 @@ input{font:inherit}
     if(NAV.line){ mapGorev.removeLayer(NAV.line);NAV.line=null }
     osrmRota(bas,hedef).then(function(rt){
       if(!rt.legs||!rt.legs[0].steps) throw new Error('rota yok');
-      NAV.line=L.polyline(latlngs(rt),{color:'#0F7A5A',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      NAV.line=L.polyline(latlngs(rt),{color:'#1B6FA8',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       mapGorev.fitBounds(NAV.line.getBounds(),{paddingTopLeft:[40,150],paddingBottomRight:[40,330],maxZoom:16});
       NAV.steps=rt.legs[0].steps;
       navGuncelle(GEO.last||bas);
     }).catch(function(){
       NAV.steps=null;
-      NAV.line=L.polyline([bas,hedef],{color:'#0F7A5A',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      NAV.line=L.polyline([bas,hedef],{color:'#1B6FA8',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       mapGorev.fitBounds([bas,hedef],{paddingTopLeft:[40,150],paddingBottomRight:[40,330],maxZoom:16});
       navYaz('<em>'+fmtM(mesafeM(bas,hedef))+'</em> düz git','Hedef: '+NAV.ad+' · yol verisi yok','straight');
     });
