@@ -121,6 +121,17 @@ input{font:inherit}
 .lock{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mute)}
 .lock svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .canli{display:none;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--mute)}
+.canli-pill{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:14px;z-index:500;display:none;align-items:center;gap:7px;
+  background:var(--ink);color:var(--cream);border-radius:999px;padding:9px 13px;font-size:12px;font-weight:600;box-shadow:0 8px 22px rgba(30,30,36,.22)}
+.canli-pill b{font-weight:800;letter-spacing:.05em;text-transform:uppercase;font-size:10.5px;color:#fff}
+.canli-pill .dot{margin:0;background:#39D98A}
+.step-row{display:flex;align-items:center;gap:10px}
+.step-row .step-t{flex:1;min-width:0}
+.minilive{display:none;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--mute);background:var(--pad);border-radius:999px;padding:5px 9px;flex:none}
+.minilive .dot{margin:0;background:#39D98A}
+.kart{background:#fff;border-radius:20px;padding:14px 14px 2px;box-shadow:0 8px 24px rgba(30,30,36,.07);margin-top:14px}
+.kart .hedef{margin:0;padding-top:0;border-top:0}
+.kart .son{border-top:1.5px solid var(--line);padding-top:11px;margin:12px 0 12px}
 .canli .dot{margin:0}
 .hareketsiz{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 64px);z-index:520;background:var(--ink);color:var(--cream);
   border-radius:14px;padding:12px 14px;font-size:12.5px;line-height:1.4;display:none;box-shadow:0 10px 28px rgba(0,0,0,.28)}
@@ -269,6 +280,7 @@ input{font:inherit}
   <section class="scr full on" id="v-vardiya">
     <div class="map" id="mapHome"></div>
     <div class="bolge"><span class="dot live"></span>Alsancak · <b>8 sipariş</b></div>
+    <div class="canli-pill" id="canli"><span class="dot live"></span><b>Canlı</b><span id="canliTxt">26 km/s</span></div>
     <div class="panel">
       <div class="grab"></div>
       <div class="panel-row">
@@ -280,40 +292,35 @@ input{font:inherit}
         <button class="mini" id="molaBtn" hidden>Mola ver</button>
       </div>
 
-      <div class="canli" id="canli">
-        <span class="dot live"></span>
-        <span id="canliTxt">Konum alınıyor…</span>
-        <span class="lock" style="margin-left:auto"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Canlı</span>
-      </div>
-
       <div class="oranim">
         <span>Kabul oranı <b id="oRate">%92</b></span>
         <span>Bugün <b id="oOffer">24</b> teklif</span>
         <span>Puan <b>4,9</b></span>
       </div>
 
-      <div class="hedef">
-        <div class="hedef-top">
-          <span class="lab">Bugün</span>
-          <b class="num" id="hMoney">₺412</b>
-          <span class="mute num" id="hGoal">/ ₺600</span>
+      <div class="kart">
+        <div class="hedef">
+          <div class="hedef-top">
+            <span class="lab">Bugün</span>
+            <b class="num" id="hMoney">₺412</b>
+            <span class="mute num" id="hGoal">/ ₺600</span>
+          </div>
+          <div class="prog"><i id="hBar" style="width:69%"></i></div>
+          <div class="hedef-alt">
+            <span class="num" id="hOrders">6 sipariş</span>
+            <span class="num" id="hKm">38 km</span>
+            <span class="num" id="hTime">4s 12dk yolda</span>
+          </div>
         </div>
-        <div class="prog"><i id="hBar" style="width:69%"></i></div>
-        <div class="hedef-alt">
-          <span class="num" id="hOrders">6 sipariş</span>
-          <span class="num" id="hKm">38 km</span>
-          <span class="num" id="hTime">4s 12dk yolda</span>
+        <div class="son">
+          <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
         </div>
       </div>
 
       <div class="plan">
         <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
         <span>Sıradaki vardiya · Yarın 18:00–23:00</span>
-      </div>
-
-      <div class="son">
-        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-        <span>Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
       </div>
 
       <button class="btn" id="shiftBtn">Vardiyayı başlat</button>
@@ -339,7 +346,10 @@ input{font:inherit}
     <div class="panel">
       <div class="grab"></div>
       <div class="steps" id="gSteps"></div>
-      <div class="step-t" id="gTitle">Dükkana git</div>
+      <div class="step-row">
+        <div class="step-t" id="gTitle">Dükkana git</div>
+        <span class="minilive" id="miniLive"><span class="dot live"></span><span id="miniLiveTxt">26 km/s</span></span>
+      </div>
 
       <div class="durak on" id="durak1">
         <span class="pin"></span>
@@ -610,7 +620,6 @@ input{font:inherit}
     if(mapHome) meHome=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapHome);
     mapGorev=mkMap($('#mapGorev'),KONUM.alis,13,false);
     if(mapGorev){
-      L.polyline([KONUM.ben,KONUM.alis,KONUM.teslim],{color:'#1E1E24',weight:3,dashArray:'7 7',opacity:.75}).addTo(mapGorev);
       meGorev=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapGorev);
       L.marker(KONUM.alis,{icon:pin('pick','A')}).addTo(mapGorev);
       L.marker(KONUM.teslim,{icon:pin('drop','B')}).addTo(mapGorev);
@@ -686,13 +695,15 @@ input{font:inherit}
     if(mapHome&&S.on&&!S.active) mapHome.panTo(ll,{animate:true,duration:0.6});
   }
   function canliCiz(){
-    var box=$('#canli'); if(!box) return;
-    box.style.display=S.on?'flex':'none';
+    var box=$('#canli'),ml=$('#miniLive');
+    if(box) box.style.display=S.on?'flex':'none';
+    if(ml) ml.style.display=S.on?'flex':'none';
     if(!S.on) return;
-    var t=$('#canliTxt');
-    if(!GEO.ready){ t.textContent='Konum alınıyor…'; return }
-    if(GEO.still>5){ t.textContent='Duruyorsun · '+kisaSure(GEO.still*1000) }
-    else { t.textContent='Hareket halinde · '+Math.round(GEO.speed)+' km/s' }
+    var txt='konum…';
+    if(GEO.ready) txt=GEO.still>5?('duruyor · '+kisaSure(GEO.still*1000)):(Math.round(GEO.speed)+' km/s');
+    var a=$('#canliTxt'),b=$('#miniLiveTxt');
+    if(a) a.textContent=txt;
+    if(b) b.textContent=txt;
   }
 
   function go(v){
@@ -891,7 +902,7 @@ input{font:inherit}
       return '<i class="'+c+'"></i>'+(k<ADIMLAR.length-1?'<s class="'+(k<i?'ok':'')+'"></s>':'');
     }).join('');
     $('#gTitle').innerHTML=ADIMLAR[i].t+(ADIMLAR[i].eta!=='—'?'<span class="eta-s">'+ADIMLAR[i].eta+'</span>':'');
-    sureCiz();rotaKapat();
+    sureCiz();rotaKapat();gorevRota();
     $('#durak1').className='durak '+(i<2?'on':'done');
     $('#durak2').className='durak '+(i>=2?'on':'');
     $('#gNote').innerHTML=ADIMLAR[i].not;
@@ -930,6 +941,43 @@ input{font:inherit}
     var kalan=Math.ceil((S.deadline-Date.now())/60000);
     if(kalan>0){ el.textContent=kalan+' dk'; el.className=kalan<=8?'tight':'' }
     else { el.textContent='+'+Math.abs(kalan)+' dk'; el.className='late' }
+  }
+
+  /* yol üzerinden rota */
+  var OSRM_CACHE={};
+  function osrmRota(a,b){
+    var k=a[0].toFixed(4)+','+a[1].toFixed(4)+';'+b[0].toFixed(4)+','+b[1].toFixed(4);
+    if(OSRM_CACHE[k]) return Promise.resolve(OSRM_CACHE[k]);
+    var url='https://router.project-osrm.org/route/v1/driving/'+a[1]+','+a[0]+';'+b[1]+','+b[0]+'?overview=full&geometries=geojson&steps=true';
+    return fetch(url).then(function(r){return r.json()}).then(function(j){
+      var rt=j.routes&&j.routes[0];
+      if(!rt||!rt.geometry) throw new Error('rota yok');
+      OSRM_CACHE[k]=rt;
+      return rt;
+    });
+  }
+  function latlngs(rt){ return rt.geometry.coordinates.map(function(c){return [c[1],c[0]]}) }
+  var gLeg1=null,gLeg2=null;
+  function gorevRota(){
+    if(!mapGorev||!window.L) return;
+    if(gLeg1){mapGorev.removeLayer(gLeg1);gLeg1=null}
+    if(gLeg2){mapGorev.removeLayer(gLeg2);gLeg2=null}
+    var bas=GEO.last||KONUM.ben;
+    if(S.step<2){
+      osrmRota(bas,KONUM.alis).then(function(rt){
+        if(!mapGorev) return;
+        gLeg1=L.polyline(latlngs(rt),{color:'#FF4B1F',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      }).catch(function(){});
+      osrmRota(KONUM.alis,KONUM.teslim).then(function(rt){
+        if(!mapGorev) return;
+        gLeg2=L.polyline(latlngs(rt),{color:'#1E1E24',weight:3,opacity:.32,dashArray:'2 7'}).addTo(mapGorev);
+      }).catch(function(){});
+    }else{
+      osrmRota(bas,KONUM.teslim).then(function(rt){
+        if(!mapGorev) return;
+        gLeg1=L.polyline(latlngs(rt),{color:'#FF4B1F',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      }).catch(function(){});
+    }
   }
 
   /* adım adım navigasyon */
@@ -997,12 +1045,9 @@ input{font:inherit}
     $('#navBox').classList.add('on');
     navYaz('Yol tarifi alınıyor…','','straight');
     if(NAV.line){ mapGorev.removeLayer(NAV.line);NAV.line=null }
-    var url='https://router.project-osrm.org/route/v1/driving/'+bas[1]+','+bas[0]+';'+hedef[1]+','+hedef[0]+'?overview=full&geometries=geojson&steps=true';
-    fetch(url).then(function(r){return r.json()}).then(function(j){
-      var rt=j.routes&&j.routes[0];
-      if(!rt||!rt.legs||!rt.legs[0].steps) throw new Error('rota yok');
-      var geo=rt.geometry.coordinates.map(function(c){return [c[1],c[0]]});
-      NAV.line=L.polyline(geo,{color:'#FF4B1F',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+    osrmRota(bas,hedef).then(function(rt){
+      if(!rt.legs||!rt.legs[0].steps) throw new Error('rota yok');
+      NAV.line=L.polyline(latlngs(rt),{color:'#FF4B1F',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       mapGorev.fitBounds(NAV.line.getBounds(),{paddingTopLeft:[40,150],paddingBottomRight:[40,330],maxZoom:16});
       NAV.steps=rt.legs[0].steps;
       navGuncelle(GEO.last||bas);
