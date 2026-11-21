@@ -43,6 +43,17 @@ input{font:inherit}
 .mute{color:var(--mute)}
 .num{font-variant-numeric:tabular-nums}
 
+.mapctl{position:absolute;right:14px;top:calc(env(safe-area-inset-top) + 152px);z-index:505;display:flex;flex-direction:column;
+  background:var(--cream);border-radius:14px;box-shadow:0 8px 22px rgba(30,30,36,.18);overflow:hidden}
+.mapctl button{width:40px;height:40px;display:grid;place-items:center;font-size:19px;font-weight:700;color:var(--ink);line-height:1}
+.mapctl button+button{border-top:1px solid var(--line)}
+.mapctl svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.panel.tight .steps,.panel.tight .durak,.panel.tight .gline{display:none}
+.panel.tight{padding-top:8px}
+.panel.tight .step-t{font-size:19px;margin-bottom:8px}
+.panel .grab{cursor:pointer;position:relative;width:auto;height:14px;background:none;display:flex;align-items:flex-start;justify-content:center;margin:0 0 8px}
+.panel .grab::before{content:'';width:38px;height:4px;border-radius:2px;background:var(--pad)}
+.panel.tight .grab::before{background:var(--orange)}
 .panel{position:absolute;left:0;right:0;bottom:0;z-index:500;background:var(--cream);
   border-radius:24px 24px 0 0;padding:12px 20px calc(env(safe-area-inset-bottom) + 16px);
   box-shadow:0 -10px 34px rgba(30,30,36,.16)}
@@ -280,6 +291,11 @@ input{font:inherit}
   <section class="scr full on" id="v-vardiya">
     <div class="map" id="mapHome"></div>
     <div class="bolge"><span class="dot live"></span>Alsancak · <b>8 sipariş</b></div>
+    <div class="mapctl">
+      <button data-z="in" data-m="home" aria-label="Yakınlaştır">+</button>
+      <button data-z="out" data-m="home" aria-label="Uzaklaştır">−</button>
+      <button data-z="me" data-m="home" aria-label="Konumuma dön"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3.4M12 18.6V22M2 12h3.4M18.6 12H22"/></svg></button>
+    </div>
     <div class="canli-pill" id="canli"><span class="dot live"></span><b>Canlı</b><span id="canliTxt">26 km/s</span></div>
     <div class="panel">
       <div class="grab"></div>
@@ -334,6 +350,11 @@ input{font:inherit}
       <div class="chip"><span class="lab">Sipariş</span><b class="num" id="gId">#1042</b></div>
       <div class="chip eta"><span class="lab">Teslim</span><b id="gEta">32 dk</b></div>
     </div>
+    <div class="mapctl">
+      <button data-z="in" data-m="gorev" aria-label="Yakınlaştır">+</button>
+      <button data-z="out" data-m="gorev" aria-label="Uzaklaştır">−</button>
+      <button data-z="me" data-m="gorev" aria-label="Rotaya dön"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3.4M12 18.6V22M2 12h3.4M18.6 12H22"/></svg></button>
+    </div>
     <div class="nav" id="navBox">
       <div class="nav-i"><svg id="navArrow" viewBox="0 0 24 24"><path d="M12 20V5"/><path d="M6 11l6-6 6 6"/></svg></div>
       <div class="nav-t">
@@ -343,8 +364,8 @@ input{font:inherit}
       <button class="nav-x" id="navX" aria-label="Yol tarifini kapat">✕</button>
     </div>
     <div class="hareketsiz" id="hareketsiz"><b>Hareketsiz görünüyorsun</b>2 dakikadır aynı yerdesin. Sorun mu var?</div>
-    <div class="panel">
-      <div class="grab"></div>
+    <div class="panel" id="gorevPanel">
+      <div class="grab" id="grabGorev" role="button" aria-label="Paneli daralt/genişlet"></div>
       <div class="steps" id="gSteps"></div>
       <div class="step-row">
         <div class="step-t" id="gTitle">Dükkana git</div>
@@ -618,7 +639,7 @@ input{font:inherit}
   function kurHarita(){
     mapHome=mkMap($('#mapHome'),KONUM.ben,14);
     if(mapHome) meHome=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapHome);
-    mapGorev=mkMap($('#mapGorev'),KONUM.alis,13,false);
+    mapGorev=mkMap($('#mapGorev'),KONUM.alis,13,true);
     if(mapGorev){
       meGorev=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapGorev);
       L.marker(KONUM.alis,{icon:pin('pick','A')}).addTo(mapGorev);
@@ -715,6 +736,24 @@ input{font:inherit}
     if(v==='vardiya'&&mapHome) setTimeout(function(){mapHome.invalidateSize()},90);
   }
   $$('.tab').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.v)})});
+
+  $$('.mapctl button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var m=b.dataset.m==='gorev'?mapGorev:mapHome;
+      if(!m) return;
+      var z=b.dataset.z;
+      if(z==='in') m.zoomIn();
+      else if(z==='out') m.zoomOut();
+      else if(b.dataset.m==='gorev') haritaOdak(S.step);
+      else m.setView(GEO.last||KONUM.ben,15,{animate:true});
+    });
+  });
+
+  var grabEl=$('#grabGorev');
+  if(grabEl) grabEl.addEventListener('click',function(){
+    var p=$('#gorevPanel');p.classList.toggle('tight');
+    if(mapGorev) setTimeout(function(){mapGorev.invalidateSize()},260);
+  });
 
   /* listeler */
   var gecmis=[
