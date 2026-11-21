@@ -186,6 +186,12 @@ input{font:inherit}
 .t-foot{display:flex;gap:8px;flex-wrap:wrap}
 .tag{font-size:12.5px;color:var(--mute);border:1.5px solid var(--line);border-radius:999px;padding:6px 11px}
 .tag b{color:var(--ink);font-weight:700}
+.bolge{position:absolute;top:calc(env(safe-area-inset-top) + 14px);left:14px;z-index:500;display:flex;align-items:center;gap:8px;
+  background:var(--cream);border-radius:999px;padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--ink);box-shadow:0 8px 22px rgba(30,30,36,.16)}
+.bolge .dot{margin:0}
+.bolge b{font-weight:800}
+.son{display:flex;align-items:center;gap:8px;margin:10px 0 14px;font-size:12.5px;color:var(--mute)}
+.son svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .eta-s{font-family:var(--display);font-size:13px;font-weight:600;color:var(--mute);margin-left:7px;letter-spacing:0}
 #gEta.tight{color:var(--orange)}
 #gEta.late{color:#C0261A}
@@ -198,7 +204,7 @@ input{font:inherit}
 .nav-i{width:38px;height:38px;border-radius:12px;background:var(--ink);display:grid;place-items:center;flex:none}
 .nav-i svg{width:20px;height:20px;stroke:var(--cream);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
 .nav-t{flex:1;min-width:0}
-.nav-t b{display:block;font-family:var(--display);font-weight:800;font-size:15.5px;letter-spacing:-.3px;line-height:1.25}
+.nav-t b{display:block;font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.3px;line-height:1.22}
 .nav-t b em{font-style:normal;color:var(--orange)}
 .nav-t span{display:block;font-size:12px;color:var(--mute);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nav-x{width:26px;height:26px;border-radius:50%;background:var(--pad);color:var(--ink);font-size:12px;display:grid;place-items:center;flex:none}
@@ -262,6 +268,7 @@ input{font:inherit}
   <!-- VARDİYA -->
   <section class="scr full on" id="v-vardiya">
     <div class="map" id="mapHome"></div>
+    <div class="bolge"><span class="dot live"></span>Alsancak · <b>8 sipariş</b></div>
     <div class="panel">
       <div class="grab"></div>
       <div class="panel-row">
@@ -302,6 +309,11 @@ input{font:inherit}
       <div class="plan">
         <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
         <span>Sıradaki vardiya · Yarın 18:00–23:00</span>
+      </div>
+
+      <div class="son">
+        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+        <span>Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
       </div>
 
       <button class="btn" id="shiftBtn">Vardiyayı başlat</button>
@@ -496,6 +508,7 @@ input{font:inherit}
     <div class="sheet-h"><b>Ayarlar</b><button class="x" data-kapat="shAyarlar">✕</button></div>
     <div class="tg"><span>Teklif sesi</span><button class="sw on" data-ayar="ses"><i></i></button></div>
     <div class="tg"><span>Titreşim</span><button class="sw on" data-ayar="titresim"><i></i></button></div>
+    <div class="tg"><span>Sesli yol tarifi</span><button class="sw on" data-ayar="sesliYol"><i></i></button></div>
     <div class="tg"><span>Ekran açık kalsın</span><button class="sw on" data-ayar="ekranAcik"><i></i></button></div>
     <div class="lab" style="margin:18px 0 2px">Zorunlu · kapatılamaz</div>
     <button class="opt" data-kilit="1"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Canlı durum<span class="r">Açık</span></button>
@@ -558,7 +571,7 @@ input{font:inherit}
   var S={on:false,mola:false,molaEnd:0,since:0,orders:6,money:412,km:38,dakika:252,goal:600,
     offered:24,accepted:22,bahsis:34,prim:40,nakit:120,
     step:0,active:false,timer:null,molaTimer:null,offerTimer:null,leftTimer:null,left:15,
-    ses:true,titresim:true,ekranAcik:true};
+    ses:true,titresim:true,ekranAcik:true,sesliYol:true};
 
   function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2300)}
   function oran(){return Math.round(S.accepted/Math.max(1,S.offered)*100)}
@@ -617,13 +630,13 @@ input{font:inherit}
   function konumAl(cb){
     if(!navigator.geolocation){ cb(false); return }
     var bitti=false;
-    var to=setTimeout(function(){ if(!bitti){ bitti=true; cb(false) } },6000);
+    var to=setTimeout(function(){ if(!bitti){ bitti=true; cb(false) } },3000);
     navigator.geolocation.getCurrentPosition(function(p){
       if(bitti) return; bitti=true; clearTimeout(to);
       konumIsle([p.coords.latitude,p.coords.longitude],p.coords.speed);
       cb(true);
     },function(){ if(bitti) return; bitti=true; clearTimeout(to); cb(false) },
-    {enableHighAccuracy:true,timeout:5000,maximumAge:2000});
+    {enableHighAccuracy:true,timeout:2600,maximumAge:5000});
   }
   function konumIzle(){
     if(GEO.watch!=null||GEO.sim||!navigator.geolocation) return;
@@ -772,7 +785,10 @@ input{font:inherit}
 
   function baslat(){
     sesHazir();
+    var b=$('#shiftBtn');
+    b.textContent='Konum alınıyor…';b.disabled=true;
     konumAl(function(ok){
+      b.disabled=false;vardiyaCiz();
       if(ok){ konumIzle(); vardiyaAc() }
       else ac('shKonum');
     });
@@ -900,6 +916,7 @@ input{font:inherit}
     if(S.step<ADIMLAR.length-1){S.step++;$('#kodIn').value='';adimCiz();if(S.step===2)toast('Paket sende · müşteriye git');return}
     S.active=false;S.orders++;S.money+=ORD.fee;S.km=Math.round((S.km+ORD.km)*10)/10;S.dakika+=ORD.dk;S.nakit+=ORD.nakit;
     gecmis.unshift({t:'şimdi',w:ORD.shop+' → Buca',f:'₺'+ORD.fee});
+    var sf=$('#sonFee'); if(sf) sf.textContent='₺'+ORD.fee;
     rows($('#kazancList'),gecmis);$('#kCount').textContent=gecmis.length+' kayıt';
     $('#kodIn').value='';
     ozet();go('vardiya');toast('Teslim edildi · ₺'+ORD.fee+' hesabına geçti');
@@ -946,14 +963,27 @@ input{font:inherit}
     if(m.indexOf('uturn')>=0) return 'left';
     return 'straight';
   }
+  var sonSes='';
+  function navSes(txt){
+    if(!S.sesliYol||!window.speechSynthesis||!txt) return;
+    if(txt===sonSes) return;
+    sonSes=txt;
+    try{
+      var u=new SpeechSynthesisUtterance(txt);
+      u.lang='tr-TR';u.rate=1.05;
+      speechSynthesis.cancel();speechSynthesis.speak(u);
+    }catch(e){}
+  }
   function navYaz(ana,alt,don){
     $('#navAct').innerHTML=ana;
     $('#navSub').textContent=alt||'';
+    if(ana.indexOf('alınıyor')<0) navSes(ana.replace(/<[^>]+>/g,''));
     var a=$('#navArrow');
     a.style.transform=don==='left'?'rotate(-90deg)':don==='right'?'rotate(90deg)':don==='arrive'?'rotate(180deg)':'rotate(0deg)';
   }
   function rotaKapat(){
-    NAV.on=false;
+    NAV.on=false;sonSes='';
+    try{ if(window.speechSynthesis) speechSynthesis.cancel() }catch(e){}
     $('#navBox').classList.remove('on');
     if(NAV.line&&mapGorev){ mapGorev.removeLayer(NAV.line);NAV.line=null }
     NAV.steps=null;NAV.idx=0;
@@ -1053,7 +1083,7 @@ input{font:inherit}
     b.addEventListener('click',function(){
       var k=b.dataset.ayar; S[k]=!S[k]; b.classList.toggle('on',S[k]);
       if(k==='ekranAcik'&&S[k]) wakeAc();
-      toast((S[k]?'Açık · ':'Kapalı · ')+({ses:'Teklif sesi',titresim:'Titreşim',ekranAcik:'Ekran açık'})[k]);
+      toast((S[k]?'Açık · ':'Kapalı · ')+({ses:'Teklif sesi',titresim:'Titreşim',ekranAcik:'Ekran açık',sesliYol:'Sesli yol tarifi'})[k]);
     });
   });
 
