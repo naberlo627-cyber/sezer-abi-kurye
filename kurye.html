@@ -108,12 +108,13 @@ input{font:inherit}
 .note{margin:12px 0;padding:11px 13px;border:1.5px dashed var(--line);border-radius:13px;font-size:13px;color:var(--mute)}
 .note b{color:var(--ink)}
 
-.teslim{margin:12px 0;padding:13px;border:1.5px solid var(--line);border-radius:14px;background:var(--paper)}
-.teslim-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-size:13.5px}
-.teslim-row b{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.4px}
-.kod-in{width:100%;height:52px;border:1.5px solid var(--line);border-radius:12px;background:#fff;text-align:center;
-  font-size:22px;letter-spacing:10px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
-.kod-in::placeholder{letter-spacing:8px;color:var(--pad)}
+.kod{display:flex;align-items:center;gap:12px;margin:12px 0;padding:11px 14px;border:1.5px solid var(--line);
+  border-radius:14px;background:var(--paper)}
+.kod[hidden]{display:none}
+.kod-l{font-size:13px;font-weight:600;color:var(--mute);margin-right:auto}
+.kod-in{width:108px;height:44px;flex:none;border:1.5px solid var(--line);border-radius:11px;background:#fff;text-align:center;
+  font-size:18px;letter-spacing:7px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);padding-left:7px}
+.kod-in::placeholder{letter-spacing:6px;color:var(--pad);font-weight:600}
 .shake{animation:shake .32s}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 
@@ -319,9 +320,9 @@ input{font:inherit}
 
       <div class="note" id="gNote">1 çanta · Nakit ₺120 tahsil edilecek</div>
 
-      <div class="teslim" id="gTeslim" hidden>
-        <div class="teslim-row"><span>Tahsil edilecek</span><b class="num">₺120 nakit</b></div>
-        <input class="kod-in" id="kodIn" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Teslim kodu">
+      <div class="kod" id="gKod" hidden>
+        <span class="kod-l" id="gKodLab">Dükkan kodu</span>
+        <input class="kod-in" id="kodIn" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Doğrulama kodu">
       </div>
 
       <button class="sorun-link" id="sorunAc">Sorun mu var?</button>
@@ -797,9 +798,9 @@ input{font:inherit}
   /* görev */
   var ADIMLAR=[
     {t:'Dükkana git',eta:'4 dk',b:'Vardım',not:'1 çanta · Dükkan: Köfteci Ali'},
-    {t:'Paketi al',eta:'—',b:'Paketi aldım',not:'1 çanta · <b>Nakit ₺120</b> tahsil edilecek'},
+    {t:'Paketi al',eta:'—',b:'Paketi aldım',not:'Dükkan sahibinden 4 haneli kodu al · <b>demo 2058</b>',kod:'2058',lab:'Dükkan kodu'},
     {t:'Müşteriye götür',eta:'18 dk',b:'Vardım',not:'Müşteri notu: <b>Kapıyı çalma, zili çal.</b>'},
-    {t:'Teslim et',eta:'—',b:'Teslim ettim',not:'Müşteriden kodu al · <b>₺120 nakit</b> tahsil et'}
+    {t:'Teslim et',eta:'—',b:'Teslim ettim',not:'Müşteriden kodu al · <b>₺120 nakit</b> · demo 4471',kod:'4471',lab:'Teslim kodu'}
   ];
   var gorevMesajT=null;
   function gorevBaslat(){
@@ -829,9 +830,11 @@ input{font:inherit}
     $('#durak1').className='durak '+(i<2?'on':'done');
     $('#durak2').className='durak '+(i>=2?'on':'');
     $('#gNote').innerHTML=ADIMLAR[i].not;
-    $('#gTeslim').hidden=i!==3;
-    $('#gNext').textContent=ADIMLAR[i].b;
-    $('#gNext').disabled=i===3&&$('#kodIn').value.length<4;
+    var a=ADIMLAR[i];
+    $('#gKod').hidden=!a.kod;
+    if(a.kod) $('#gKodLab').textContent=a.lab;
+    $('#gNext').textContent=a.b;
+    $('#gNext').disabled=!!a.kod&&$('#kodIn').value.length<4;
     haritaOdak(i);
   }
   $('#kodIn').addEventListener('input',function(){
@@ -839,11 +842,13 @@ input{font:inherit}
     $('#gNext').disabled=this.value.length<4;
   });
   $('#gNext').addEventListener('click',function(){
-    if(S.step<ADIMLAR.length-1){S.step++;adimCiz();if(S.step===2)toast('Paket sende · müşteriye git');return}
-    if($('#kodIn').value!==ORD.kod){
+    var a=ADIMLAR[S.step];
+    if(a.kod&&$('#kodIn').value!==a.kod){
       var el=$('#kodIn'); el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
-      toast('Kod tutmadı · müşteriye tekrar sor'); titret(300); return;
+      toast(S.step===1?'Kod tutmadı · dükkan sahibine tekrar sor':'Kod tutmadı · müşteriye tekrar sor');
+      titret(300); return;
     }
+    if(S.step<ADIMLAR.length-1){S.step++;$('#kodIn').value='';adimCiz();if(S.step===2)toast('Paket sende · müşteriye git');return}
     S.active=false;S.orders++;S.money+=ORD.fee;S.km=Math.round((S.km+ORD.km)*10)/10;S.dakika+=ORD.dk;S.nakit+=ORD.nakit;
     gecmis.unshift({t:'şimdi',w:ORD.shop+' → Buca',f:'₺'+ORD.fee});
     rows($('#kazancList'),gecmis);$('#kCount').textContent=gecmis.length+' kayıt';
