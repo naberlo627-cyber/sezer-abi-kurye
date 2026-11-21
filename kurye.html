@@ -172,6 +172,32 @@ input{font:inherit}
 .fee{font-family:var(--display);font-weight:800;font-size:40px;letter-spacing:-2px;text-align:center;line-height:1;font-variant-numeric:tabular-nums}
 .fee-sub{text-align:center;font-size:13px;color:var(--mute);margin:6px 0 16px}
 .shop{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:-.8px;margin-bottom:8px}
+.t-card{position:relative}
+.t-x{position:absolute;top:10px;right:10px;z-index:2}
+.t-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-right:30px}
+.t-head .ring{width:52px;height:52px;margin:0;flex:none}
+.t-head .ring svg{width:52px;height:52px}
+.t-head .ring b{font-size:16px}
+.t-head-m{flex:1;min-width:0}
+.t-head-m .lab{margin:0 0 3px}
+.t-meta{display:block;font-size:13px;color:var(--mute)}
+.t-head .fee{font-size:26px;letter-spacing:-1px;text-align:right;margin:0}
+.t-rows{margin-bottom:14px}
+.t-foot{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:12.5px;color:var(--mute);border:1.5px solid var(--line);border-radius:999px;padding:6px 11px}
+.tag b{color:var(--ink);font-weight:700}
+.eta-s{font-family:var(--display);font-size:13px;font-weight:600;color:var(--mute);margin-left:7px;letter-spacing:0}
+#gEta.tight{color:var(--orange)}
+#gEta.late{color:#C0261A}
+.gline{display:flex;align-items:center;gap:10px;margin:12px 0 2px;font-size:13px;color:var(--mute)}
+.gline #gNote{flex:1;min-width:0}
+.gline .sorun-link{flex:none;width:auto;padding:0;font-size:12.5px}
+.rotabar{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 72px);z-index:515;display:none;align-items:center;gap:9px;
+  background:var(--ink);color:var(--cream);border-radius:14px;padding:11px 12px 11px 14px;font-size:13px;box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.rotabar.on{display:flex}
+.rotabar .r{margin-left:auto;color:#B9B9BF;font-variant-numeric:tabular-nums}
+.rotabar .dot{margin:0}
+.rb-x{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.14);color:var(--cream);font-size:12px;display:grid;place-items:center;flex:none}
 .acts2{display:grid;gap:9px;margin-top:16px}
 .acts2 .btn{height:52px}
 
@@ -283,7 +309,13 @@ input{font:inherit}
     <div class="map" id="mapGorev"></div>
     <div class="gorev-top">
       <div class="chip"><span class="lab">Sipariş</span><b class="num" id="gId">#1042</b></div>
-      <div class="chip eta"><span class="lab" id="gEtaLab">Dükkana</span><b id="gEta">4 dk</b></div>
+      <div class="chip eta"><span class="lab">Teslim</span><b id="gEta">32 dk</b></div>
+    </div>
+    <div class="rotabar" id="rotaBar">
+      <span class="dot live"></span>
+      <b id="rotaAd">Yol tarifi</b>
+      <span class="r"><span id="rotaKm">2,4 km</span> · <span id="rotaDk">8 dk</span></span>
+      <button class="rb-x" id="rotaKapat" aria-label="Yol tarifini kapat">✕</button>
     </div>
     <div class="hareketsiz" id="hareketsiz"><b>Hareketsiz görünüyorsun</b>2 dakikadır aynı yerdesin. Sorun mu var?</div>
     <div class="panel">
@@ -318,14 +350,16 @@ input{font:inherit}
         </div>
       </div>
 
-      <div class="note" id="gNote">1 çanta · Nakit ₺120 tahsil edilecek</div>
+      <div class="gline">
+        <span id="gNote">1 çanta · Dükkan: Köfteci Ali</span>
+        <button class="sorun-link" id="sorunAc">Sorun mu var?</button>
+      </div>
 
       <div class="kod" id="gKod" hidden>
         <span class="kod-l" id="gKodLab">Dükkan kodu</span>
         <input class="kod-in" id="kodIn" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Doğrulama kodu">
       </div>
 
-      <button class="sorun-link" id="sorunAc">Sorun mu var?</button>
       <button class="btn" id="gNext">Vardım</button>
     </div>
   </section>
@@ -397,22 +431,32 @@ input{font:inherit}
 
 <!-- TEKLİF -->
 <div class="sheet center" id="teklif" role="dialog" aria-modal="true" aria-label="Yeni sipariş">
-  <div class="sheet-card">
-    <div class="ring">
-      <svg width="64" height="64"><circle class="trk" cx="32" cy="32" r="26"/><circle class="bar" id="ringBar" cx="32" cy="32" r="26"/></svg>
-      <b id="ringTxt">15</b>
+  <div class="sheet-card t-card">
+    <button class="x t-x" id="tKapat" aria-label="Kapat">✕</button>
+    <div class="t-head">
+      <div class="ring">
+        <svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="26"/><circle class="bar" id="ringBar" cx="32" cy="32" r="26"/></svg>
+        <b id="ringTxt">15</b>
+      </div>
+      <div class="t-head-m">
+        <span class="lab">Yeni sipariş</span>
+        <span class="t-meta"><span id="tKm">2,4</span> km · <span id="tDk">18</span> dk · 1 çanta</span>
+      </div>
+      <div class="fee num" id="tFee">₺78</div>
     </div>
-    <div class="lab" style="text-align:center;margin-bottom:12px">Yeni sipariş</div>
-    <div class="fee num" id="tFee">₺78</div>
-    <div class="fee-sub"><span id="tKm">2,4</span> km · <span id="tDk">18</span> dk · 1 çanta</div>
-    <div class="shop" id="tShop">Köfteci Ali</div>
-    <div class="durak on" style="border:0;padding:0 0 8px">
-      <span class="pin"></span>
-      <div style="min-width:0"><span class="who">Alış</span><b>Alsancak, Kıbrıs Şehitleri Cd. No 12</b></div>
+    <div class="t-rows">
+      <div class="durak on" style="border:0;padding:0 0 10px">
+        <span class="pin"></span>
+        <div style="min-width:0"><span class="who">Alış · <b id="tShop">Köfteci Ali</b></span><span>Alsancak, Kıbrıs Şehitleri Cd. No 12</span></div>
+      </div>
+      <div class="durak" style="border:0;padding:0">
+        <span class="pin"></span>
+        <div style="min-width:0"><span class="who">Teslim</span><span>Buca, Menderes Cd. No 45 D:7</span></div>
+      </div>
     </div>
-    <div class="durak" style="border:0;padding:0">
-      <span class="pin"></span>
-      <div style="min-width:0"><span class="who">Teslim · nakit ₺120</span><b>Buca, Menderes Cd. No 45 D:7</b></div>
+    <div class="t-foot">
+      <span class="tag">Teslim süresi <b id="tSure">32 dk</b></span>
+      <span class="tag">Nakit <b>₺120</b></span>
     </div>
     <div class="acts2">
       <button class="btn" id="tKabul">Kabul et</button>
@@ -501,7 +545,7 @@ input{font:inherit}
   var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
 
   var ORD={id:'#1042',shop:'Köfteci Ali',from:'Alsancak, Kıbrıs Şehitleri Cd. No 12',to:'Buca, Menderes Cd. No 45 D:7',
-    custTel:'+905551234567',shopTel:'+905553334455',kod:'4471',fee:78,km:2.4,dk:18,nakit:120};
+    custTel:'+905551234567',shopTel:'+905553334455',kod:'4471',fee:78,km:2.4,dk:18,nakit:120,sure:32};
 
   var KONUM={ben:[38.4237,27.1428],alis:[38.4374,27.1428],teslim:[38.3867,27.1740]};
 
@@ -714,7 +758,7 @@ input{font:inherit}
   function tik(){
     var e1=$('#sureTxt'); if(e1&&S.on&&!S.mola) e1.textContent=sure(Date.now()-S.since);
     var e2=$('#molaTxt'); if(e2&&S.mola) e2.textContent=kisaSure(Math.max(0,S.molaEnd-Date.now()));
-    canliCiz();
+    canliCiz();sureCiz();
   }
 
   function wakeAc(){ if(!S.ekranAcik||!('wakeLock' in navigator)) return;
@@ -781,6 +825,7 @@ input{font:inherit}
     $('#tFee').textContent='₺'+ORD.fee;
     $('#tKm').textContent=String(ORD.km).replace('.',',');
     $('#tDk').textContent=ORD.dk;
+    $('#tSure').textContent=ORD.sure+' dk';
     ac('teklif');
     var bar=$('#ringBar');bar.style.animation='none';void bar.getBoundingClientRect();bar.style.animation='';
     S.left=15;$('#ringTxt').textContent='15';
@@ -792,6 +837,7 @@ input{font:inherit}
     },1000);
   }
   function teklifiKapat(){$('#teklif').classList.remove('on');clearInterval(S.leftTimer)}
+  $('#tKapat').addEventListener('click',function(){teklifiKapat();teklifPlanla(20000)});
   $('#tGec').addEventListener('click',function(){teklifiKapat();toast('Geçildi');teklifPlanla(14000)});
   $('#tKabul').addEventListener('click',function(){teklifiKapat();S.accepted++;ozet();gorevBaslat()});
 
@@ -804,7 +850,7 @@ input{font:inherit}
   ];
   var gorevMesajT=null;
   function gorevBaslat(){
-    S.active=true;S.step=0;$('#kodIn').value='';$('#msgBadge').classList.remove('on');
+    S.active=true;S.step=0;S.deadline=Date.now()+ORD.sure*60000;$('#kodIn').value='';$('#msgBadge').classList.remove('on');
     go('gorev');adimCiz();
     clearTimeout(gorevMesajT);
     gorevMesajT=setTimeout(function(){
@@ -822,11 +868,8 @@ input{font:inherit}
       var c=k<i?'ok':(k===i?'now':'');
       return '<i class="'+c+'"></i>'+(k<ADIMLAR.length-1?'<s class="'+(k<i?'ok':'')+'"></s>':'');
     }).join('');
-    $('#gTitle').textContent=ADIMLAR[i].t;
-    $('#gEtaLab').textContent=i<2?'Dükkana':'Müşteriye';
-    var eta=ADIMLAR[i].eta;
-    $('#gEta').textContent=eta;
-    $('#gEta').closest('.chip').style.display=eta==='—'?'none':'';
+    $('#gTitle').innerHTML=ADIMLAR[i].t+(ADIMLAR[i].eta!=='—'?'<span class="eta-s">'+ADIMLAR[i].eta+'</span>':'');
+    sureCiz();rotaTemizle();
     $('#durak1').className='durak '+(i<2?'on':'done');
     $('#durak2').className='durak '+(i>=2?'on':'');
     $('#gNote').innerHTML=ADIMLAR[i].not;
@@ -857,10 +900,43 @@ input{font:inherit}
     teklifPlanla(25000);
   });
 
+  /* teslim süresi */
+  function sureCiz(){
+    var el=$('#gEta'); if(!el) return;
+    if(!S.active||!S.deadline){ el.textContent='—';el.className='';return }
+    var kalan=Math.ceil((S.deadline-Date.now())/60000);
+    if(kalan>0){ el.textContent=kalan+' dk'; el.className=kalan<=8?'tight':'' }
+    else { el.textContent='+'+Math.abs(kalan)+' dk'; el.className='late' }
+  }
+
+  /* uygulama içi yol tarifi */
+  var rotaCizgi=null;
+  function rotaTemizle(){
+    $('#rotaBar').classList.remove('on');
+    if(rotaCizgi&&mapGorev){ mapGorev.removeLayer(rotaCizgi);rotaCizgi=null }
+  }
+  function rotaGoster(kim){
+    if(!mapGorev||!window.L) return;
+    var hedef=kim==='alis'?KONUM.alis:KONUM.teslim;
+    var bas=GEO.last||KONUM.ben;
+    if(rotaCizgi){ mapGorev.removeLayer(rotaCizgi) }
+    rotaCizgi=L.polyline([bas,hedef],{color:'#FF4B1F',weight:5,opacity:.9,lineCap:'round'}).addTo(mapGorev);
+    mapGorev.fitBounds([bas,hedef],{paddingTopLeft:[40,130],paddingBottomRight:[40,340],maxZoom:16});
+    var km=Math.max(0.1,Math.round(mesafeM(bas,hedef)/100)/10);
+    $('#rotaAd').textContent=kim==='alis'?'Dükkana yol tarifi':'Müşteriye yol tarifi';
+    $('#rotaKm').textContent=String(km).replace('.',',')+' km';
+    $('#rotaDk').textContent=Math.max(1,Math.round(km*3.1))+' dk';
+    $('#rotaBar').classList.add('on');
+  }
+  $('#rotaKapat').addEventListener('click',function(){ adimCiz() });
+
   /* sheet yardımcıları */
   function ac(id){$('#'+id).classList.add('on')}
   function kapat(id){$('#'+id).classList.remove('on')}
-  $$('.sheet').forEach(function(s){ s.addEventListener('click',function(e){ if(e.target===s) s.classList.remove('on') }) });
+  $$('.sheet').forEach(function(s){
+    if(s.id==='teklif'||s.id==='shKonum') return;
+    s.addEventListener('click',function(e){ if(e.target===s) s.classList.remove('on') });
+  });
   $$('[data-kapat]').forEach(function(b){ b.addEventListener('click',function(){ kapat(b.dataset.kapat) }) });
   $$('[data-ac]').forEach(function(b){ b.addEventListener('click',function(){ ac(b.dataset.ac) }) });
 
@@ -924,9 +1000,8 @@ input{font:inherit}
   $('#konumDemo').addEventListener('click',function(){ kapat('shKonum'); konumSim(); vardiyaAc() });
 
   /* araçlar */
-  function mapsUrl(a){return 'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(a)+'&travelmode=driving'}
-  $('#d1Nav').addEventListener('click',function(){window.open(mapsUrl(ORD.from),'_blank')});
-  $('#d2Nav').addEventListener('click',function(){window.open(mapsUrl(ORD.to),'_blank')});
+  $('#d1Nav').addEventListener('click',function(){rotaGoster('alis')});
+  $('#d2Nav').addEventListener('click',function(){rotaGoster('teslim')});
   function aramaKaydet(kim){ toast(kim+' aranıyor · arama kayda geçti') }
   $('#d1Call').addEventListener('click',function(){aramaKaydet('Dükkan');location.href='tel:'+ORD.shopTel});
   $('#d2Call').addEventListener('click',function(){aramaKaydet('Müşteri');location.href='tel:'+ORD.custTel});
