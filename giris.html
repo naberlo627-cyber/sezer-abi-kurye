@@ -127,6 +127,8 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .seg button{min-height:56px;border:2px solid var(--ink);border-radius:12px;background:var(--paper);font-size:16px;font-weight:500}
 .seg button[aria-pressed=true]{background:var(--orange);font-weight:700}
+.seg2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg2 button{min-height:46px;font-size:14.5px}
 .photo{min-height:72px;border:2px dashed var(--ink);border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:700;width:100%;overflow:hidden;padding:0 12px}
 .photo.done{border-style:solid;background:var(--paper)}
 .photo img{height:48px;width:48px;object-fit:cover;border-radius:8px;border:2px solid var(--ink)}
@@ -374,9 +376,13 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   <button type="button" class="photo" id="photoBtn">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="photoTxt">Ehliyetinin fotoğrafını çek</span>
   </button>
-  <div class="field"><label for="kodC">Sezer abi'den gelen kod</label>
+  <div class="field"><span class="lab" id="kodCL">Sezer abi'den gelen kod</span>
+    <div class="seg seg2" role="group" aria-labelledby="kodCL" id="kodSegC">
+      <button type="button" aria-pressed="true" data-kod="var">Kodum var</button>
+      <button type="button" aria-pressed="false" data-kod="yok">Kodum yok</button>
+    </div>
     <input id="kodC" class="in code" type="text" placeholder="SEZER-00" autocapitalize="characters" autocomplete="off">
-    <span class="hint" id="kodHint">Kodu Sezer abi WhatsApp'tan yolluyor. Kodsuz başvuru almıyoruz.</span></div>
+    <span class="hint" id="kodHint">Kodla girersen hemen içeridesin.</span></div>
   <div class="spacer"></div>
   <label class="check"><input type="checkbox" id="kvkkC"><span>Kullanım koşullarını ve kişisel verilerimin işlenmesini kabul ediyorum.</span></label>
   <button class="btn" id="submitC" disabled>Başvuruyu gönder</button>
@@ -393,8 +399,13 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   <div class="field"><label for="yetkili">Yetkili adı soyadı</label><input id="yetkili" class="in" type="text" autocomplete="name" placeholder="Ad Soyad"></div>
   <div class="field"><label for="adres">Dükkan adresi</label><input id="adres" class="in" type="text" autocomplete="street-address" placeholder="Mahalle, cadde, no">
     <button type="button" class="maplink" id="mapBtn">Haritada konumu işaretle</button></div>
-  <div class="field"><label for="kod">Sezer abiden aldığın davet kodu</label><input id="kod" class="in code" type="text" placeholder="SEZER-00" autocapitalize="characters">
-    <span class="hint">Kodun yoksa boş bırak, ekibimiz seni arar.</span></div>
+  <div class="field"><span class="lab" id="kodSL">Sezer abiden aldığın davet kodu</span>
+    <div class="seg seg2" role="group" aria-labelledby="kodSL" id="kodSegS">
+      <button type="button" aria-pressed="true" data-kod="var">Kodum var</button>
+      <button type="button" aria-pressed="false" data-kod="yok">Kodum yok</button>
+    </div>
+    <input id="kod" class="in code" type="text" placeholder="SEZER-00" autocapitalize="characters" autocomplete="off">
+    <span class="hint" id="kodHintS">Kodla girersen hemen içeridesin.</span></div>
   <div class="spacer"></div>
   <label class="check"><input type="checkbox" id="kvkkS"><span>Kullanım koşullarını ve kişisel verilerimin işlenmesini kabul ediyorum.</span></label>
   <button class="btn" id="submitS" disabled>Başvuruyu gönder</button>
@@ -404,16 +415,16 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 <section class="screen" id="s-done" aria-label="Başvuru alındı">
   <div class="band"><svg viewBox="0 0 320 90" fill="#FFF3E4" aria-hidden="true"><use href="#mustache"/></svg></div>
   <div class="done-body">
-    <h1 class="h" style="font-size:clamp(32px,9.6vw,38px);letter-spacing:-1.3px">Başvurun bize ulaştı.</h1>
-    <p>Ekibimiz seni en geç yarın arayacak. Telefonun yakınında olsun.</p>
+    <h1 class="h" id="doneTitle" style="font-size:clamp(32px,9.6vw,38px);letter-spacing:-1.3px">Başvurun bize ulaştı.</h1>
+    <p id="doneText">Ekibimiz seni en geç yarın arayacak. Telefonun yakınında olsun.</p>
   </div>
   <div class="steps">
-    <div class="step"><div class="rail"><span class="dot ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="bar ok"></span></div><span class="t">Başvuru alındı</span></div>
-    <div class="step"><div class="rail"><span class="dot now"></span><span class="bar"></span></div><span class="t">Telefonla görüşme</span></div>
-    <div class="step"><div class="rail"><span class="dot"></span></div><span class="t off">Hesabın açılır, işe başlarsın</span></div>
+    <div class="step"><div class="rail"><span class="dot ok" id="d1dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="bar ok" id="d1bar"></span></div><span class="t" id="d1t">Başvuru alındı</span></div>
+    <div class="step"><div class="rail"><span class="dot now" id="d2dot"></span><span class="bar" id="d2bar"></span></div><span class="t" id="d2t">Telefonla görüşme</span></div>
+    <div class="step"><div class="rail"><span class="dot" id="d3dot"></span></div><span class="t off" id="d3t">Hesabın açılır, işe başlarsın</span></div>
   </div>
   <div class="spacer"></div>
-  <div class="bottom"><button class="btn dark" data-home>Tamam</button></div>
+  <div class="bottom"><button class="btn dark" id="doneBtn">Tamam</button></div>
 </section>
 
 <!-- Giriş tamam -->
@@ -492,7 +503,7 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   function press(d){
     if(current!=='otp'||code.length>=4) return;
     code+=d; paint();
-    if(code.length===4) setTimeout(function(){ if(current==='otp') go('ok') },350);
+    if(code.length===4) setTimeout(function(){ if(current!=='otp') return; go(state.mode==='login'?'ok':(state.role==='shop'?'shop':'courier')) },350);
   }
   function del(){ if(current!=='otp') return; code=code.slice(0,-1); paint() }
   $('#keys').addEventListener('click',function(e){
@@ -518,12 +529,26 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 
   /* Kurye kaydı */
   var ad=$('#ad'), ilce=$('#ilce'), arac=$$('#arac button'), kodC=$('#kodC'), kvC=$('#kvkkC'), subC=$('#submitC');
+  var kodModeC='var';
+  function kodVarC(){ return kodModeC==='var' && kodC.value.trim().length>=4 }
   function chkC(){
     var okArac=arac.some(function(b){return b.getAttribute('aria-pressed')==='true'});
     var kod=kodC.value.trim();
-    subC.disabled=!(ad.value.trim().length>=3 && ilce.value && okArac && kod.length>=4 && kvC.checked);
-    kodC.classList.toggle('bad', kod.length>0 && kod.length<4);
+    subC.disabled=!(ad.value.trim().length>=3 && ilce.value && okArac && (kodModeC==='yok' || kod.length>=4) && kvC.checked);
+    kodC.classList.toggle('bad', kodModeC==='var' && kod.length>0 && kod.length<4);
   }
+  $$('#kodSegC button').forEach(function(b){
+    b.addEventListener('click',function(){
+      kodModeC=b.dataset.kod;
+      $$('#kodSegC button').forEach(function(x){ x.setAttribute('aria-pressed', x===b) });
+      kodC.hidden = kodModeC==='yok';
+      if(kodModeC==='yok') kodC.value='';
+      $('#kodHint').textContent = kodModeC==='yok'
+        ? 'Kodsuz başvurular sıraya alınır. Sıran gelince seni ararız.'
+        : 'Kodla girersen hemen içeridesin.';
+      chkC();
+    });
+  });
   arac.forEach(function(b){ b.addEventListener('click',function(){ arac.forEach(function(x){x.setAttribute('aria-pressed',x===b)}); chkC() }) });
   [ad,ilce,kodC,kvC].forEach(function(el){ el.addEventListener('input',chkC); el.addEventListener('change',chkC) });
   kodC.addEventListener('input',function(){ var i=this.selectionStart; this.value=this.value.toUpperCase(); this.setSelectionRange(i,i) });
@@ -535,11 +560,25 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
     var img=new Image(); img.alt=''; img.src=URL.createObjectURL(f); btn.insertBefore(img,btn.firstChild);
     btn.querySelector('svg').style.display='none'; $('#photoTxt').textContent='Fotoğraf eklendi · değiştir';
   });
-  subC.addEventListener('click',function(){ go('done') });
+  subC.addEventListener('click',function(){ showDone(kodVarC()) });
 
   /* Dükkan kaydı */
-  var dk=$('#dukkan'), yt=$('#yetkili'), ad2=$('#adres'), kvS=$('#kvkkS'), subS=$('#submitS');
-  function chkS(){ subS.disabled=!(dk.value.trim().length>=2 && yt.value.trim().length>=3 && ad2.value.trim().length>=5 && kvS.checked) }
+  var dk=$('#dukkan'), yt=$('#yetkili'), ad2=$('#adres'), kvS=$('#kvkkS'), subS=$('#submitS'), kodS=$('#kod');
+  var kodModeS='var';
+  function kodVarS(){ return kodModeS==='var' && kodS.value.trim().length>=4 }
+  function chkS(){ subS.disabled=!(dk.value.trim().length>=2 && yt.value.trim().length>=3 && ad2.value.trim().length>=5 && (kodModeS==='yok' || kodS.value.trim().length>=4) && kvS.checked) }
+  $$('#kodSegS button').forEach(function(b){
+    b.addEventListener('click',function(){
+      kodModeS=b.dataset.kod;
+      $$('#kodSegS button').forEach(function(x){ x.setAttribute('aria-pressed', x===b) });
+      kodS.hidden = kodModeS==='yok';
+      if(kodModeS==='yok') kodS.value='';
+      $('#kodHintS').textContent = kodModeS==='yok'
+        ? 'Kodsuz başvurular sıraya alınır. Sıran gelince seni ararız.'
+        : 'Kodla girersen hemen içeridesin.';
+      chkS();
+    });
+  });
   [dk,yt,ad2,kvS].forEach(function(el){ el.addEventListener('input',chkS); el.addEventListener('change',chkS) });
   $('#mapBtn').addEventListener('click',function(){
     var b=this;
@@ -548,7 +587,29 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
     navigator.geolocation.getCurrentPosition(function(){ b.textContent='✓ Konum işaretlendi'; b.classList.add('ok') },
       function(){ b.textContent='Konum alınamadı, tekrar dene' },{timeout:8000});
   });
-  subS.addEventListener('click',function(){ go('done') });
+  subS.addEventListener('click',function(){ showDone(kodVarS()) });
+
+  /* Sonuç: kodlu doğrudan içeri, kodsuz sıraya */
+  var okDot=$('#d1dot').innerHTML;
+  function setDot(el,on){ el.className='dot'+(on?' ok':''); el.innerHTML=on?okDot:'' }
+  function setBar(el,on){ el.className='bar'+(on?' ok':'') }
+  function showDone(kodlu){
+    $('#doneTitle').textContent = kodlu ? 'Kodun geçerli.' : 'Başvurun bize ulaştı.';
+    $('#doneText').textContent = kodlu
+      ? 'İçeridesin. Sipariş almaya hazırsın.'
+      : 'Ekibimiz seni en geç yarın arayacak. Telefonun yakınında olsun.';
+    setBar($('#d1bar'),true);
+    setDot($('#d2dot'),kodlu); setBar($('#d2bar'),kodlu);
+    setDot($('#d3dot'),kodlu);
+    $('#d2t').textContent = kodlu ? 'Kod onaylandı' : 'Telefonla görüşme';
+    $('#d3t').textContent = kodlu ? 'Hesabın açıldı' : 'Hesabın açılır, işe başlarsın';
+    $('#d3t').classList.toggle('off', !kodlu);
+    var b=$('#doneBtn');
+    b.textContent = kodlu ? 'Başla' : 'Tamam';
+    b.dataset.kodlu = kodlu ? '1' : '';
+    go('done');
+  }
+  $('#doneBtn').addEventListener('click',function(){ if(this.dataset.kodlu) go('ok'); else home() });
 
   history.replaceState({n:'welcome'},'','');
   show('welcome');
