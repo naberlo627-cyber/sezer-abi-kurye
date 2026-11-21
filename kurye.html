@@ -10,7 +10,7 @@
 <style>
 :root{
   --orange:#E8431C; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55;
-  --line:#C9BBA7; --pad:#E3D6C4;
+  --line:#E4DCD1; --pad:#EDE7DF; --hair:#EFEAE3;
   --display:'Bricolage Grotesque',system-ui,sans-serif;
   --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
@@ -54,9 +54,9 @@ input{font:inherit}
 .panel .grab{cursor:pointer;position:relative;width:auto;height:14px;background:none;display:flex;align-items:flex-start;justify-content:center;margin:0 0 8px}
 .panel .grab::before{content:'';width:38px;height:4px;border-radius:2px;background:var(--pad)}
 .panel.tight .grab::before{background:var(--orange)}
-.panel{position:absolute;left:0;right:0;bottom:0;z-index:500;background:var(--cream);
-  border-radius:24px 24px 0 0;padding:12px 20px calc(env(safe-area-inset-bottom) + 16px);
-  box-shadow:0 -10px 34px rgba(30,30,36,.16)}
+.panel{position:absolute;left:0;right:0;bottom:0;z-index:500;background:#fff;
+  border-radius:26px 26px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 14px);
+  box-shadow:0 -12px 36px rgba(30,30,36,.13)}
 .grab{width:38px;height:4px;border-radius:2px;background:var(--pad);margin:0 auto 12px}
 .panel-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--pad);display:inline-block;margin-right:7px;vertical-align:1px}
@@ -140,6 +140,13 @@ input{font:inherit}
 .step-row .step-t{flex:1;min-width:0}
 .minilive{display:none;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--mute);background:var(--pad);border-radius:999px;padding:5px 9px;flex:none}
 .minilive .dot{margin:0;background:#39D98A}
+.gun{margin-top:18px}
+.gun-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.gun-num{font-family:var(--display);font-weight:800;font-size:38px;letter-spacing:-1.8px;line-height:1}
+.gun-goal{font-size:14px;color:var(--mute);font-weight:600}
+.gun-alt{display:flex;gap:14px;font-size:12.5px;color:var(--mute)}
+.meta{display:flex;gap:16px;font-size:12px;color:var(--mute);margin-top:16px;padding-top:14px;border-top:1px solid var(--hair)}
+.meta b{color:var(--ink);font-weight:700}
 .kart{background:#fff;border-radius:20px;padding:14px 14px 2px;box-shadow:0 8px 24px rgba(30,30,36,.07);margin-top:14px}
 .kart .hedef{margin:0;padding-top:0;border-top:0}
 .kart .son{border-top:1.5px solid var(--line);padding-top:11px;margin:12px 0 12px}
@@ -159,7 +166,7 @@ input{font:inherit}
 .sheet{position:fixed;inset:0;z-index:880;display:none;align-items:flex-end;justify-content:center;background:rgba(30,30,36,.55)}
 .sheet.on{display:flex}
 .sheet.center{align-items:center;padding:18px;z-index:900}
-.sheet-card{width:100%;max-width:480px;background:var(--cream);border-radius:24px 24px 0 0;
+.sheet-card{width:100%;max-width:480px;background:#fff;border-radius:24px 24px 0 0;
   padding:18px 20px calc(env(safe-area-inset-bottom) + 20px);animation:up .24s cubic-bezier(.22,.61,.36,1)}
 .sheet.center .sheet-card{border-radius:24px;max-width:420px;animation:pop .22s cubic-bezier(.22,.61,.36,1)}
 @keyframes up{from{transform:translateY(34px);opacity:.5}to{transform:none;opacity:1}}
@@ -255,7 +262,7 @@ input{font:inherit}
 .prow span:first-child{color:var(--mute)}
 .prow b{font-weight:600;text-align:right}
 
-.tabbar{flex:none;display:grid;grid-template-columns:repeat(3,1fr);background:var(--paper);border-top:1.5px solid var(--line);
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-top:1px solid var(--hair);
   padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);z-index:600}
 .tabbar.hide{display:none}
 .tab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0;color:var(--mute);font-size:11px;font-weight:600}
@@ -308,35 +315,29 @@ input{font:inherit}
         <button class="mini" id="molaBtn" hidden>Mola ver</button>
       </div>
 
-      <div class="oranim">
-        <span>Kabul oranı <b id="oRate">%92</b></span>
+      <div class="gun">
+        <div class="gun-top">
+          <span class="lab">Bugün</span>
+          <b class="gun-num num" id="hMoney">₺412</b>
+          <span class="gun-goal num" id="hGoal">/ ₺600</span>
+        </div>
+        <div class="prog"><i id="hBar" style="width:69%"></i></div>
+        <div class="gun-alt">
+          <span class="num" id="hOrders">6 sipariş</span>
+          <span class="num" id="hKm">38 km</span>
+          <span class="num" id="hTime">4s 12dk</span>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span>Kabul <b id="oRate">%92</b></span>
         <span>Bugün <b id="oOffer">24</b> teklif</span>
         <span>Puan <b>4,9</b></span>
       </div>
 
-      <div class="kart">
-        <div class="hedef">
-          <div class="hedef-top">
-            <span class="lab">Bugün</span>
-            <b class="num" id="hMoney">₺412</b>
-            <span class="mute num" id="hGoal">/ ₺600</span>
-          </div>
-          <div class="prog"><i id="hBar" style="width:69%"></i></div>
-          <div class="hedef-alt">
-            <span class="num" id="hOrders">6 sipariş</span>
-            <span class="num" id="hKm">38 km</span>
-            <span class="num" id="hTime">4s 12dk yolda</span>
-          </div>
-        </div>
-        <div class="son">
-          <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-          <span>Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
-        </div>
-      </div>
-
-      <div class="plan">
-        <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
-        <span>Sıradaki vardiya · Yarın 18:00–23:00</span>
+      <div class="son">
+        <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+        <span>Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
       </div>
 
       <button class="btn" id="shiftBtn">Vardiyayı başlat</button>
@@ -790,7 +791,7 @@ input{font:inherit}
     $('#hBar').style.width=Math.min(100,Math.round(S.money/S.goal*100))+'%';
     $('#hOrders').textContent=S.orders+' sipariş';
     $('#hKm').textContent=S.km+' km';
-    $('#hTime').textContent=Math.floor(S.dakika/60)+'s '+(S.dakika%60)+'dk yolda';
+    $('#hTime').textContent=Math.floor(S.dakika/60)+'s '+(S.dakika%60)+'dk';
     $('#kToday').textContent='₺'+S.money;
     $('#kMeta').textContent=S.orders+' sipariş · '+S.km+' km · '+Math.floor(S.dakika/60)+' sa '+(S.dakika%60)+' dk yolda';
     $('#dSiparis').textContent='₺'+sip;
