@@ -114,3 +114,14 @@ python3 -m http.server 12000 --bind 0.0.0.0
   (remote URL'de token YOK — Genç'teki hata tekrarlanmadı)
 - Test yöntemi: uygulama IIFE içinde; `page.evaluate` iç fonksiyonları göremez,
   gerçek UI (tıklama/seçici) üzerinden test et.
+
+## 2026-11-21 — harita gerçek veriye bağlandı (kurye.html)
+
+- Karo: OpenStreetMap (gri filtre). Yol tarifi OSRM, adres çözümleme Nominatim.
+- Siparişler artık üretiliyor: 6 dükkân + 7 müşteri adresi (`YERLER`), her teklif
+  gerçek koordinat, gerçek km/dk ve km bazlı ücret alıyor.
+- Ücret 18 ₺ + 11 ₺/km; teslim süresi yol süresi + 8 dk. Kod, sipariş kimliği,
+  telefonlar da sipariş başına üretiliyor.
+- Konum: gerçek GPS; İzmir dışı fix yok sayılır, demo konuma düşer.
+- Ekran metinleri (`#d1Addr`, `#d2Addr`, `#tFromAddr`, `#tToAddr`, `#gId`, `#sonLine`)
+  siparişe göre yazılıyor.

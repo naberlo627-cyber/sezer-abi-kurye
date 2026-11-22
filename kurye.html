@@ -34,8 +34,8 @@ input{font:inherit}
 .scr.full{padding:0;overflow:hidden}
 
 .map{position:absolute;inset:0;background:#EFE6D8;z-index:0}
-.map .leaflet-tile{filter:grayscale(.35) sepia(.12) contrast(.96)}
-.leaflet-tile-pane{filter:grayscale(.92) contrast(1.04) brightness(1.07)}
+.map .leaflet-tile{filter:none}
+.leaflet-tile-pane{filter:grayscale(.94) contrast(1.04) brightness(1.05)}
 .credit{position:absolute;right:8px;bottom:6px;z-index:400;font-size:9.5px;color:#6B655C;background:rgba(255,251,245,.8);padding:1px 5px;border-radius:4px}
 
 .brand{display:flex;align-items:center;gap:9px;margin-bottom:18px}
@@ -343,7 +343,7 @@ input{font:inherit}
 
       <div class="son">
         <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-        <span>Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
+        <span id="sonLine">Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
       </div>
 
       <button class="btn" id="shiftBtn">Başla</button>
@@ -383,8 +383,8 @@ input{font:inherit}
         <span class="pin"></span>
         <div style="min-width:0">
           <span class="who">Alış</span>
-          <b>Köfteci Ali</b>
-          <span>Alsancak, Kıbrıs Şehitleri Cd. No 12</span>
+          <b id="d1Name">Köfteci Ali</b>
+          <span id="d1Addr">Alsancak, Kıbrıs Şehitleri Cd. No 12</span>
         </div>
         <div class="acts">
           <button class="icbtn" id="d1Call" aria-label="Dükkanı ara"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg></button>
@@ -396,8 +396,8 @@ input{font:inherit}
         <span class="pin"></span>
         <div style="min-width:0">
           <span class="who">Teslim</span>
-          <b>Merve K.</b>
-          <span>Buca, Menderes Cd. No 45 D:7</span>
+          <b id="d2Name">Merve K.</b>
+          <span id="d2Addr">Buca, Menderes Cd. No 45 D:7</span>
         </div>
         <div class="acts">
           <button class="icbtn" id="d2Call" aria-label="Müşteriyi ara"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></svg></button>
@@ -470,7 +470,7 @@ input{font:inherit}
       <button class="opt" id="profShift"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.2A8 8 0 1017 6.2"/></svg>Bitir</button>
       <button class="opt" onclick="cikisYap()"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg>Çıkış yap</button>
     </div>
-    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 24 · 22 Kasım</div>
+    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 25 · 22 Kasım</div>
   </section>
 
   <nav class="tabbar" id="tabbar">
@@ -504,16 +504,16 @@ input{font:inherit}
     <div class="t-rows">
       <div class="durak on" style="border:0;padding:0 0 10px">
         <span class="pin"></span>
-        <div style="min-width:0"><span class="who">Alış · <b id="tShop">Köfteci Ali</b></span><span>Alsancak, Kıbrıs Şehitleri Cd. No 12</span></div>
+        <div style="min-width:0"><span class="who">Alış · <b id="tShop">Köfteci Ali</b></span><span id="tFromAddr">Alsancak, Kıbrıs Şehitleri Cd. No 12</span></div>
       </div>
       <div class="durak" style="border:0;padding:0">
         <span class="pin"></span>
-        <div style="min-width:0"><span class="who">Teslim</span><span>Buca, Menderes Cd. No 45 D:7</span></div>
+        <div style="min-width:0"><span class="who">Teslim · <b id="tCust">Merve K.</b></span><span id="tToAddr">Buca, Menderes Cd. No 45 D:7</span></div>
       </div>
     </div>
     <div class="t-foot">
       <span class="tag">Teslim süresi <b id="tSure">32 dk</b></span>
-      <span class="tag">Nakit <b>₺120</b></span>
+      <span class="tag">Nakit <b id="tNakit">₺120</b></span>
     </div>
     <div class="acts2">
       <button class="btn" id="tKabul">Kabul et</button>
@@ -607,10 +607,57 @@ input{font:inherit}
 
   var KONUM={ben:[38.4237,27.1428],alis:[38.4374,27.1428],teslim:[38.3867,27.1740]};
 
+  /* gerçek adresler · İzmir */
+  var YERLER={
+    alis:[
+      {ad:'Köfteci Ali',adres:'Kıbrıs Şehitleri Cd. 12, Alsancak, Konak, İzmir',ll:[38.4358,27.1428]},
+      {ad:'Çiğdem Pastanesi',adres:'Mustafa Kemal Cd. 24, Bornova, İzmir',ll:[38.4620,27.2140]},
+      {ad:'Kumrucu Şevki',adres:'Cemal Gürsel Cd. 8, Çankaya, Konak, İzmir',ll:[38.4232,27.1345]},
+      {ad:'Ege Pilavcısı',adres:'Mithatpaşa Cd. 210, Güzelyalı, Konak, İzmir',ll:[38.3970,27.0930]},
+      {ad:'Karşıyaka Simit',adres:'Yalı Cd. 46, Karşıyaka, İzmir',ll:[38.4560,27.1130]},
+      {ad:'Gaziemir Burger',adres:'Akçay Cd. 19, Gaziemir, İzmir',ll:[38.3230,27.1370]}
+    ],
+    teslim:[
+      {ad:'Merve K.',ilce:'Buca',adres:'Menderes Cd. 45 D:7, Buca, İzmir',ll:[38.3867,27.1740]},
+      {ad:'Emre T.',ilce:'Alsancak',adres:'1483 Sk. 6, Alsancak, Konak, İzmir',ll:[38.4370,27.1465]},
+      {ad:'Selin A.',ilce:'Bornova',adres:'Üniversite Cd. 33 D:4, Bornova, İzmir',ll:[38.4650,27.2185]},
+      {ad:'Barış Y.',ilce:'Çankaya',adres:'Halil Rıfat Paşa Cd. 88, Çankaya, Konak, İzmir',ll:[38.4205,27.1300]},
+      {ad:'Zeynep D.',ilce:'Güzelyalı',adres:'İnönü Cd. 120 D:9, Güzelyalı, Konak, İzmir',ll:[38.3985,27.0905]},
+      {ad:'Kerem S.',ilce:'Karşıyaka',adres:'Girne Bulvarı 240 D:12, Karşıyaka, İzmir',ll:[38.4585,27.1205]},
+      {ad:'Ayşe N.',ilce:'Hatay',adres:'Özcan Sk. 3, Hatay, Konak, İzmir',ll:[38.4055,27.1080]}
+    ]
+  };
+
+  /* adres çözümleme · Nominatim, sonuçlar cihazda saklanır */
+  var GEO_CACHE={};
+  try{ GEO_CACHE=JSON.parse(localStorage.getItem('sak_geo_v2')||'{}')||{} }catch(e){ GEO_CACHE={} }
+  var GEO_Q=[],GEO_BUSY=false;
+  function geoKaydet(){ try{ localStorage.setItem('sak_geo_v2',JSON.stringify(GEO_CACHE)) }catch(e){} }
+  function geoKuyruk(adres){
+    return new Promise(function(res,rej){ GEO_Q.push({a:adres,res:res,rej:rej});geoCalis() });
+  }
+  function geoCalis(){
+    if(GEO_BUSY||!GEO_Q.length) return;
+    GEO_BUSY=true;
+    var is=GEO_Q.shift();
+    var url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=tr&q='+encodeURIComponent(is.a);
+    fetch(url).then(function(r){return r.json()}).then(function(j){
+      if(!j||!j.length) throw new Error('adres yok');
+      var ll=[parseFloat(j[0].lat),parseFloat(j[0].lon)];
+      GEO_CACHE[is.a]=ll;geoKaydet();is.res(ll);
+    }).catch(function(e){ is.rej(e) }).then(function(){
+      GEO_BUSY=false;setTimeout(geoCalis,1200);
+    });
+  }
+  function yerBul(y){
+    if(GEO_CACHE[y.adres]) return Promise.resolve(GEO_CACHE[y.adres]);
+    return geoKuyruk(y.adres);
+  }
+
   var S={on:false,mola:false,molaEnd:0,since:0,orders:6,money:412,km:38,dakika:252,goal:600,
     offered:24,accepted:22,bahsis:34,prim:40,nakit:120,
     step:0,active:false,timer:null,molaTimer:null,offerTimer:null,leftTimer:null,left:15,
-    ses:true,titresim:true,ekranAcik:true,sesliYol:true};
+    ses:true,titresim:true,ekranAcik:true,sesliYol:true,offerBusy:false};
 
   function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2300)}
   function oran(){return Math.round(S.accepted/Math.max(1,S.offered)*100)}
@@ -639,20 +686,28 @@ input{font:inherit}
     return m;
   }
   function pin(cls,txt){return L.divIcon({className:'',html:'<div class="mk '+cls+'">'+(txt||'')+'</div>',iconSize:[26,26],iconAnchor:[13,13]})}
+  var mkA=null,mkB=null;
   function haritaOdak(i){
     if(!mapGorev) return;
-    var pts=i<2?[KONUM.ben,KONUM.alis]:[KONUM.alis,KONUM.teslim];
+    var ben=GEO.last||KONUM.ben;
+    var pts=i<2?[ben,KONUM.alis]:[KONUM.alis,KONUM.teslim];
     mapGorev.fitBounds(pts,{paddingTopLeft:[46,120],paddingBottomRight:[46,340],maxZoom:15});
+  }
+  function haritaNoktalari(){
+    if(!mapGorev||!window.L) return;
+    if(mkA){ mapGorev.removeLayer(mkA);mkA=null }
+    if(mkB){ mapGorev.removeLayer(mkB);mkB=null }
+    mkA=L.marker(KONUM.alis,{icon:pin('pick','A')}).addTo(mapGorev);
+    mkB=L.marker(KONUM.teslim,{icon:pin('drop','B')}).addTo(mapGorev);
+    if(!S.active) haritaOdak(0);
   }
   function kurHarita(){
     mapHome=mkMap($('#mapHome'),KONUM.ben,14);
     if(mapHome) meHome=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapHome);
-    mapGorev=mkMap($('#mapGorev'),KONUM.alis,13,true);
+    mapGorev=mkMap($('#mapGorev'),KONUM.ben,13,true);
     if(mapGorev){
       meGorev=L.marker(KONUM.ben,{icon:pin('me')}).addTo(mapGorev);
-      L.marker(KONUM.alis,{icon:pin('pick','A')}).addTo(mapGorev);
-      L.marker(KONUM.teslim,{icon:pin('drop','B')}).addTo(mapGorev);
-      haritaOdak(0);
+      haritaNoktalari();
     }
   }
   setTimeout(kurHarita,60);
@@ -665,13 +720,17 @@ input{font:inherit}
     var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[0]*rad)*Math.cos(b[0]*rad)*Math.sin(dLon/2)*Math.sin(dLon/2);
     return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
   }
+  var SEHIR=[38.4237,27.1428];
+  function sehirIcinde(ll){ return mesafeM(SEHIR,ll)<60000 }
   function konumAl(cb){
     if(!navigator.geolocation){ cb(false); return }
     var bitti=false;
     var to=setTimeout(function(){ if(!bitti){ bitti=true; cb(false) } },3000);
     navigator.geolocation.getCurrentPosition(function(p){
       if(bitti) return; bitti=true; clearTimeout(to);
-      konumIsle([p.coords.latitude,p.coords.longitude],p.coords.speed);
+      var ll=[p.coords.latitude,p.coords.longitude];
+      if(!sehirIcinde(ll)){ toast('İzmir dışındasın · demo bölgesi kullanılıyor'); cb(false); return }
+      konumIsle(ll,p.coords.speed);
       cb(true);
     },function(){ if(bitti) return; bitti=true; clearTimeout(to); cb(false) },
     {enableHighAccuracy:true,timeout:2600,maximumAge:5000});
@@ -679,7 +738,9 @@ input{font:inherit}
   function konumIzle(){
     if(GEO.watch!=null||GEO.sim||!navigator.geolocation) return;
     GEO.watch=navigator.geolocation.watchPosition(function(p){
-      konumIsle([p.coords.latitude,p.coords.longitude],p.coords.speed);
+      var ll=[p.coords.latitude,p.coords.longitude];
+      if(!sehirIcinde(ll)){ konumSim(); return }
+      konumIsle(ll,p.coords.speed);
     },function(){},{enableHighAccuracy:true,maximumAge:4000});
   }
   function konumIsle(ll,hiz){
@@ -722,6 +783,7 @@ input{font:inherit}
     if(meHome) meHome.setLatLng(ll);
     if(meGorev) meGorev.setLatLng(ll);
     if(mapHome&&S.on&&!S.active) mapHome.panTo(ll,{animate:true,duration:0.6});
+    if(mapGorev&&S.active&&!NAV.on&&!mapGorev.getBounds().pad(-0.15).contains(ll)) mapGorev.panTo(ll,{animate:true,duration:0.6});
   }
   function canliCiz(){
     var box=$('#canli'),ml=$('#miniLive');
@@ -753,7 +815,10 @@ input{font:inherit}
       if(z==='in') m.zoomIn();
       else if(z==='out') m.zoomOut();
       else if(b.dataset.m==='gorev') haritaOdak(S.step);
-      else m.setView(GEO.last||KONUM.ben,15,{animate:true});
+      else{
+        m.setView(GEO.last||KONUM.ben,15,{animate:true});
+        konumAl(function(ok){ if(ok) m.setView(GEO.last,16,{animate:true}) });
+      }
     });
   });
 
@@ -895,17 +960,110 @@ input{font:inherit}
   $('#profShift').addEventListener('click',function(){ bitir() });
   $('#ozKapat').addEventListener('click',function(){ kapat('shOzet'); go('vardiya'); toast('Vardiya kapandı') });
 
+  /* sipariş üretimi · adres + rota + ücret */
+  function rast(arr,haric){
+    var p=arr.filter(function(x){return x!==haric});
+    return p[Math.floor(Math.random()*p.length)]||arr[0];
+  }
+  function rotaBilgi(a,b){
+    return osrmRota(a,b).then(function(rt){
+      return {km:(rt.distance||0)/1000,dk:(rt.duration||0)/60*1.3};
+    }).catch(function(){
+      var km=mesafeM(a,b)/1000*1.35;
+      return {km:km,dk:km/24*60};
+    });
+  }
+  function fiyatla(km,dk){
+    ORD.km=Math.round(km*10)/10;
+    ORD.dk=Math.max(5,Math.round(dk));
+    ORD.fee=Math.max(40,Math.round((18+ORD.km*11)/2)*2);
+    ORD.sure=ORD.dk+8;
+    ORD.nakit=Math.max(50,Math.round(ORD.fee*1.5/10)*10);
+  }
+  function adimlarKur(){
+    var d1=Math.max(2,Math.round(ORD.dk*0.35)),d2=Math.max(4,ORD.dk-d1);
+    ADIMLAR=[
+      {t:'Dükkana git',eta:d1+' dk',b:'Vardım',not:'1 çanta · Dükkan: '+ORD.shop},
+      {t:'Paketi al',eta:'—',b:'Paketi aldım',not:'Dükkan sahibi kodu söylüyor · <b>'+ORD.kodDukkan+'</b>',kod:ORD.kodDukkan,lab:'Dükkan kodu'},
+      {t:'Müşteriye götür',eta:d2+' dk',b:'Vardım',not:'Müşteri notu: <b>Kapıyı çalma, zili çal.</b>'},
+      {t:'Teslim et',eta:'—',b:'Teslim ettim',not:'Müşteri kodu söylüyor · <b>₺'+ORD.nakit+' nakit</b> · kod <b>'+ORD.kod+'</b>,kod:ORD.kod,lab:'Teslim kodu'}
+    ];
+  }
+  function teklifYaz(){
+    var el;
+    if((el=$('#tShop'))) el.textContent=ORD.shop;
+    if((el=$('#tCust'))) el.textContent=ORD.cust;
+    if((el=$('#tFromAddr'))) el.textContent=ORD.from;
+    if((el=$('#tToAddr'))) el.textContent=ORD.to;
+    if((el=$('#tFee'))) el.textContent='₺'+ORD.fee;
+    if((el=$('#tKm'))) el.textContent=String(ORD.km).replace('.',',');
+    if((el=$('#tDk'))) el.textContent=ORD.dk;
+    if((el=$('#tSure'))) el.textContent=ORD.sure+' dk';
+    if((el=$('#tNakit'))) el.textContent='₺'+ORD.nakit;
+  }
+  function sonYaz(){
+    var el=$('#sonLine'); if(!el) return;
+    var d=new Date(),sa=('0'+d.getHours()).slice(-2),dk=('0'+d.getMinutes()).slice(-2);
+    el.innerHTML='Son teslimat '+sa+':'+dk+' · '+ORD.shop+' → '+ORD.ilce+' · <b class="num">₺'+ORD.fee+'</b>';
+  }
+  function gorevYaz(){
+    var el;
+    if((el=$('#gId'))) el.textContent=ORD.id;
+    if((el=$('#d1Name'))) el.textContent=ORD.shop;
+    if((el=$('#d1Addr'))) el.textContent=ORD.from;
+    if((el=$('#d2Name'))) el.textContent=ORD.cust;
+    if((el=$('#d2Addr'))) el.textContent=ORD.to;
+  }
+  var sonSiparis={s:null,t:null};
+  function siparisKur(){
+    var s=rast(YERLER.alis,sonSiparis.s),t=rast(YERLER.teslim,sonSiparis.t);
+    sonSiparis={s:s,t:t};
+    ORD.shop=s.ad;ORD.from=s.adres;
+    ORD.cust=t.ad;ORD.to=t.adres;ORD.ilce=t.ilce||'İzmir';
+    ORD.id='#'+(1040+Math.floor(Math.random()*900));
+    ORD.kod=String(1000+Math.floor(Math.random()*9000));
+    ORD.kodDukkan=String(1000+Math.floor(Math.random()*9000));
+    ORD.custTel='+90555'+String(1000000+Math.floor(Math.random()*8999999));
+    ORD.shopTel='+90232'+String(1000000+Math.floor(Math.random()*8999999));
+    KONUM.alis=s.ll.slice();KONUM.teslim=t.ll.slice();
+    haritaNoktalari();
+    return rotaBilgi(KONUM.alis,KONUM.teslim).then(function(b){
+      fiyatla(b.km,b.dk);adimlarKur();gorevYaz();teklifYaz();
+      Promise.all([
+        yerBul(s).catch(function(){return null}),
+        yerBul(t).catch(function(){return null})
+      ]).then(function(ll){
+        if(!ll[0]||!ll[1]) return;
+        if(mesafeM(KONUM.alis,ll[0])<60&&mesafeM(KONUM.teslim,ll[1])<60) return;
+        KONUM.alis=ll[0];KONUM.teslim=ll[1];haritaNoktalari();
+        return rotaBilgi(ll[0],ll[1]).then(function(b2){
+          fiyatla(b2.km,b2.dk);adimlarKur();
+          if($('#teklif').classList.contains('on')) teklifYaz();
+          if(S.active) gorevYaz();
+        });
+      }).catch(function(){});
+    });
+  }
+
   /* teklif */
   function teklifPlanla(ms){
     clearTimeout(S.offerTimer);
     S.offerTimer=setTimeout(function(){ if(S.on&&!S.mola&&!S.active) teklifGoster() },ms);
   }
   function teklifGoster(){
-    S.offered++; ozet();
-    $('#tFee').textContent='₺'+ORD.fee;
-    $('#tKm').textContent=String(ORD.km).replace('.',',');
-    $('#tDk').textContent=ORD.dk;
-    $('#tSure').textContent=ORD.sure+' dk';
+    if(S.offerBusy) return;
+    S.offerBusy=true;
+    siparisKur().then(function(){
+      S.offerBusy=false;
+      S.offered++;ozet();
+      teklifYaz();
+      teklifAc();
+    }).catch(function(){
+      S.offerBusy=false;
+      teklifPlanla(8000);
+    });
+  }
+  function teklifAc(){
     ac('teklif');
     var bar=$('#ringBar');bar.style.animation='none';void bar.getBoundingClientRect();bar.style.animation='';
     S.left=15;$('#ringTxt').textContent='15';
@@ -922,12 +1080,7 @@ input{font:inherit}
   $('#tKabul').addEventListener('click',function(){teklifiKapat();S.accepted++;ozet();gorevBaslat()});
 
   /* görev */
-  var ADIMLAR=[
-    {t:'Dükkana git',eta:'4 dk',b:'Vardım',not:'1 çanta · Dükkan: Köfteci Ali'},
-    {t:'Paketi al',eta:'—',b:'Paketi aldım',not:'Dükkan sahibinden 4 haneli kodu al · <b>demo 2058</b>',kod:'2058',lab:'Dükkan kodu'},
-    {t:'Müşteriye götür',eta:'18 dk',b:'Vardım',not:'Müşteri notu: <b>Kapıyı çalma, zili çal.</b>'},
-    {t:'Teslim et',eta:'—',b:'Teslim ettim',not:'Müşteriden kodu al · <b>₺120 nakit</b> · demo 4471',kod:'4471',lab:'Teslim kodu'}
-  ];
+  var ADIMLAR=[];
   var gorevMesajT=null;
   function gorevBaslat(){
     S.active=true;S.step=0;S.deadline=Date.now()+ORD.sure*60000;$('#kodIn').value='';$('#msgBadge').classList.remove('on');
@@ -938,7 +1091,7 @@ input{font:inherit}
       mesajEkle('3. kat, asansör yok. Kapıyı çalmayın, arayın.',true);
       $('#msgBadge').classList.add('on');
       beep();titret([180,100,180]);
-      toast('Merve K. mesaj gönderdi');
+      toast(ORD.cust+' mesaj gönderdi');
     },9000);
   }
   function adimCiz(){
@@ -973,8 +1126,8 @@ input{font:inherit}
     }
     if(S.step<ADIMLAR.length-1){S.step++;$('#kodIn').value='';adimCiz();if(S.step===2)toast('Paket sende · müşteriye git');return}
     S.active=false;S.orders++;S.money+=ORD.fee;S.km=Math.round((S.km+ORD.km)*10)/10;S.dakika+=ORD.dk;S.nakit+=ORD.nakit;
-    gecmis.unshift({t:'şimdi',w:ORD.shop+' → Buca',f:'₺'+ORD.fee});
-    var sf=$('#sonFee'); if(sf) sf.textContent='₺'+ORD.fee;
+    gecmis.unshift({t:'şimdi',w:ORD.shop+' → '+ORD.ilce,f:'₺'+ORD.fee});
+    sonYaz();
     rows($('#kazancList'),gecmis);$('#kCount').textContent=gecmis.length+' kayıt';
     $('#kodIn').value='';
     ozet();go('vardiya');toast('Teslim edildi · ₺'+ORD.fee+' hesabına geçti');

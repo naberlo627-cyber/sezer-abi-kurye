@@ -164,3 +164,17 @@ bash tools/build-apk.sh                        # APK
 - Kısa yazım kuralı: buton ve etiketler tek kelime (`Başla`, `Bitir`, `Mola`).
   Uzun cümle yerine kısa etiket; detay dokununca açılır.
 - Giriş ekranı mavi zemin: yazılar `--cream` (kontrast için ayrı override).
+
+## Harita (kurye.html)
+
+- Karo: OpenStreetMap (`tile.openstreetmap.org`), CSS ile griye çevriliyor.
+  CARTO artık anahtar istiyor; Esri açık gri karo şehir içinde fazla seyrek.
+  Ticari ölçekte karo sağlayıcısı sözleşmeli olmalı.
+- Yol tarifi: OSRM genel sunucusu (`router.project-osrm.org`), `osrmRota()`.
+  Dönen süre 1,3 ile çarpılır (şehir içi moto gerçekliği).
+- Adres çözümleme: Nominatim, `geoKuyruk()` saniyede 1 istek atar; sonuçlar
+  `localStorage['sak_geo_v2']` içinde saklanır. Adres havuzu `YERLER`.
+- Konum: `navigator.geolocation`; İzmir merkezine 60 km'den uzak fix yok sayılır,
+  demo konuma düşer. `SEHIR` sabiti.
+- Ücret/süre: `fiyatla()` → 18 ₺ + 11 ₺/km (çift sayıya yuvarlanır),
+  teslim süresi = yol süresi + 8 dk. Sipariş alanları `ORD` içinde tutulur.
