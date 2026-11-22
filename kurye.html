@@ -6,13 +6,14 @@
 <meta name="theme-color" content="#FFFFFF">
 <title>Sezer Abi Kurye · Vardiya</title>
 <link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/fonts2.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
   --accent:#0F5C96; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55;
   --line:#E4DCD1; --pad:#EDE7DF; --hair:#EFEAE3;
-  --display:'Bricolage Grotesque',system-ui,sans-serif;
-  --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display:'Instrument Serif',Georgia,'Times New Roman',serif;
+  --body:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--ink);overscroll-behavior:none}
@@ -39,7 +40,9 @@ input{font:inherit}
 .brand{display:flex;align-items:center;gap:9px;margin-bottom:18px}
 .brand svg{width:28px;height:8px;fill:var(--ink);flex:none}
 .brand span{font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--mute)}
-.disp{font-family:var(--display);font-weight:800;letter-spacing:-1.4px;line-height:1.02;font-size:34px}
+.disp{font-family:var(--display);font-weight:400;letter-spacing:-.3px;line-height:1.06;font-size:36px}
+.disp,.state-t,.hedef-top b,.chip.eta b,.step-t,.gun-num,.sheet-h b,.ring b,.fee,.shop,.nav-t b,.big,.odeme b,.prof-name,.mk{font-weight:400;letter-spacing:-.3px}
+.big,.fee,.gun-num,.hedef-top b,.chip.eta b,.ring b{font-variant-numeric:tabular-nums}
 .lab{font-size:11.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--mute)}
 .mute{color:var(--mute)}
 .num{font-variant-numeric:tabular-nums}
@@ -63,7 +66,7 @@ input{font:inherit}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--pad);display:inline-block;margin-right:7px;vertical-align:1px}
 .dot.live{background:var(--accent);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.state-t{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-1px;margin:5px 0 1px}
+.state-t{font-family:var(--display);font-weight:400;font-size:31px;letter-spacing:-.2px;margin:6px 0 2px}
 .state-s{font-size:13px;color:var(--mute)}
 
 .mini{flex:none;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;font-size:13px;font-weight:600;background:var(--paper)}
@@ -246,7 +249,7 @@ input{font:inherit}
 .rows .t{font-size:13px;color:var(--mute);width:42px;flex:none;font-variant-numeric:tabular-nums}
 .rows .w{flex:1;min-width:0;font-size:14.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rows .f{font-weight:700;font-variant-numeric:tabular-nums}
-.big{font-family:var(--display);font-weight:800;font-size:44px;letter-spacing:-2.2px;line-height:1;margin:6px 0;font-variant-numeric:tabular-nums}
+.big{font-family:var(--display);font-weight:400;font-size:48px;letter-spacing:-1px;line-height:1;margin:6px 0;font-variant-numeric:tabular-nums}
 .dokum{margin-top:14px;border-top:1.5px solid var(--line)}
 .dokum div{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--pad);font-size:14.5px}
 .dokum div span:first-child{color:var(--mute)}
@@ -311,7 +314,7 @@ input{font:inherit}
         <div>
           <div class="lab" id="durumLab">Çevrimdışı</div>
           <div class="state-t" id="durumT">Vardiya kapalı</div>
-          <div class="state-s" id="durumS">Hazır olduğunda başlat.</div>
+          <div class="state-s" id="durumS">Hazır olunca başlat.</div>
         </div>
         <button class="mini" id="molaBtn" hidden>Mola ver</button>
       </div>
@@ -341,7 +344,7 @@ input{font:inherit}
         <span>Son teslimat 14:20 · Köfteci Ali → Buca · <b class="num" id="sonFee">₺78</b></span>
       </div>
 
-      <button class="btn" id="shiftBtn">Vardiyayı başlat</button>
+      <button class="btn" id="shiftBtn">Başla</button>
     </div>
   </section>
 
@@ -462,10 +465,10 @@ input{font:inherit}
     <div style="margin-top:20px">
       <button class="opt" data-ac="shAyarlar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.6 1.6 0 008 19.4a1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.6 1.6 0 003.7 15a1.6 1.6 0 00-1.5-1H2a2 2 0 110-4h.1A1.6 1.6 0 004.6 8a1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1A1.6 1.6 0 009 3.7 1.6 1.6 0 0010 2.2V2a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1A1.6 1.6 0 0020.3 8v.1a1.6 1.6 0 001.5 1H22a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg>Ayarlar<span class="r">Ses, titreşim</span></button>
       <button class="opt" data-ac="shYardim"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 015 1c0 1.7-2.5 2-2.5 3.6"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/></svg>Yardım ve destek<span class="r">7/24</span></button>
-      <button class="opt" id="profShift"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.2A8 8 0 1017 6.2"/></svg>Vardiyayı bitir</button>
+      <button class="opt" id="profShift"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.2A8 8 0 1017 6.2"/></svg>Bitir</button>
       <button class="opt" onclick="location.href='giris.html'"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg>Çıkış yap</button>
     </div>
-    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 21 · 22 Kasım</div>
+    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 22 · 22 Kasım</div>
   </section>
 
   <nav class="tabbar" id="tabbar">
@@ -808,7 +811,7 @@ input{font:inherit}
   function vardiyaCiz(){
     var on=S.on,mola=S.mola;
     $('#molaBtn').hidden=!on;
-    $('#molaBtn').textContent=mola?'Molayı bitir':'Mola ver';
+    $('#molaBtn').textContent=mola?'Devam':'Mola';
     $('#molaBtn').classList.toggle('on',mola);
     if(mola){
       $('#durumLab').innerHTML='<span class="dot"></span>Molada · <span class="num" id="molaTxt">'+kisaSure(S.molaEnd-Date.now())+'</span>';
@@ -824,7 +827,7 @@ input{font:inherit}
       $('#durumS').textContent='Hazır olduğunda başlat.';
     }
     var b=$('#shiftBtn');
-    b.textContent=mola?'Molayı bitir':(on?'Vardiyayı bitir':'Vardiyayı başlat');
+    b.textContent=mola?'Devam':(on?'Bitir':'Başla');
     b.className='btn'+(on&&!mola?' ghost':'');
   }
   function tik(){
