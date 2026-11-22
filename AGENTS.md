@@ -152,3 +152,15 @@ denetlenir; eksikse boş site yüklenmez.
 python3 -m http.server 12000 --bind 0.0.0.0   # yerel
 bash tools/build-apk.sh                        # APK
 ```
+
+## Tipografi ve ton (onaylı)
+
+- Başlık ve tutarlar: **Instrument Serif** (400, `--display`). Gövde/arayüz:
+  **Instrument Sans** (400/600/700, `--body`).
+- Fontlar `assets/fonts2.css` içinde base64 gömülü (latin + latin-ext);
+  Google Fonts'a çalışma anında bağımlılık yok, çevrimdışı çalışır.
+- Serif 800 kalınlığı yok: `--display` kullanan seçicilerde `font-weight:400`
+  zorlanır (kurye.html ve index.html içinde tek override bloğu).
+- Kısa yazım kuralı: buton ve etiketler tek kelime (`Başla`, `Bitir`, `Mola`).
+  Uzun cümle yerine kısa etiket; detay dokununca açılır.
+- Giriş ekranı mavi zemin: yazılar `--cream` (kontrast için ayrı override).
