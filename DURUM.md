@@ -125,3 +125,6 @@ python3 -m http.server 12000 --bind 0.0.0.0
 - Konum: gerçek GPS; İzmir dışı fix yok sayılır, demo konuma düşer.
 - Ekran metinleri (`#d1Addr`, `#d2Addr`, `#tFromAddr`, `#tToAddr`, `#gId`, `#sonLine`)
   siparişe göre yazılıyor.
+- **Surge hâlâ v24'te:** depoda `SURGE_TOKEN` yok, iş akışı Surge adımını
+  atlıyor. Güncel sürüm GitHub Pages ve Cloudflare Pages'te. Token eklenince
+  (`gh secret set SURGE_TOKEN`) master'a her push Surge'u da tazeler.
