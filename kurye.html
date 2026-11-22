@@ -470,7 +470,7 @@ input{font:inherit}
       <button class="opt" id="profShift"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.2A8 8 0 1017 6.2"/></svg>Bitir</button>
       <button class="opt" onclick="cikisYap()"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg>Çıkış yap</button>
     </div>
-    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 25 · 22 Kasım</div>
+    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 26 · 22 Kasım</div>
   </section>
 
   <nav class="tabbar" id="tabbar">
@@ -678,9 +678,10 @@ input{font:inherit}
   /* harita */
   var mapHome=null,mapGorev=null,meHome=null,meGorev=null;
   function mkMap(el,center,zoom,interactive){
-    if(!window.L) return null;
+    if(!window.L){ toast('Harita kütüphanesi yüklenemedi · bağlantıyı denetle'); return null }
     var m=L.map(el,{zoomControl:false,attributionControl:false,scrollWheelZoom:false,dragging:interactive!==false,tap:true}).setView(center,zoom);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(m);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(m)
+      .once('tileerror',function(){ toast('Harita karoları yüklenemedi · bağlantıyı denetle') });
     var c=document.createElement('div');c.className='credit';c.textContent='© OpenStreetMap';
     el.parentNode.appendChild(c);
     return m;
@@ -986,7 +987,7 @@ input{font:inherit}
       {t:'Dükkana git',eta:d1+' dk',b:'Vardım',not:'1 çanta · Dükkan: '+ORD.shop},
       {t:'Paketi al',eta:'—',b:'Paketi aldım',not:'Dükkan sahibi kodu söylüyor · <b>'+ORD.kodDukkan+'</b>',kod:ORD.kodDukkan,lab:'Dükkan kodu'},
       {t:'Müşteriye götür',eta:d2+' dk',b:'Vardım',not:'Müşteri notu: <b>Kapıyı çalma, zili çal.</b>'},
-      {t:'Teslim et',eta:'—',b:'Teslim ettim',not:'Müşteri kodu söylüyor · <b>₺'+ORD.nakit+' nakit</b> · kod <b>'+ORD.kod+'</b>,kod:ORD.kod,lab:'Teslim kodu'}
+      {t:'Teslim et',eta:'—',b:'Teslim ettim',not:'Müşteri kodu söylüyor · <b>₺'+ORD.nakit+' nakit</b> · kod <b>'+ORD.kod+'</b>',kod:ORD.kod,lab:'Teslim kodu'}
     ];
   }
   function teklifYaz(){
