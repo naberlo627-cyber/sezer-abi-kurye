@@ -119,9 +119,22 @@ npx surge login          # bir kez, tarayıcıdan
 npx surge token          # çıkan token'ı depoya ekle
 ```
 
-`SURGE_TOKEN` depo sırrı olarak eklenir; `surge` işi sonraki push'ta
-otomatik yayınlar. **`SURGE_LOGIN` gerekmez** — Surge kimliği yalnız
-token ile doğrular (`--token` bayrağı).
+`SURGE_TOKEN` bu depoda **tanımlı değil**; `yayin.yml` içindeki Surge işi
+bu yüzden sessizce atlanır. Yayın, `naberlo627-cyber/genc` deposundaki
+`.github/workflows/kurye-surge.yml` köprüsüyle yapılır (Surge sırları
+orada): 6 saatte bir zamanlanmış, ayrıca elle tetiklenebilir.
+
+Elle tetikleme:
+
+```bash
+curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/naberlo627-cyber/genc/actions/workflows/kurye-surge.yml/dispatches \
+  -d '{"ref":"master"}'
+```
+
+**`SURGE_LOGIN` gerekmez** — Surge kimliği yalnız token ile doğrular
+(`--token` bayrağı).
 
 Elle yayın:
 
