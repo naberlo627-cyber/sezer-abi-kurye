@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFF3E4">
+<title>Yazı tipi seçenekleri · Sezer Abi Kurye</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF3E4; --ink:#1E1E24; --mute:#6B655E; --line:#E4DCD1; --pad:#EDE7DF; --accent:#0F5C96;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#EDE7DF;color:var(--ink);padding:22px 16px 48px;font-family:'Instrument Sans',system-ui,sans-serif}
+h1{font-size:23px;letter-spacing:-.4px;margin:0 auto 6px;max-width:560px;font-weight:600}
+.lead{margin:0 auto 22px;max-width:560px;color:var(--mute);font-size:14.5px;line-height:1.5}
+.grid{display:grid;gap:18px;max-width:560px;margin:0 auto}
+.kart{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer}
+.kart.on{box-shadow:0 0 0 2px var(--ink)}
+.mini{background:var(--cream);padding:18px 18px 20px}
+.lab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.big{font-size:34px;line-height:1;letter-spacing:-1.2px;font-weight:600;margin-top:6px}
+.big s{font-size:14px;color:var(--mute);text-decoration:none;font-weight:400;letter-spacing:0}
+.bar{height:7px;border-radius:4px;background:var(--pad);margin:12px 0 10px;overflow:hidden}
+.bar i{display:block;height:100%;width:69%;border-radius:4px;background:var(--accent)}
+.meta{display:flex;gap:16px;font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+.cta{margin-top:14px;background:var(--ink);color:#fff;border:0;border-radius:12px;height:44px;width:100%;font-size:15px;font-weight:600;letter-spacing:.01em;font-family:inherit}
+.ad{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;font-size:13px;border-top:1px solid var(--line)}
+.ad b{font-weight:600}
+.ad span{color:var(--mute);font-size:12px}
+
+/* 1 · Sakin */
+.v1 .big{font-family:'Instrument Sans',sans-serif;font-weight:600}
+.v1 .lab{font-family:'Instrument Sans',sans-serif}
+.v1 .cta{font-family:'Instrument Sans',sans-serif}
+
+/* 2 · Editoryal */
+.v2 .big{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:40px;letter-spacing:-.8px}
+.v2 .lab{font-family:'Instrument Sans',sans-serif}
+.v2 .cta{font-family:'Instrument Sans',sans-serif}
+
+/* 3 · Keskin */
+.v3 .big{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-1.6px}
+.v3 .lab{font-family:'Space Grotesk',sans-serif;letter-spacing:.2em}
+.v3 .cta{font-family:'Space Grotesk',sans-serif}
+.v3 .meta{font-family:'Space Grotesk',sans-serif}
+
+/* kısa yazım tablosu */
+.kisa{max-width:560px;margin:28px auto 0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.kisa h2{font-size:15px;margin:0;padding:14px 16px 12px;border-bottom:1px solid var(--line);font-weight:600}
+.satir{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:13px;align-items:center}
+.satir:last-child{border-bottom:0}
+.satir .e{color:var(--mute);text-decoration:line-through;text-decoration-color:#D8CFC3}
+.satir .y{font-weight:600}
+.not{max-width:560px;margin:14px auto 0;color:var(--mute);font-size:12.5px;line-height:1.5}
+</style>
+</head>
+<body>
+<div>
+  <h1>Yazı tipi: hangisi?</h1>
+  <p class="lead">Üçü de aynı ekranı gösteriyor, sadece harfler değişiyor. Rakamlar eşit genişlikte (tabular), yani tutarlar alt alta hizalı durur.</p>
+</div>
+
+<div class="grid">
+  <div class="kart v1" data-ad="Sakin">
+    <div class="mini">
+      <div class="lab">Bugün</div>
+      <div class="big">₺412 <s>/ ₺600</s></div>
+      <div class="bar"><i></i></div>
+      <div class="meta"><span>6 sipariş</span><span>38 km</span><span>4s 12dk</span></div>
+      <button class="cta">Başla</button>
+    </div>
+    <div class="ad"><b>1 · Sakin</b><span>Instrument Sans</span></div>
+  </div>
+
+  <div class="kart v2" data-ad="Editoryal">
+    <div class="mini">
+      <div class="lab">Bugün</div>
+      <div class="big">₺412 <s>/ ₺600</s></div>
+      <div class="bar"><i></i></div>
+      <div class="meta"><span>6 sipariş</span><span>38 km</span><span>4s 12dk</span></div>
+      <button class="cta">Başla</button>
+    </div>
+    <div class="ad"><b>2 · Editoryal</b><span>Instrument Serif + Sans</span></div>
+  </div>
+
+  <div class="kart v3" data-ad="Keskin">
+    <div class="mini">
+      <div class="lab">Bugün</div>
+      <div class="big">₺412 <s>/ ₺600</s></div>
+      <div class="bar"><i></i></div>
+      <div class="meta"><span>6 sipariş</span><span>38 km</span><span>4s 12dk</span></div>
+      <button class="cta">Başla</button>
+    </div>
+    <div class="ad"><b>3 · Keskin</b><span>Space Grotesk</span></div>
+  </div>
+</div>
+
+<div class="kisa">
+  <h2>Kısa yazım</h2>
+  <div class="satir"><span class="e">Vardiyayı başlat</span><span class="y">Başla</span></div>
+  <div class="satir"><span class="e">Bugünün siparişleri</span><span class="y">Siparişler</span></div>
+  <div class="satir"><span class="e">Son teslimat 14:20 · Köfteci Ali → Buca</span><span class="y">14:20 · Buca</span></div>
+  <div class="satir"><span class="e">Kabul %92 · Bugün 24 teklif · Puan 4,9</span><span class="y">24 teklif · 4,9</span></div>
+  <div class="satir"><span class="e">Siparişi teslim ettim</span><span class="y">Vardım</span></div>
+</div>
+<p class="not">Kural: bir satır, tek bilgi. Uzun cümle yerine kısa etiket; detay gerekiyorsa dokununca açılır.</p>
+
+<script>
+document.querySelectorAll('.kart').forEach(function(k){
+  k.addEventListener('click',function(){
+    document.querySelectorAll('.kart').forEach(function(x){x.classList.remove('on')});
+    k.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>
