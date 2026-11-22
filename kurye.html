@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
-  --accent:#1B6FA8; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55;
+  --accent:#0F5C96; --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#5E5A55;
   --line:#E4DCD1; --pad:#EDE7DF; --hair:#EFEAE3;
   --display:'Bricolage Grotesque',system-ui,sans-serif;
   --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -55,7 +55,7 @@ input{font:inherit}
 .panel .grab{cursor:pointer;position:relative;width:auto;height:14px;background:none;display:flex;align-items:flex-start;justify-content:center;margin:0 0 8px}
 .panel .grab::before{content:'';width:38px;height:4px;border-radius:2px;background:var(--pad)}
 .panel.tight .grab::before{background:var(--accent)}
-.panel{position:absolute;left:0;right:0;bottom:0;z-index:500;background:#fff;
+.panel{position:absolute;left:0;right:0;bottom:0;z-index:500;background:var(--cream);
   border-radius:26px 26px 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 14px);
   box-shadow:0 -12px 36px rgba(30,30,36,.13)}
 .grab{width:38px;height:4px;border-radius:2px;background:var(--pad);margin:0 auto 12px}
@@ -76,7 +76,7 @@ input{font:inherit}
 .hedef-top{display:flex;align-items:baseline;gap:7px}
 .hedef-top b{font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-1.2px;font-variant-numeric:tabular-nums}
 .hedef-top .lab{margin-right:auto}
-.prog{height:6px;border-radius:3px;background:var(--pad);margin:9px 0 8px;overflow:hidden}
+.prog{height:7px;border-radius:4px;background:var(--pad);margin:10px 0 9px;overflow:hidden}
 .prog i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .4s ease}
 .hedef-alt{display:flex;gap:14px;font-size:12.5px;color:var(--mute)}
 
@@ -100,7 +100,7 @@ input{font:inherit}
 .steps{display:flex;align-items:center;margin-bottom:14px}
 .steps i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);flex:none}
 .steps i.ok{background:var(--ink);border-color:var(--ink)}
-.steps i.now{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px rgba(27,111,168,.14)}
+.steps i.now{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px rgba(15,92,150,.14)}
 .steps s{display:block;height:1.5px;background:var(--line);flex:1}
 .steps s.ok{background:var(--ink)}
 
@@ -148,7 +148,7 @@ input{font:inherit}
 .gun-alt{display:flex;gap:14px;font-size:12.5px;color:var(--mute)}
 .meta{display:flex;gap:16px;font-size:12px;color:var(--mute);margin-top:16px;padding-top:14px;border-top:1px solid var(--hair)}
 .meta b{color:var(--ink);font-weight:700}
-.kart{background:#fff;border-radius:20px;padding:14px 14px 2px;box-shadow:0 8px 24px rgba(30,30,36,.07);margin-top:14px}
+.kart{background:var(--paper);border-radius:20px;padding:14px 14px 2px;box-shadow:0 8px 24px rgba(30,30,36,.07);margin-top:14px}
 .kart .hedef{margin:0;padding-top:0;border-top:0}
 .kart .son{border-top:1.5px solid var(--line);padding-top:11px;margin:12px 0 12px}
 .canli .dot{margin:0}
@@ -167,7 +167,7 @@ input{font:inherit}
 .sheet{position:fixed;inset:0;z-index:880;display:none;align-items:flex-end;justify-content:center;background:rgba(30,30,36,.55)}
 .sheet.on{display:flex}
 .sheet.center{align-items:center;padding:18px;z-index:900}
-.sheet-card{width:100%;max-width:480px;background:#fff;border-radius:24px 24px 0 0;
+.sheet-card{width:100%;max-width:480px;background:var(--cream);border-radius:24px 24px 0 0;
   padding:18px 20px calc(env(safe-area-inset-bottom) + 20px);animation:up .24s cubic-bezier(.22,.61,.36,1)}
 .sheet.center .sheet-card{border-radius:24px;max-width:420px;animation:pop .22s cubic-bezier(.22,.61,.36,1)}
 @keyframes up{from{transform:translateY(34px);opacity:.5}to{transform:none;opacity:1}}
@@ -263,7 +263,7 @@ input{font:inherit}
 .prow span:first-child{color:var(--mute)}
 .prow b{font-weight:600;text-align:right}
 
-.tabbar{flex:none;display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-top:1px solid var(--hair);
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(3,1fr);background:var(--cream);border-top:1px solid var(--hair);
   padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);z-index:600}
 .tabbar.hide{display:none}
 .tab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0;color:var(--mute);font-size:11px;font-weight:600}
@@ -273,8 +273,8 @@ input{font:inherit}
 
 .mk{display:grid;place-items:center;border-radius:50%;font-family:var(--display);font-weight:800;font-size:12px;color:#fff}
 .mk.pick{width:26px;height:26px;background:var(--ink);box-shadow:0 0 0 4px rgba(30,30,36,.16)}
-.mk.drop{width:26px;height:26px;background:var(--accent);box-shadow:0 0 0 4px rgba(27,111,168,.16)}
-.mk.me{width:20px;height:20px;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 3px rgba(27,111,168,.22)}
+.mk.drop{width:26px;height:26px;background:var(--accent);box-shadow:0 0 0 4px rgba(15,92,150,.16)}
+.mk.me{width:20px;height:20px;background:var(--accent);border:3px solid #fff;box-shadow:0 0 0 3px rgba(15,92,150,.22)}
 
 .offbar{position:fixed;top:0;left:0;right:0;z-index:850;background:var(--ink);color:var(--cream);text-align:center;
   font-size:12.5px;font-weight:600;padding:calc(env(safe-area-inset-top) + 6px) 12px 6px;display:none}
@@ -1007,7 +1007,7 @@ input{font:inherit}
     if(S.step<2){
       osrmRota(bas,KONUM.alis).then(function(rt){
         if(!mapGorev) return;
-        gLeg1=L.polyline(latlngs(rt),{color:'#1B6FA8',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+        gLeg1=L.polyline(latlngs(rt),{color:'#0F5C96',weight:7,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       }).catch(function(){});
       osrmRota(KONUM.alis,KONUM.teslim).then(function(rt){
         if(!mapGorev) return;
@@ -1016,7 +1016,7 @@ input{font:inherit}
     }else{
       osrmRota(bas,KONUM.teslim).then(function(rt){
         if(!mapGorev) return;
-        gLeg1=L.polyline(latlngs(rt),{color:'#1B6FA8',weight:5,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+        gLeg1=L.polyline(latlngs(rt),{color:'#0F5C96',weight:7,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       }).catch(function(){});
     }
   }
@@ -1088,13 +1088,13 @@ input{font:inherit}
     if(NAV.line){ mapGorev.removeLayer(NAV.line);NAV.line=null }
     osrmRota(bas,hedef).then(function(rt){
       if(!rt.legs||!rt.legs[0].steps) throw new Error('rota yok');
-      NAV.line=L.polyline(latlngs(rt),{color:'#1B6FA8',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      NAV.line=L.polyline(latlngs(rt),{color:'#0F5C96',weight:7,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       mapGorev.fitBounds(NAV.line.getBounds(),{paddingTopLeft:[40,150],paddingBottomRight:[40,330],maxZoom:16});
       NAV.steps=rt.legs[0].steps;
       navGuncelle(GEO.last||bas);
     }).catch(function(){
       NAV.steps=null;
-      NAV.line=L.polyline([bas,hedef],{color:'#1B6FA8',weight:6,opacity:.95,lineCap:'round'}).addTo(mapGorev);
+      NAV.line=L.polyline([bas,hedef],{color:'#0F5C96',weight:7,opacity:.95,lineCap:'round'}).addTo(mapGorev);
       mapGorev.fitBounds([bas,hedef],{paddingTopLeft:[40,150],paddingBottomRight:[40,330],maxZoom:16});
       navYaz('<em>'+fmtM(mesafeM(bas,hedef))+'</em> düz git','Hedef: '+NAV.ad+' · yol verisi yok','straight');
     });
