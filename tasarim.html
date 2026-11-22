@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFF3E4">
+<title>İç tasarım seçenekleri · Sezer Abi Kurye</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+:root{
+  --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#6B655E; --line:#E4DCD1; --pad:#EDE7DF;
+  --accent:#0F5C96;
+  --display:'Bricolage Grotesque','DM Sans',system-ui,sans-serif;
+  --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#EDE7DF;font-family:var(--body);color:var(--ink);padding:22px 16px 48px}
+h1{font-family:var(--display);font-size:23px;letter-spacing:-.5px;margin:0 0 6px;max-width:560px;margin-inline:auto}
+.lead{margin:0 auto 22px;max-width:560px;color:var(--mute);font-size:14.5px;line-height:1.5}
+.grid{display:grid;gap:18px;max-width:560px;margin:0 auto}
+.kart{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:.15s}
+.kart.on{box-shadow:0 0 0 2px var(--ink)}
+.mini{position:relative;height:250px;overflow:hidden;display:flex;flex-direction:column}
+.harita{flex:1;background:
+  repeating-linear-gradient(0deg,#E6E3DF 0 1px,transparent 1px 26px),
+  repeating-linear-gradient(90deg,#E6E3DF 0 1px,transparent 1px 26px),
+  #F2F0ED;position:relative}
+.harita svg{position:absolute;inset:0;width:100%;height:100%}
+.pin{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%)}
+.pin.b{background:var(--accent)}
+.ad{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;font-size:13.5px;border-top:1px solid var(--line)}
+.ad b{font-weight:700}
+.ad span{color:var(--mute);font-size:12.5px}
+
+/* ortak parçalar */
+.panel{background:var(--cream);padding:13px 15px 15px}
+.lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.big{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.8px;line-height:1}
+.big s{font-size:12px;color:var(--mute);text-decoration:none;font-weight:400}
+.bar{height:6px;border-radius:3px;background:var(--pad);margin:8px 0 7px;overflow:hidden}
+.bar i{display:block;height:100%;width:69%;border-radius:3px;background:var(--accent)}
+.row{display:flex;gap:14px;font-size:11.5px;color:var(--mute)}
+.cta{margin-top:11px;background:var(--ink);color:#fff;border:0;border-radius:11px;height:38px;width:100%;font-size:13.5px;font-weight:700}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:9px}
+.card .t{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.card .v{font-family:var(--display);font-size:15px;font-weight:700;margin-top:2px}
+.card .s{font-size:11.5px;color:var(--mute);margin-top:1px}
+.split{display:flex;gap:8px}
+.split>*{flex:1}
+.dark{background:var(--ink);color:#fff}
+.dark .lab,.dark .row,.dark .card .t,.dark .card .s{color:#A9A49D}
+.dark .big s{color:#A9A49D}
+.dark .bar{background:#3A3A44}
+.dark .cta{background:#fff;color:var(--ink)}
+.dark .card{background:#2A2A33;border-color:#3A3A44}
+.dark .pin{background:#fff}
+</style>
+</head>
+<body>
+<div>
+  <h1>İç tasarım: hangisi?</h1>
+  <p class="lead">Dördü de aynı bilgiyi gösteriyor, sıralama ve renk kullanımı farklı. Beğendiğine dokun, adını söyle — onu uygulamaya geçiririm.</p>
+</div>
+
+<div class="grid">
+
+  <!-- A · Sade -->
+  <div class="kart" data-ad="Sade">
+    <div class="mini">
+      <div class="harita">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><path d="M40 95 L70 70 L110 72 L140 46 L190 40 L230 22" fill="none" stroke="#0F5C96" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="pin" style="left:14%;top:78%"></span>
+        <span class="pin b" style="left:76%;top:19%"></span>
+      </div>
+      <div class="panel">
+        <div class="lab">Bugün</div>
+        <div class="big">₺412 <s>/ ₺600</s></div>
+        <div class="bar"><i></i></div>
+        <div class="row"><span>6 sipariş</span><span>38 km</span><span>4s 12dk</span></div>
+        <button class="cta">Vardiyayı başlat</button>
+      </div>
+    </div>
+    <div class="ad"><b>A · Sade</b><span>şu anki düzen</span></div>
+  </div>
+
+  <!-- B · Kartlı -->
+  <div class="kart" data-ad="Kartlı">
+    <div class="mini">
+      <div class="harita" style="flex:0 0 88px">
+        <svg viewBox="0 0 300 88" preserveAspectRatio="none"><path d="M30 70 L80 52 L130 54 L190 30 L250 14" fill="none" stroke="#0F5C96" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="pin" style="left:10%;top:78%"></span>
+        <span class="pin b" style="left:83%;top:16%"></span>
+      </div>
+      <div class="panel" style="background:var(--cream)">
+        <div class="card" style="margin-top:0">
+          <div class="t">Bugün</div>
+          <div class="v">₺412 <s style="font-size:11px;color:var(--mute);text-decoration:none">/ ₺600</s></div>
+          <div class="bar" style="margin:6px 0 0"><i></i></div>
+        </div>
+        <div class="card">
+          <div class="t">Sıradaki</div>
+          <div class="v">Köfteci Ali → Merve K.</div>
+          <div class="s">1,8 km · 8 dk</div>
+        </div>
+        <button class="cta" style="margin-top:9px">Vardiyayı başlat</button>
+      </div>
+    </div>
+    <div class="ad"><b>B · Kartlı</b><span>kart kart ayrı bilgi</span></div>
+  </div>
+
+  <!-- C · Tek renk -->
+  <div class="kart" data-ad="Tek renk">
+    <div class="mini">
+      <div class="harita">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><path d="M40 95 L70 70 L110 72 L140 46 L190 40 L230 22" fill="none" stroke="#0F5C96" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="pin" style="left:14%;top:78%"></span>
+        <span class="pin" style="left:76%;top:19%"></span>
+      </div>
+      <div class="panel" style="background:#fff">
+        <div class="lab">Bugün</div>
+        <div class="big">₺412 <s>/ ₺600</s></div>
+        <div class="bar"><i style="background:var(--ink)"></i></div>
+        <div class="row"><span>6 sipariş</span><span>38 km</span><span>4s 12dk</span></div>
+        <button class="cta">Vardiyayı başlat</button>
+      </div>
+    </div>
+    <div class="ad"><b>C · Tek renk</b><span>renk yalnız haritada</span></div>
+  </div>
+
+  <!-- D · Koyu -->
+  <div class="kart" data-ad="Koyu">
+    <div class="mini">
+      <div class="harita">
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none"><path d="M40 95 L70 70 L110 72 L140 46 L190 40 L230 22" fill="none" stroke="#0F5C96" stroke-width="4" stroke-linecap="round"/></svg>
+        <span class="pin" style="left:14%;top:78%"></span>
+        <span class="pin b" style="left:76%;top:19%"></span>
+      </div>
+      <div class="panel dark">
+        <div class="lab">Bugün</div>
+        <div class="big">₺412 <s>/ ₺600</s></div>
+        <div class="bar"><i></i></div>
+        <div class="row"><span>6 sipariş</span><span>38 km</span><span>4s 12dk</span></div>
+        <button class="cta">Vardiyayı başlat</button>
+      </div>
+    </div>
+    <div class="ad"><b>D · Koyu</b><span>gece vardiyası</span></div>
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.kart').forEach(function(k){
+  k.addEventListener('click',function(){
+    document.querySelectorAll('.kart').forEach(function(x){x.classList.remove('on')});
+    k.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>
