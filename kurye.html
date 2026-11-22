@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
 <title>Sezer Abi Kurye · Vardiya</title>
+<script>try{if(localStorage.getItem('sak_oturum')!=='1')location.replace('index.html');}catch(e){}</script>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/fonts2.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -467,9 +468,9 @@ input{font:inherit}
       <button class="opt" data-ac="shAyarlar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.6 1.6 0 008 19.4a1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.6 1.6 0 003.7 15a1.6 1.6 0 00-1.5-1H2a2 2 0 110-4h.1A1.6 1.6 0 004.6 8a1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1A1.6 1.6 0 009 3.7 1.6 1.6 0 0010 2.2V2a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1A1.6 1.6 0 0020.3 8v.1a1.6 1.6 0 001.5 1H22a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg>Ayarlar<span class="r">Ses, titreşim</span></button>
       <button class="opt" data-ac="shYardim"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 015 1c0 1.7-2.5 2-2.5 3.6"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/></svg>Yardım ve destek<span class="r">7/24</span></button>
       <button class="opt" id="profShift"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.2A8 8 0 1017 6.2"/></svg>Bitir</button>
-      <button class="opt" onclick="location.href='giris.html'"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg>Çıkış yap</button>
+      <button class="opt" onclick="cikisYap()"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h9"/></svg>Çıkış yap</button>
     </div>
-    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 22 · 22 Kasım</div>
+    <div class="mute" style="margin-top:18px;text-align:center;font-size:12px" id="surumEtiket">Sürüm 23 · 22 Kasım</div>
   </section>
 
   <nav class="tabbar" id="tabbar">
@@ -1207,6 +1208,7 @@ input{font:inherit}
 
   ozet(); vardiyaCiz();
 })();
+window.cikisYap=function(){try{localStorage.removeItem('sak_oturum')}catch(e){}location.href='index.html';};
 </script>
 </body>
 </html>

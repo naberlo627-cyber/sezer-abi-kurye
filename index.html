@@ -166,7 +166,7 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 /* login ok */
 #s-ok{background:var(--accent);align-items:center;justify-content:center;text-align:center;gap:20px}
 #s-ok h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,13vw,56px);letter-spacing:-1.6px;line-height:1;color:var(--cream)}
-#s-ok p{font-size:18px;font-weight:500;max-width:280px;line-height:1.4}
+#s-ok p{font-size:18px;font-weight:500;max-width:280px;line-height:1.4;color:var(--cream)}
 #s-ok svg{width:min(240px,60vw);height:auto}
 #s-ok .btn{max-width:340px;margin-top:12px}
 
@@ -441,7 +441,7 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   <svg viewBox="0 0 320 90" fill="#FFF3E4" aria-hidden="true"><use href="#mustache"/></svg>
   <h1>Hoş geldin abi!</h1>
   <p>Giriş yaptın.</p>
-  <button class="btn cream" onclick="location.href='kurye.html'">Başla</button>
+  <button class="btn cream" onclick="girisAc()">Başla</button>
 </section>
 
 </main>
@@ -618,7 +618,9 @@ select.in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
     b.dataset.kodlu = kodlu ? '1' : '';
     go('done');
   }
-  $('#doneBtn').addEventListener('click',function(){ if(this.dataset.kodlu) location.href='kurye.html'; else home() });
+  function girisAc(){ try{localStorage.setItem('sak_oturum','1')}catch(e){} location.href='kurye.html'; }
+  window.girisAc=girisAc;
+  $('#doneBtn').addEventListener('click',function(){ if(this.dataset.kodlu) girisAc(); else home() });
 
   history.replaceState({n:'welcome'},'','');
   show('welcome');
