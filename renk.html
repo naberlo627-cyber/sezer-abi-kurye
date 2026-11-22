@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFF3E4">
+<title>Renk seçimi · Sezer Abi Kurye</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+:root{
+  --cream:#FFF3E4; --paper:#FFFBF5; --ink:#1E1E24; --mute:#6B655E; --line:#E4DCD1; --pad:#EDE7DF;
+  --display:'Bricolage Grotesque','DM Sans',system-ui,sans-serif;
+  --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#EDE7DF}
+body{font-family:var(--body);color:var(--ink);padding:20px 16px 44px}
+h1{font-family:var(--display);font-size:24px;letter-spacing:-.6px;margin:0 0 6px}
+p.lead{margin:0 0 20px;color:var(--mute);font-size:14.5px;line-height:1.5;max-width:520px}
+.grid{display:grid;gap:16px;max-width:520px;margin:0 auto}
+.kart{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:.15s}
+.kart:active{transform:scale(.995)}
+.kart.on{box-shadow:0 0 0 2px var(--ink)}
+.mini{background:var(--cream);padding:16px 18px 18px}
+.satir{display:flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.nokta{width:7px;height:7px;border-radius:50%;background:var(--a)}
+h3{font-family:var(--display);font-size:19px;margin:8px 0 10px;letter-spacing:-.3px}
+.rakam{font-family:var(--display);font-size:30px;letter-spacing:-1px;font-weight:700}
+.rakam span{font-size:14px;color:var(--mute);font-weight:400;letter-spacing:0}
+.prog{height:7px;border-radius:4px;background:var(--pad);margin:10px 0 12px;overflow:hidden}
+.prog i{display:block;height:100%;width:69%;border-radius:4px;background:var(--a)}
+.btn{background:var(--ink);color:#fff;border:0;border-radius:13px;height:46px;width:100%;font-size:15px;font-weight:700}
+.ad{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;font-size:13.5px;border-top:1px solid var(--line);background:#fff}
+.ad b{font-weight:700}
+.ad code{font-family:ui-monospace,monospace;font-size:12px;color:var(--mute)}
+.sec{max-width:520px;margin:0 auto 12px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.sec:not(:first-of-type){margin-top:26px}
+</style>
+</head>
+<body>
+<div style="max-width:520px;margin:0 auto">
+  <h1>Hangi ton?</h1>
+  <p class="lead">Dördü de aynı arayüz. Sadece vurgu rengi değişiyor. Beğendiğine dokun, bana söyle — hepsini o renge çeviririm.</p>
+</div>
+
+<div class="sec">Mavi ailesi</div>
+<div class="grid" id="mavi">
+  <div class="kart" data-ad="Petrol" style="--a:#0F5C96">
+    <div class="mini">
+      <div class="satir"><span class="nokta"></span>Çevrimdışı</div>
+      <h3>Vardiya kapalı</h3>
+      <div class="rakam">₺412 <span>/ ₺600</span></div>
+      <div class="prog"><i></i></div>
+      <button class="btn">Vardiyayı başlat</button>
+    </div>
+    <div class="ad"><b>Petrol</b><code>#0F5C96</code></div>
+  </div>
+
+  <div class="kart" data-ad="Kraliyet" style="--a:#1B4F9C">
+    <div class="mini">
+      <div class="satir"><span class="nokta"></span>Çevrimdışı</div>
+      <h3>Vardiya kapalı</h3>
+      <div class="rakam">₺412 <span>/ ₺600</span></div>
+      <div class="prog"><i></i></div>
+      <button class="btn">Vardiyayı başlat</button>
+    </div>
+    <div class="ad"><b>Kraliyet</b><code>#1B4F9C</code></div>
+  </div>
+
+  <div class="kart" data-ad="Lacivert" style="--a:#17365D">
+    <div class="mini">
+      <div class="satir"><span class="nokta"></span>Çevrimdışı</div>
+      <h3>Vardiya kapalı</h3>
+      <div class="rakam">₺412 <span>/ ₺600</span></div>
+      <div class="prog"><i></i></div>
+      <button class="btn">Vardiyayı başlat</button>
+    </div>
+    <div class="ad"><b>Lacivert</b><code>#17365D</code></div>
+  </div>
+</div>
+
+<div class="sec">Mavi dışı</div>
+<div class="grid">
+  <div class="kart" data-ad="Zümrüt" style="--a:#14664F">
+    <div class="mini">
+      <div class="satir"><span class="nokta"></span>Çevrimdışı</div>
+      <h3>Vardiya kapalı</h3>
+      <div class="rakam">₺412 <span>/ ₺600</span></div>
+      <div class="prog"><i></i></div>
+      <button class="btn">Vardiyayı başlat</button>
+    </div>
+    <div class="ad"><b>Zümrüt</b><code>#14664F</code></div>
+  </div>
+
+  <div class="kart" data-ad="Bordo" style="--a:#7A2E3B">
+    <div class="mini">
+      <div class="satir"><span class="nokta"></span>Çevrimdışı</div>
+      <h3>Vardiya kapalı</h3>
+      <div class="rakam">₺412 <span>/ ₺600</span></div>
+      <div class="prog"><i></i></div>
+      <button class="btn">Vardiyayı başlat</button>
+    </div>
+    <div class="ad"><b>Bordo</b><code>#7A2E3B</code></div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.kart').forEach(function(k){
+  k.addEventListener('click',function(){
+    document.querySelectorAll('.kart').forEach(function(x){x.classList.remove('on')});
+    k.classList.add('on');
+    k.scrollIntoView({block:'nearest',behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

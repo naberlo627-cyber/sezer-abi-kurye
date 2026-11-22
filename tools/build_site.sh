@@ -8,7 +8,7 @@ OUT="$ROOT/dist"
 rm -rf "$OUT"
 mkdir -p "$OUT"
 
-for f in index.html giris.html kurye.html manifest.json sw.js version.json; do
+for f in index.html giris.html kurye.html renk.html manifest.json sw.js version.json; do
   [ -f "$ROOT/$f" ] && cp "$ROOT/$f" "$OUT/"
 done
 [ -d "$ROOT/icons" ] && cp -r "$ROOT/icons" "$OUT/"
